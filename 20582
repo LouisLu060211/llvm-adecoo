@@ -1,0 +1,14 @@
+yaolu@toronto:~/llvm-project-src$ git reset --hard HEAD
+HEAD is now at 1434c4b3e9a8 Avoid crash in test alias analysis operand printing
+yaolu@toronto:~/llvm-project-src$ git branch --show-current 
+fix-affine-for-fold-detached-block
+yaolu@toronto:~/llvm-project-src$ ninja -C ~/llvm-build check-mlir -j10
+ninja: Entering directory `/home/yaolu/llvm-build'
+[2/36   5% - 1 processes] Building CXX object tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineOps.cpp.o
+FAILED: [code=1] tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineOps.cpp.o 
+CCACHE_CPP2=yes CCACHE_HASHDIR=yes CCACHE_SLOPPINESS=pch_defines,time_macros /usr/bin/ccache /usr/bin/clang++ -D_DEBUG -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_USE_CXX11_ABI=1 -D_GNU_SOURCE -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -I/home/yaolu/llvm-build/tools/mlir/lib/Dialect/Affine/IR -I/home/yaolu/llvm-project-src/mlir/lib/Dialect/Affine/IR -I/home/yaolu/llvm-build/tools/mlir/include -I/home/yaolu/llvm-project-src/mlir/include -I/home/yaolu/llvm-build/include -I/home/yaolu/llvm-project-src/llvm/include -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Werror=unguarded-availability-new -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wc++98-compat-extra-semi -Wimplicit-fallthrough -Wcovered-switch-default -Wno-noexcept-type -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Wsuggest-override -Wstring-conversion -Wno-pass-failed -Wmisleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections -Wundef -Werror=mismatched-tags -Werror=global-constructors -O3 -DNDEBUG -UNDEBUG -fno-exceptions -funwind-tables -fno-rtti -std=c++17 -MD -MT tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineOps.cpp.o -MF tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineOps.cpp.o.d -o tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineOps.cpp.o -c /home/yaolu/llvm-project-src/mlir/lib/Dialect/Affine/IR/AffineOps.cpp
+/home/yaolu/llvm-project-src/mlir/lib/Dialect/Affine/IR/AffineOps.cpp:2599:11: error: use of undeclared identifier 'var'
+      if(!var.getParentReigion){
+          ^
+1 error generated.
+ninja: build stopped: subcommand failed.

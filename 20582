@@ -9,3 +9,9 @@ CCACHE_CPP2=yes CCACHE_HASHDIR=yes CCACHE_SLOPPINESS=pch_defines,time_macros /us
                              ()
 1 error generated.
 ninja: build stopped: subcommand failed.
+yaolu@toronto:~/llvm-project-src$ ninja -C ~/llvm-build check-mlir -j10
+ninja: Entering directory `/home/yaolu/llvm-build'
+[34/35  97% - 1 processes] Running the MLIR regression tests
+                                                                 -- Testing: 4010 tests, 64 workers --                                                                  
+ 99% [==================================================================================================================================================-] ETA: 00:00:00
+MLIR :: Dialect/Vector/vector-tofrom-elements-to-shuffle-tree-transforms.mlir   

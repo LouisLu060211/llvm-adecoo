@@ -1,49 +1,15 @@
-yaolu@toronto:~/llvm-project-src$ git rebase -i HEAD~6
-[detached HEAD 3a9b774ca84c] [mlir][memref] Avoid mem2reg crash on element count overflow
- Date: Tue Jun 23 18:02:12 2026 +0800
- 1 file changed, 3 insertions(+)
-Successfully rebased and updated refs/heads/fix-affine-for-fold-detached-block.
-yaolu@toronto:~/llvm-project-src$ git push -u fork HEAD
-To ssh://ssh.github.com:443/LouisLu060211/llvm-project.git
- ! [rejected]                  HEAD -> fix-affine-for-fold-detached-block (non-fast-forward)
-error: failed to push some refs to 'ssh://ssh.github.com:443/LouisLu060211/llvm-project.git'
-hint: Updates were rejected because the tip of your current branch is behind
-hint: its remote counterpart. Integrate the remote changes (e.g.
-hint: 'git pull ...') before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-yaolu@toronto:~/llvm-project-src$ git add .
-yaolu@toronto:~/llvm-project-src$ git commit
-On branch fix-affine-for-fold-detached-block
-Your branch and 'fork/fix-affine-for-fold-detached-block' have diverged,
-and have 1 and 6 different commits each, respectively.
-  (use "git pull" to merge the remote branch into yours)
-
-nothing to commit, working tree clean
-yaolu@toronto:~/llvm-project-src$ git push -u fork HEAD
-To ssh://ssh.github.com:443/LouisLu060211/llvm-project.git
- ! [rejected]                  HEAD -> fix-affine-for-fold-detached-block (non-fast-forward)
-error: failed to push some refs to 'ssh://ssh.github.com:443/LouisLu060211/llvm-project.git'
-hint: Updates were rejected because the tip of your current branch is behind
-hint: its remote counterpart. Integrate the remote changes (e.g.
-hint: 'git pull ...') before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-yaolu@toronto:~/llvm-project-src$ ninja -C ~/llvm-build mlir-opt
-~/llvm-build/bin/mlir-opt -test-memref-to-llvm-with-transforms ~/a.mlir   # should no longer segfault
-ninja -C ~/llvm-build check-mlir
-ninja: Entering directory `/home/yaolu/llvm-build'
-[7/14  50% - 3 processes] Building CXX object tools/mlir/test/lib/Analysis/CMakeFiles/MLIRTestAnalysis.dir/TestAliasAnalysis.cpp.o^C
-module {
-  llvm.func @f(%arg0: f32 {test._ptr}) attributes {test.ptr} {
-    %0 = "test.ptr"(%arg0) {test._ptr} : (f32) -> f32
-    %1 = "test.ptr"(%arg0) {test.inclusive} : (f32) -> f32
-    %2 = "test.ptr"(%arg0) {test.exclusive} : (f32) -> f32
-    %3 = "test.ptr"(%arg0) {test.c_ptr} : (f32) -> f32
-    llvm.return
-  }
-}
-
-ninja: Entering directory `/home/yaolu/llvm-build'
-^C
-yaolu@toronto:~/llvm-project-src$ git push --force-with-lease origin fix-affine-for-fold-detached-block
-remote: Permission to llvm/llvm-project.git denied to LouisLu060211.
-fatal: unable to access 'https://github.com/llvm/llvm-project.git/': The requested URL returned error: 403
+The pass motivation
+- how the pass works, what utils does it use
+we shouldnt talk about bugs or issues 
+just talk about the pass in general
+Hocky Yudhiono 00870384 2026-07-15 10:40
+would be great actually if you could do like in details explanation about what is Value, Operation, PatternRewriter
+and some llvm ADT and methods that you learned
+Hocky Yudhiono 00870384 2026-07-15 10:41
+like make sure you understand the crooks and nannies
+like mlir walk
+what is it
+what is Region, Block, Arguments
+those stuffs
+and what api is aailable in the rewriter
+OpBuilder

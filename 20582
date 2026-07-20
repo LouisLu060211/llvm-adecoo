@@ -1,4 +1,8 @@
-yaolu@toronto:~/AscendNPU-IR$ master -> A3
-dev/regbase -> A5
-bash: master: command not found
-bash: dev/regbase: No such file or directory
+yaolu@toronto:~/AscendNPU-IR$ git branch
+* master
+yaolu@toronto:~/AscendNPU-IR$ git fetch origin
+yaolu@toronto:~/AscendNPU-IR$ git checkout dev/regbase
+error: pathspec 'dev/regbase' did not match any file(s) known to git
+yaolu@toronto:~/AscendNPU-IR$ 
+yaolu@toronto:~/AscendNPU-IR$ npu-smi info
+bash: npu-smi: command not found

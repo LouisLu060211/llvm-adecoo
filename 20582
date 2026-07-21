@@ -1,29 +1,25 @@
-yaolu@toronto:~/AscendNPU-IR$ ./build/bin/bishengir-opt bishengir/test/Integration/HIVM/VecAdd/add.mlir -o /tmp/out.mlir && echo "OK" && head -20 /tmp/out.mlir
-OK
-module {
-  func.func @add(%arg0: memref<16xi16, #hivm.address_space<gm>>, %arg1: memref<16xi16, #hivm.address_space<gm>>, %arg2: memref<16xi16, #hivm.address_space<gm>>) attributes {hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>} {
-    %alloc = memref.alloc() : memref<16xi16, #hivm.address_space<ub>>
-    hivm.hir.load ins(%arg0 : memref<16xi16, #hivm.address_space<gm>>) outs(%alloc : memref<16xi16, #hivm.address_space<ub>>)
-    %alloc_0 = memref.alloc() : memref<16xi16, #hivm.address_space<ub>>
-    hivm.hir.load ins(%arg1 : memref<16xi16, #hivm.address_space<gm>>) outs(%alloc_0 : memref<16xi16, #hivm.address_space<ub>>)
-    %alloc_1 = memref.alloc() : memref<16xi16, #hivm.address_space<ub>>
-    hivm.hir.vadd ins(%alloc, %alloc_0 : memref<16xi16, #hivm.address_space<ub>>, memref<16xi16, #hivm.address_space<ub>>) outs(%alloc_1 : memref<16xi16, #hivm.address_space<ub>>)
-    hivm.hir.store ins(%alloc_1 : memref<16xi16, #hivm.address_space<ub>>) outs(%arg2 : memref<16xi16, #hivm.address_space<gm>>)
-    return
-  }
-}
+1. 证明 clone 下来了，而且子模块完整：
 
-yaolu@toronto:~/AscendNPU-IR$ bash
-cat bishengir/test/Integration/HIVM/VecAdd/add.mlir
-yaolu@toronto:~/AscendNPU-IR$ file A3 A5
-A3: empty
-A5: empty
-yaolu@toronto:~/AscendNPU-IR$ ./build/bin/llvm-lit -a bishengir/test/Integration/HIVM/VecAdd/ 2>&1 | head -30
--- Testing: 1 tests, 1 workers --
-UNSUPPORTED: bishengir :: Integration/HIVM/VecAdd/main.cpp (1 of 1)
-Test is unsupported
-********************
+bash
+cd ~/AscendNPU-IR && git remote -v && git log -1 --oneline && git submodule status
 
-Testing Time: 0.08s
+这一条同时显示：仓库来源、最新提交、三个大子模块都在位。
 
-Total Discovered Tests: 1
+2. 证明编译产物存在、工具能起来：
+
+bash
+./build/bin/bishengir-opt --version
+
+打印版本号，说明你有一份编译好、能运行的 bishengir-opt。
+
+3. 证明它真的跑通了一段 IR（最有说服力的一条）：
+
+bash
+./build/bin/bishengir-opt bishengir/test/Integration/HIVM/VecAdd/add.mlir | tee /tmp/vecadd_out.mlir
+
+tee 会把结果同时打到屏幕并存到 /tmp/vecadd_out.mlir。屏幕上出现那段带 hivm.hir.vadd 的 IR，就是「输入 IR 进去、编译器处理、输出 IR 出来」的完整证据。
+
+4.（可选，加分）证明官方测试框架跑过，且如实说明硬件用例被跳过：
+
+bash
+./build/bin/llvm-lit -a bishengir/test/Integration/HIVM/VecAdd/

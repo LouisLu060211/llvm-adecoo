@@ -1,6 +1,8 @@
-yaolu@toronto:~/AscendNPU-IR$ ls
-A3  A5  AscendNPU-IR  bishengir  build  build-tools  CMakeLists.txt  docker  docs  LICENSE  NOTICE  OWNERS  README.md  README_zh.md  third-party  Third_Party_Open_Source_Software_Notice
-yaolu@toronto:~/AscendNPU-IR$ git submodule status
- 487bf69401b9269eef1ee598fdbdc04c6c7f29a9 third-party/llvm-project (llvmorg-19.1.7-71-g487bf69401b9)
- 5302aaab2b796ec7cca9840e3d1a7dc29d40b89d third-party/shmem (v1.0.0-47-g5302aaab)
- 5e9c503194b644ef53e3f788ade7afc76ce269e4 third-party/torch-mlir (pytorch-1.3-3162-g5e9c5031)
+yaolu@toronto:~/AscendNPU-IR$ ls build
+benchmarks  build.ninja  CMakeCache.txt  cmake_install.cmake    CPackConfig.cmake        docs      include  install_manifest_bishengir-publish-products.txt  projects  tablegen_compile_commands.yml  third-party  unittests
+bin         cmake        CMakeFiles      compile_commands.json  CPackSourceConfig.cmake  examples  install  lib                                              runtimes  test                           tools        utils
+yaolu@toronto:~/AscendNPU-IR$ find / -name "set_env.sh" -path "*Ascend*" 2>/dev/null | head
+which cmake ninja clang clang++ 2>/dev/null
+
+
+^C

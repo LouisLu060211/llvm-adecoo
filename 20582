@@ -1,8 +1,20 @@
-yaolu@toronto:~/AscendNPU-IR$ ls build
-benchmarks  build.ninja  CMakeCache.txt  cmake_install.cmake    CPackConfig.cmake        docs      include  install_manifest_bishengir-publish-products.txt  projects  tablegen_compile_commands.yml  third-party  unittests
-bin         cmake        CMakeFiles      compile_commands.json  CPackSourceConfig.cmake  examples  install  lib                                              runtimes  test                           tools        utils
-yaolu@toronto:~/AscendNPU-IR$ find / -name "set_env.sh" -path "*Ascend*" 2>/dev/null | head
-which cmake ninja clang clang++ 2>/dev/null
-
-
-^C
+yaolu@toronto:~/AscendNPU-IR$ ls build/bin
+bishengir-capi-ir-test          llvm-bcanalyzer             llvm-dwarfdump                llvm-lto                        llvm-profgen                   llvm-tblgen                           mlir-capi-transform-test       not
+bishengir-capi-pass-test        llvm-bitcode-strip          llvm-dwarfutil                llvm-lto2                       llvm-ranlib                    llvm-tli-checker                      mlir-capi-translation-test     obj2yaml
+bishengir-compile               llvm-cat                    llvm-dwp                      llvm-mc                         llvm-rc                        llvm-undname                          mlir-cat                       opt
+bishengir-hfusion-ods-yaml-gen  llvm-cfi-verify             llvm-exegesis                 llvm-mca                        llvm-readelf                   llvm-windres                          mlir-cpu-runner                reduce-chunk-list
+bishengir-lsp-server            llvm-config                 llvm-extract                  llvm-microsoft-demangle-fuzzer  llvm-readobj                   llvm-xray                             mlir-linalg-ods-yaml-gen       sancov
+bishengir-opt                   llvm-cov                    llvm-gsymutil                 llvm-min-tblgen                 llvm-readtapi                  llvm-yaml-numeric-parser-fuzzer       mlir-lsp-server                sanstats
+bishengir-options-tblgen        llvm-c-test                 llvm-ifs                      llvm-ml                         llvm-reduce                    llvm-yaml-parser-fuzzer               mlir-minimal-opt               split-file
+bishengir-target-spec-tblgen    llvm-cvtres                 llvm-install-name-tool        llvm-modextract                 llvm-remarkutil                mlir-bytecode-parser-fuzzer           mlir-minimal-opt-canonicalize  tblgen-lsp-server
+bugpoint                        llvm-cxxdump                llvm-isel-fuzzer              llvm-mt                         llvm-rtdyld                    mlir-capi-execution-engine-test       mlir-opt                       tblgen-to-irdl
+count                           llvm-cxxfilt                llvm-itanium-demangle-fuzzer  llvm-nm                         llvm-rust-demangle-fuzzer      mlir-capi-irdl-test                   mlir-pdll                      UnicodeNameMappingGenerator
+dsymutil                        llvm-cxxmap                 llvm-jitlink                  llvm-objcopy                    llvm-sim                       mlir-capi-ir-test                     mlir-pdll-lsp-server           update_core_linalg_named_ops.sh
+FileCheck                       llvm-debuginfo-analyzer     llvm-jitlink-executor         llvm-objdump                    llvm-size                      mlir-capi-llvm-test                   mlir-query                     verify-uselistorder
+llc                             llvm-debuginfod             llvm-lib                      llvm-opt-fuzzer                 llvm-special-case-list-fuzzer  mlir-capi-pass-test                   mlir-reduce                    yaml2obj
+lli                             llvm-debuginfod-find        llvm-libtool-darwin           llvm-opt-report                 llvm-split                     mlir-capi-pdl-test                    mlir-src-sharder               yaml-bench
+lli-child-target                llvm-diff                   llvm-link                     llvm-otool                      llvm-stress                    mlir-capi-quant-test                  mlir-tblgen
+llvm-addr2line                  llvm-dis                    llvm-lipo                     llvm-pdbutil                    llvm-strings                   mlir-capi-rewrite-test                mlir-text-parser-fuzzer
+llvm-ar                         llvm-dlang-demangle-fuzzer  llvm-lit                      llvm-PerfectShuffle             llvm-strip                     mlir-capi-sparse-tensor-test          mlir-transform-opt
+llvm-as                         llvm-dlltool                llvm-locstats                 llvm-profdata                   llvm-symbolizer                mlir-capi-transform-interpreter-test  mlir-translate
+yaolu@toronto:~/AscendNPU-IR$ 

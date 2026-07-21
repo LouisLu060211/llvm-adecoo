@@ -1,21 +1,29 @@
-1. 拿 VecAdd 的 IR 喂给 bishengir-opt，验证工具通不通：
+yaolu@toronto:~/AscendNPU-IR$ ./build/bin/bishengir-opt bishengir/test/Integration/HIVM/VecAdd/add.mlir -o /tmp/out.mlir && echo "OK" && head -20 /tmp/out.mlir
+OK
+module {
+  func.func @add(%arg0: memref<16xi16, #hivm.address_space<gm>>, %arg1: memref<16xi16, #hivm.address_space<gm>>, %arg2: memref<16xi16, #hivm.address_space<gm>>) attributes {hacc.entry, hacc.function_kind = #hacc.function_kind<DEVICE>} {
+    %alloc = memref.alloc() : memref<16xi16, #hivm.address_space<ub>>
+    hivm.hir.load ins(%arg0 : memref<16xi16, #hivm.address_space<gm>>) outs(%alloc : memref<16xi16, #hivm.address_space<ub>>)
+    %alloc_0 = memref.alloc() : memref<16xi16, #hivm.address_space<ub>>
+    hivm.hir.load ins(%arg1 : memref<16xi16, #hivm.address_space<gm>>) outs(%alloc_0 : memref<16xi16, #hivm.address_space<ub>>)
+    %alloc_1 = memref.alloc() : memref<16xi16, #hivm.address_space<ub>>
+    hivm.hir.vadd ins(%alloc, %alloc_0 : memref<16xi16, #hivm.address_space<ub>>, memref<16xi16, #hivm.address_space<ub>>) outs(%alloc_1 : memref<16xi16, #hivm.address_space<ub>>)
+    hivm.hir.store ins(%alloc_1 : memref<16xi16, #hivm.address_space<ub>>) outs(%arg2 : memref<16xi16, #hivm.address_space<gm>>)
+    return
+  }
+}
 
-bash
-./build/bin/bishengir-opt bishengir/test/Integration/HIVM/VecAdd/add.mlir -o /tmp/out.mlir && echo "OK" && head -20 /tmp/out.mlir
-
-打印 OK 并出来一段 IR，就说明编译器工具本身是好的。
-
-2. 顺便看一眼这个例子的 IR 长什么样：
-
-bash
+yaolu@toronto:~/AscendNPU-IR$ bash
 cat bishengir/test/Integration/HIVM/VecAdd/add.mlir
+yaolu@toronto:~/AscendNPU-IR$ file A3 A5
+A3: empty
+A5: empty
+yaolu@toronto:~/AscendNPU-IR$ ./build/bin/llvm-lit -a bishengir/test/Integration/HIVM/VecAdd/ 2>&1 | head -30
+-- Testing: 1 tests, 1 workers --
+UNSUPPORTED: bishengir :: Integration/HIVM/VecAdd/main.cpp (1 of 1)
+Test is unsupported
+********************
 
-3. 确认 A3、A5 到底是啥（上一条你没跑，这次单独跑）：
+Testing Time: 0.08s
 
-bash
-file A3 A5
-
-4. 试着让官方测试框架自己跑（如果 lit 装好了，它会自动跳过需要硬件的用例，只跑能跑的）：
-
-bash
-./build/bin/llvm-lit -a bishengir/test/Integration/HIVM/VecAdd/ 2>&1 | head -30
+Total Discovered Tests: 1

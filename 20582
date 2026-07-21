@@ -1,50 +1,21 @@
-yaolu@toronto:~/AscendNPU-IR$ cat cat bishengir/test/Integration/HIVM/VecAdd/README.md
-cat: cat: No such file or directory
-# HIVM Vector Add
+1. 拿 VecAdd 的 IR 喂给 bishengir-opt，验证工具通不通：
 
-This is a simple example that demonstrates:
-- how to compile `.mlir` into binary that can be executed on the Ascend NPU using `bishengir-compile`
-- how to write a host wrapper that can launch the program on Ascend NPU
+bash
+./build/bin/bishengir-opt bishengir/test/Integration/HIVM/VecAdd/add.mlir -o /tmp/out.mlir && echo "OK" && head -20 /tmp/out.mlir
 
-## Requirements
+打印 OK 并出来一段 IR，就说明编译器工具本身是好的。
 
-To run the example on Ascend NPU, please install the CANN software package and the set the environment variable `ASCEND_HOME_PATH` to the installed path. For example:
+2. 顺便看一眼这个例子的 IR 长什么样：
 
-```bash
-export ASCEND_HOME_PATH=/usr/local/ascend-toolkit/latest
-```
+bash
+cat bishengir/test/Integration/HIVM/VecAdd/add.mlir
 
-## How to build the example
+3. 确认 A3、A5 到底是啥（上一条你没跑，这次单独跑）：
 
-1. Prepare the requirements listed above.
-2. Add `-DBISHENGIR_BUILD_EXAMPLES=ON` to the cmake build options. For example:
+bash
+file A3 A5
 
-    ```bash
-    cmake -G Ninja .. \
-    -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_ENABLE_PROJECTS="mlir" \
-    -DLLVM_EXTERNAL_PROJECTS="bishengir" \
-    -DLLVM_EXTERNAL_BISHENGIR_SOURCE_DIR="AscendNPU-IR" \ # Project root directory
-    -DBSPUB_DAVINCI_BISHENGIR=ON # Mandatory! Enables AscendNPU IR extensions for third-party repositories
-    [Other CMake Options as required]
-    -DBISHENGIR_BUILD_EXAMPLES=ON # Build integration examples
-    ```
+4. 试着让官方测试框架自己跑（如果 lit 装好了，它会自动跳过需要硬件的用例，只跑能跑的）：
 
-3. Build the project. After building, the executable `hivm-vec-add` should appear in `./bin` directory.
-4. Build the device binary using `bishengir-compile`
-    ```bash
-    bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
-    ```
-5. Execute `hivm-vec-add`
-    ```bash
-    ./hivm-vec-add
-    ```
-6. You should see the following results (some text are omitted):
-    ```bash
-    i0       Expect: 1                         Result: 1
-    i1       Expect: 2                         Result: 2
-    i2       Expect: 3                         Result: 3
-    i3       Expect: 4                         Result: 4
-    ```
+bash
+./build/bin/llvm-lit -a bishengir/test/Integration/HIVM/VecAdd/ 2>&1 | head -30

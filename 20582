@@ -1,2 +1,6 @@
-cd ~
-git clone https://gitcode.com/Ascend/AscendNPU-IR.git
+yaolu@toronto:~/AscendNPU-IR$ ls
+A3  A5  AscendNPU-IR  bishengir  build  build-tools  CMakeLists.txt  docker  docs  LICENSE  NOTICE  OWNERS  README.md  README_zh.md  third-party  Third_Party_Open_Source_Software_Notice
+yaolu@toronto:~/AscendNPU-IR$ git submodule status
+ 487bf69401b9269eef1ee598fdbdc04c6c7f29a9 third-party/llvm-project (llvmorg-19.1.7-71-g487bf69401b9)
+ 5302aaab2b796ec7cca9840e3d1a7dc29d40b89d third-party/shmem (v1.0.0-47-g5302aaab)
+ 5e9c503194b644ef53e3f788ade7afc76ce269e4 third-party/torch-mlir (pytorch-1.3-3162-g5e9c5031)

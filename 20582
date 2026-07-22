@@ -1,142 +1,112 @@
 "[Tilelang]
-- A5 expert mode (implemented and tested 62 ops) -- Layout Mode (ND2NZ) resolve
+- Designing Tilelang expert mode for A5
+- CANN 9.0 issue with Tilelang
 
-[AscendNPU-IR]
-- Implemented a pass in dev/regbase for statically verifying invalid ops on A5 (It has vectorization, it will reject invalid operations that is not supported in A5)
+[Ecosystem]
+- CUHK Shenzhen AI Math day
 
 [DPU DSL]
-- Submitted PPM (Finance and Management things) flow for the acceptance and payment of Prof. Bruno's project -- HKU  (Waiting for administration and payment, More presentation on more experts)
-- Revised patent slides as per suggestions from Shengtao (Inferring the least bit sized about data plane programming in P4 -- Ricky, and friends, also Prof Bruno has involvement)
-   - Result is pretty good, this patent is about memory optimization in the Data Plane Programming -- experiments have been done in the github repo, the algorithms quite strong, up to 48% improvement"
+- Patent assessment report done (patent rejected due to vageness reason, now improving slides)
+- Acceptance conclusion email sent to the acceptance members. All members accepted with excellent."
 "[Client Support - BAAI]
-TLE lowering / Unified Language Design
- - Researching on Gluon, TileIR, and TLE design. A back-and-forth review with Chengchen.
-    - Wrote the tensor view dialect proposal. Will have a meeting with client this weekly.
-    - Confirming with Chengchen about the next step.
- - Writing more design like syncing, etc.
+Support FlagTree 3.5.x testcase
+ - 1 remaining failure related to casting in parallel loop. Confirmed the fix.
+Supoort benchmarking with FlagTree 3.5.x
+ - Found ""Infinity"" time cost in Ascend benchmark tool. Locating the bug with the benchmark tool team.
+Support scientific model with FlagTree 3.5.x
+ - Fixed 4 PTA error with correct docker and wheel deployment. Confirming 1 remaining failure related to cat.
+Support SGLang with FlagTree 3.5.x
+ - Fixed 4 kernel-level error with correct environment setup. Successfully run SGLang. Found 3 failures in Qwen3.6-27B related to the PTA.
+Support TritonAscend-FlagTree sync-up script (3.2.x and 3.5.x)
+ - Pending.
 
 [Ecosystem Operation]
 SIG meeting
- - Preparing for the SIG meeting on 23 July.
- - Topics: (1) Ricky: two week summary (2) Henry: CV 1:2
+ - Preparing for the SIG meeting on 25 June.
+ - Topics: (1) Ricky: two week summary (2) Hocky: Flatten Introduction
 Social media article
- - 9 posted. 1 WIP (A5 Introduction). 10 TODO.
- - Ling Fei and Peng Fei are also involved
+ - 8 posted. 1 WIP (AutoScheduling). 11 TODO.
 Repo weekly summary
- - 11 posted. 1 WIP. 23 TODO.
+ - 8 posted. 1 WIP. 26 TODO.
+
+[Minimax M3Triton Support]
+bitonic kernel compilation overtime
+ - Locating the bug.
+
+[Community Task]
+#256: Tile and Bind Sub Block Pass with CustomOp Support
+ - Finished Design Review. Implementing.
+#257: Split Mix Kernel Pass with CustomOp Support
+ - No participation.
+#258: Flatten Pass with CustomOp Support
+ - Reviewing Design.
+#259: Infer Data Layout Pass with CustomOp Support
+ - No participation.
+
+[DTS]
+DTS2606150013362
+ - Fixed.
 
 [College Support]
-AscendNPU-IR Optimization
-  - Partner: Prof. Lionel's Industrial FYP
-  - Progress: Studying TableGen and LocalMmad.cpp.
-                     Load L1 -> L0 decomposition (HIVM To std and td files)
-                     Working on LoadL0AOp, LoadL0BOp, LoadMatMulBiasOp, and mmadL0Op. Thanks a lot for the help from Ammar. The PR doesn't exist yet? 
-                     The requirement was discussed with Cheng Chen.
 Layout algebra with multiple devices
   - Partner: Prof. Lionel's FYT
-  - Progress: Connected with Prof. Joachim Meyer, Prof. Sebastian Hack, and Prof. Roland Leißa from Saarland University.
-                     Researching layout algebra and MiMIR (Both researching and implementation in AscendNPU-IR). 
-                     Will have a meeting in August to share the findings. Thanks a lot for the help from Christopher.
-VF Fusion migration
-  - Partner: Prof. Burno's Industrial FYP
-  - Progress: Studying vectorization and tiling.
-PGO for CV Pipelining and VF Fusion
-  - Partner: PunJab University FYP
-  - Progress: Studying PGO, VF Fusion, and CV Pipeline. A draft of the PGO design will be given in Augest.
-Tilelang Dialect Design
-  - Partner: PunJab University FYP
-  - Progress: Studying Tilelang, HIVM, and HFusion.
+  - Progress: Connected with Roland Leißa (the main author of MimIR). Working on tensor-layout package implementation with MimIR.
+AscendNPU-IR Optimization
+  - Partner: Prof. Lionel's Industrial FYP
+  - Progress: Students are now studyign AscendNPU IR. Catch-up meeting on 13 July.
+Global Software Technology Summit
+  - Prof. Lionel will talk about ""lessons from using AI in compiler design and implementation."" FYP and FYT will be included in the talk.
 Proton
   - Partner: Prof. Wen and Markov Lab
-  - Progress: Handing over to gaowei. Implementing protonCircularStore with customOp in template.
+  - Progress: Pending. Student are now supporting KperfIR and PyPTO profiling."
+" - Locate the runtime issue in DTS2606150006647 - unaligned UB access after 1:2 tiled the last dimension. Ingu's pr should be able to fix it. 
+ - Fixed DTS2026053021231 - copy ops decomposed from atomix_xchg are not placed in vector core. Fixed by wrapping them in ""vec core"" region.
+ - Analyzed the performance of 1:2 on chunk_bwd_dv_local. it is MTE2 bounded so 1:2 cannot bring much benefits."
+"1:2 support in A5
+ - Skip odd-sized reduction dimensions for VReduce tiling(Merged)
 
-[Community Task] (1 Code Reviewing, 2 Implementation, 1 Waiting for design, 4 Pending)
-#256: Tile and Bind Sub Block Pass with CustomOp Support
- - Reviewing PR1293.
-#257: Split Mix Kernel Pass with CustomOp Support
- - Reviewed the design. Implementation WIP.
-#258: Flatten Pass with CustomOp Support
- - Reviewed the design. Implementation WIP.
-#277: Debug with MetaOp Support
- - Waiting for the design.
-#259: Infer Data Layout Pass with CustomOp Support
- - Pending until #257 is done.
-# 292: Convert Layout and Insert Load Store with CustomOp Support
- -  Pending until #257 is done.
-# 293: Graph Sync Solver with CustomOp Support
- -  Pending until #257 is done.
-# 294: Tile Cube Vector Loop with CustomOp Support
- -  Pending until #257 is done."
-" - DTS2026061419764 & DTS2026061419763: Three issues in a row
-   - compilation error in ssbuf
-   - fixpipe op fused into vector scope: fixed by PR1577 (merged https://gitcode.com/Ascend/AscendNPU-IR/pull/1577) (A5 multibuffer)
-   - ordered spin lock in while loop causes stuck: Migrating A3 unordered lock to A5 can solve this. Waiting for A3A5 repo merge so that this fix will be enabled automatically.
-
- - DTS2026070936595: UB overflow due to flatten not enabled on vector scope introduced by decomposing atomic ops (A5)
-   - Tried: update mark-stride-align with A3 logic - try flatten before aligning. After discussion with Jingchang, he is not suggesting this due to some other corner cases encountered before.
-   - Just go with a simple fix: add mark to known vector scope to enable flatten on them. PR1665 (https://gitcode.com/Ascend/AscendNPU-IR/pull/1665, not merged)
-
-- Q3 requirements: matmul_mx adapt to convert-data-layout v2 new framework
-   - Design document finished. https://wiki.huawei.com/domains/148244/wiki/296387/WIKI2026071411850701  ദ്ദി(ᵔᗜᵔ)
-   - Insert and fuse convert-data-layout works fine. Debugging runtime error in dn2nz
-   - Wenteng and kresna also helping Andy
-"
-"Blue = this week
-Black = last week
-
-1:2 support in A5
- - Resolve diamond dependency when BubbleUpExtractSlice fails(Under testing) -- https://gitcode.com/Ascend/AscendNPU-IR/pull/1466 -- Performance issue subblock thing, this one has a probability to be re reviewed (revert back to CV 1:1) keep it here for future references
- - Fix bufferization bubble up pattern (merged) - https://gitcode.com/Ascend/AscendNPU-IR/pull/1495
- - Support IndirectLoad/StoreOp in Dimension Analyzer (merged) -- https://gitcode.com/Ascend/AscendNPU-IR/pull/1312 -- This was merged and reverted twice, but this solves some dtsss as well -- Unknown Issue
- - adjust tiling_dim in propagateDownSubView for dropped dims (merged)  https://gitcode.com/Ascend/AscendNPU-IR/pull/1560 -- obvious bug
-
-Sync A3 and A5
- - sync hivm aggregated decompose op pass (merged) -- Ingu worked on this because he worked on the A3 version previously, alignment A3 only issue -- vector function in A5 doesn't have alignment
- - sync HIVMBubbleUpExtractSlice pass (merged)
- - sync dimension analyzer from a5 to a3 (Running CI)
- - sync MarkDisableLoad (Running CI)
- - sync InsertLoadStoreForScalar (Running CI)
+1:2 support in A3
+ - Fix bug in CSEExtractSlicePattern
+ - Fix Dimension Analyzer to correctly find tiling dim for TileCubeVectorLoop pass
+ - Fix unaligned I1 type subview in AggregatedDecomposeOp pass(merged)
+ - Add canonicalization pattern for AffineApplyOp in BubbleUpExtractSlice(merged)
 
 DTS handling
- - DTS2026071305456: Two cases pass with the latest feature/regbase, and created PR for the third case(Limit subblock sync in bubble-up extract slice pass) - pending on liangheng -- Local passing for the first two testcases, the third case subblock occurs too much, it tiled the reduction dims four times, bad performance, ingu added a fix to block  the CV 1:2, regression compared to not  tiled at all"
-"[A5 Sync to master]
-https://gitcode.com/Ascend/AscendNPU-IR/pull/1467 [AscendNPU IR][Convert Layout][HIVM] feat: fold and decompose convert_layout for optimized lowering
-https://gitcode.com/Ascend/AscendNPU-IR/pull/1629 [AscendNPU IR][A5 Sync][HIVM] feat: sync InitEntryKernel, workspace, layout, and Triton args
-https://gitcode.com/Ascend/AscendNPU-IR/pull/1656 [AscendNPU IR] Template codes (CV)
-https://gitcode.com/Ascend/AscendNPU-IR/pull/1661 [AscendNPU IR] InlineFixpipe
-https://gitcode.com/Ascend/AscendNPU-IR/pull/1668 [AscendNPU IR] InferHIVMDataLayout
-Helped Zack to review, separate and implement some syncs
-[A5]
-DT writing for convert layout v2 insertslice + vbrc
-[Ecosystem]
-https://github.com/llvm/llvm-project/pull/208913 (Reviewed this with aartbik@github, I found a major bug when reviewing a PR, a following PR has been made by someone but I haven't reviewed yet)"
+CV1:2: Support IndirectLoad/StoreOp in Dimension Analyzer(DTS2606150014117).
+ - Found problem in unaligned copy slicing(DTS2026062308865, DTS2026062308686). Added fix(merged)
+disable CV1:2 when load and store share same address(DTS2026061077373)"
+"MixCV Data Movement (Fixpipe, Copy, Load) insertion support in A5
+- Help analyze and debug DTS2026052878980 sent tasks to cv pipelining (merged)
+- Help analyze and debug DTS2606150003802 sent to ingu, (merged)
+- [AscendNPU IR][HFusion][PropagateReshape] fix: support rank-reducing subview in memref propagation (reviewed, ready to merge)
+- [AscendNPU IR][SubBlock Tile][HIVM] feat: support unaligned column split tiling (Template code for fixpipe with no_dual now will default to copying to both AIV0, AIV1, will need to adjust for certain case that we can do unaligned column split tiling in 1:2
+- [AscendNPU IR][SubBlock Tile][HIVM] feat: support copy ub -> cbuf error when element type is big and dimension is small. will cause alignment error
+
+Ecosystem:
+- Onboard Louis to solve LLVM/MLIR issues"
 "A5 CV1:2
-- Refactor AIC tiling PR1456 (merged), and add support for preload optimization PR1611(to merge), e.g., propagateDownToTensor pattern;
-- Refactor the eraseOp in each Op BubbleUp strategy, add user check; PR1462 (to merge);
-- Support to MarkTightlyCoupleBuffer pass, use a new logit to add TCB id, fix the wrong marked TCB in ssbuf (PR1491), merged but reverted because some no-CI cases failed; DTS2026071430963
-- Sych TileAndBind (CV1:2 code) from A5 to A3, PR1664, to solve A3 CI problem;
-- Solve 5 regression DTS because of refactor PR 1377 being merged, fixed PRs by Ingu: PR1312+PR1512+PR1560, merged.
-DTS2026070912544
-DTS2026070912742 
-DTS2026070912985 
-DTS2026071304837
-DTS2026070958029
-Maybe the CI is not strong enough that it causes some issues (compilation, precision issues)
+
+1. Solve DTS2026060451302, adapt CV1:2 for ssbuf generated scalar tightly coupled ub, PR1715 merged; The correct change should be insertTightlyCV add no  tightly coupled id to ssbuf ub;
+2. Analyze the perfromance optimization of high prioriy kernels.
+   - Explain the performance rollback problem in solve_tril, tilingSize 16x16 is too small and aiv is not fully used, after tiled would make redundant data movement; 
+   - Help to look at rewrite solve_tril, and tile it (by Ingu's PR, change to row split), non performance rollback;
+   - Handle a performance DTS2606110025341 with Keyu's help; PR merged
+
+3. handle DTS2026061848417, change nz2dn constraint; PR merged
+4. Response to performance analyze in: solve_tril, chunk_bwd_dqkwg; 
+   - has performance reduction when CV1:2 is on,
+   - solve_tril is not fully tiled (I think it is not a key issue, only mask is not tiled), chunk_bwd_dqkwg involves tiling reduce axis and store/load to gm;
+
 
 AscendNPU-IR Docs
 1. Discuss how to incorporate A5 into documentation.
 
 LLM for triton kernel generation
-1. Review some paper. Now two paper are related to Ascend kernel geenration; both of them focus on AscendC kernel, mainly focus on post-training methods, and a kernelBench for AscendC was provided;
-2. Reproduce a paper's experiment in GPU machine, configurate the environment, study its SFT and RL methods;
+1.  Discuss with Yulong about the plan of next half year, plan to join the triton kernel generation project.
+2. Review some related literature."
+"[TileLang A5]
+- CANN 9.0.0 issue. Testing deepseek kernels
+- A5 Expert Mode Design testing 
 
-- Don't forget to add the description PR (Add summary is enough)
-- Don't forget to share in the group your analysis to ask for second opinions "
-"[FYP - Final Year Project]
-- Currently learning about vectorization and tiling transforms. (In order to migrate -- We have some linalg ops, in HIVM we need to implement on our own -- so need to work on this)
-
-[Tilelang]
-- Researched on exposing more control over VF Fusion in Tilelang -- Introducing IR Annotations -- Running benchmark -- improvement checking for now
-- Proposed possible solutions
-- Currently benchmarking the first proposed solution
-- https://wiki.huawei.com/domains/144020/wiki/285772/WIKI2026070911789128"
+[tinygrad]
+- Researching more on tinygrad for open lab session "

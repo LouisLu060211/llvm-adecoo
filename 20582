@@ -1,3 +1,13 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ ls mlir/test/Conversion/FuncToLLVM/
-calling-convention.mlir  convert-data-layout.mlir  emit-c-wrappers-for-external-callers.mlir    func-duplicate-symbol.mlir  func-memref-return.mlir       func-to-llvm.mlir
-convert-argattrs.mlir    convert-funcs.mlir        emit-c-wrappers-for-external-functions.mlir  func-memref.mlir            func-to-llvm-datalayout.mlir  invalid.mlir
+// Regression test: the affine.for empty loop folder used to crash when fold
+// was attempted during dialect conversion, after the old entry block was
+// detached but the loop still yielded one of its arguments. The folder must
+// bail out instead of hitting the isDefinedOutsideOfLoop assertion.
+
+// CHECK-LABEL: @affine_for_fold_detached_block
+// CHECK: affine.for
+func.func @affine_for_fold_detached_block(%arg0: index) -> index {
+  %0 = affine.for %i = 0 to 10 iter_args(%acc = %arg0) -> (index) {
+    affine.yield %arg0 : index
+  }
+  return %0 : index
+}

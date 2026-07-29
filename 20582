@@ -1,17 +1,23 @@
-if (hasCyclicDependence(srcAffineForOp) ||
-            hasLoopCarriedDependence(srcAffineForOp)) {
-          LDBG() << "Source nest has a dependence carried by its own loops.";
-          auto srcForOp = cast<AffineForOp>(srcNode->op);
-          auto dstForOp = cast<AffineForOp>(dstNode->op);
-          int64_t sliceCost;
-          int64_t fusedLoopNestComputeCost;
-          auto fraction = getAdditionalComputeFraction(
-              srcForOp, dstForOp, maxLegalFusionDepth, depthSliceUnions,
-              sliceCost, fusedLoopNestComputeCost);
-          if (!fraction || *fraction != 0.0) {
-            LDBG() << "Can't fuse: source nest has a loop-carried dependence "
-                   << "and the slice doesn't reproduce it exactly once.";
-            continue;
-          }
-          computeToleranceThresholdToUse = 0;
+       // Cyclic dependences in the source nest may be violated when performing
+        // slicing-based fusion. They aren't actually violated in cases where no
+        // redundant execution of the source happens (1:1 pointwise dep on the
+        // producer-consumer memref access for example). Check this and allow
+        // fusion accordingly.
+        if (hasCyclicDependence(srcAffineForOp) ||
+                    hasLoopCarriedDependence(srcAffineForOp)) {
+                  LDBG() << "Source nest has a dependence carried by its own loops.";
+                  auto srcForOp = cast<AffineForOp>(srcNode->op);
+                  auto dstForOp = cast<AffineForOp>(dstNode->op);
+                  int64_t sliceCost;
+                  int64_t fusedLoopNestComputeCost;
+                  auto fraction = getAdditionalComputeFraction(
+                      srcForOp, dstForOp, maxLegalFusionDepth, depthSliceUnions,
+                      sliceCost, fusedLoopNestComputeCost);
+                  if (!fraction || *fraction != 0.0) {
+                    LDBG() << "Can't fuse: source nest has a loop-carried dependence "
+                          << "and the slice doesn't reproduce it exactly once.";
+                    continue;
+                  }
+                  computeToleranceThresholdToUse = 0;
+                }
         }

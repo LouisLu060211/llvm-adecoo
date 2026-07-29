@@ -1,27 +1,10 @@
-Your origin points to the main LLVM repo, which you can't push to. You need to push to your fork instead. Check your remotes:
+其實你可以清楚說明一下整個購票情況嗎？
 
-bash
-git remote -v
+截至目前為止，你曾分別表示機票是在國泰航空、Trip.com 及中介平台購買，相關資訊前後並不一致
 
-If your fork isn't listed, add it:
+由於你的個案，我們已向多個相關單位查詢及了解可行的處理方法，並花費了不少時間跟進。然而，由於資訊一直未能明確統一，令我們難以針對問題提出最合適及有效的解決方案。
 
-bash
-git remote add fork https://github.com/LouisLu060211/llvm-project.git
-git push fork fix-affine-for-fold-detached-block
+若你能在最初提供完整及準確的資料，我們早已可以評估情況並提出相應的解決方案，而毋須把時間花在反覆釐清基本事實上。
+請盡快提供正確及完整的購票資料，以便我們繼續跟進。
 
-If a remote for your fork already exists under some name, just push to that name instead of fork.
-
-The commit itself already succeeded, so nothing is lost. Once the push goes through, the PR updates automatically since it tracks the branch on your fork.
-
-Two follow-ups:
-
-Optional cleanup so this doesn't bite you again: make origin your fork and keep the main repo as upstream:
-bash
-git remote set-url origin https://github.com/LouisLu060211/llvm-project.git
-git remote add upstream https://github.com/llvm/llvm-project.git
-git push origin fix-affine-for-fold-detached-block
-I didn't see you run the test before committing. Before you consider this done, run:
-bash
-<path-to-build>/bin/llvm-lit -v mlir/test/Conversion/FuncToLLVM/func-to-llvm.mlir
-
-If it fails, fix it and amend the commit with git commit --amend --no-edit, then push again with -f if you already pushed. Reviewers will run this in CI, so better to catch it now.
+謝謝你的配合。

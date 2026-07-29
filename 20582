@@ -1,22 +1,73 @@
-bool mlir::affine::hasLoopCarriedDependence(AffineForOp root) {
-  SmallVector<MemRefAccess> accesses;
-  root->walk([&](Operation *op) {
-    if (isa<AffineReadOpInterface, AffineWriteOpInterface>(op))
-      accesses.emplace_back(op);
-  });
+ // Fuse computation slice of 'srcLoopNest' into 'dstLoopNest'.
+        fuseLoops(srcAffineForOp, dstAffineForOp, bestSlice);
+        dstNodeChanged = true;
 
-  unsigned rootDepth = getNestingDepth(root);
-  for (const auto &accA : accesses) {
-    for (const auto &accB : accesses) {
-      if (accA.memref != accB.memref)
-        continue;
-      unsigned numCommonLoops =
-          getNumCommonSurroundingLoops(*accA.opInst, *accB.opInst);
-      for (unsigned d = rootDepth + 1; d <= numCommonLoops; ++d) {
-        if (!noDependence(checkMemrefAccessDependence(accA, accB, d)))
-          return true;
+        LDBG() << "Fused src loop " << srcId << " into dst loop " << dstId
+               << " at depth " << bestDstLoopDepth << ":";
+        LDBG() << dstAffineForOp;
+
+        // Move 'dstAffineForOp' before 'insertPointInst' if needed.
+        if (fusedLoopInsPoint != dstAffineForOp)
+          dstAffineForOp->moveBefore(fusedLoopInsPoint);
+
+        // Update edges between 'srcNode' and 'dstNode'.
+        mdg->updateEdges(srcNode->id, dstNode->id, privateMemrefs,
+                         removeSrcNode);
+
+        // Create private memrefs.
+        if (!privateMemrefs.empty()) {
+          // Note the block into which fusion was performed. This can be used to
+          // place `alloc`s that create private memrefs.
+          Block *sliceInsertionBlock = bestSlice.insertPoint->getBlock();
+
+          // Gather stores for all the private-to-be memrefs.
+          DenseMap<Value, SmallVector<Operation *, 4>> privateMemRefToStores;
+          dstAffineForOp.walk([&](AffineWriteOpInterface storeOp) {
+            Value storeMemRef = storeOp.getMemRef();
+            if (privateMemrefs.count(storeMemRef) > 0)
+              privateMemRefToStores[storeMemRef].push_back(storeOp);
+          });
+
+          // Replace original memrefs with private memrefs. Note that all the
+          // loads and stores on these memrefs will be replaced with a new
+          // loads and stores. Any reference to the original ones becomes
+          // invalid after this point.
+          for (auto &memrefToStoresPair : privateMemRefToStores) {
+            ArrayRef<Operation *> storesForMemref = memrefToStoresPair.second;
+            Value newMemRef = createPrivateMemRef(
+                dstAffineForOp, storesForMemref, bestDstLoopDepth,
+                fastMemorySpace, sliceInsertionBlock, localBufSizeThreshold);
+            if (!newMemRef)
+              continue;
+            // Create new node in dependence graph for 'newMemRef' alloc op.
+            unsigned newMemRefNodeId = mdg->addNode(newMemRef.getDefiningOp());
+            // Add edge from 'newMemRef' node to dstNode.
+            mdg->addEdge(newMemRefNodeId, dstId, newMemRef);
+          }
+          // One or more entries for 'newMemRef' alloc op are inserted into
+          // the DenseMap mdg->nodes. Since an insertion may cause DenseMap to
+          // reallocate, update dstNode.
+          dstNode = mdg->getNode(dstId);
+        }
+
+        // Collect dst loop stats after memref privatization transformation.
+        LoopNestStateCollector dstLoopCollector;
+        dstLoopCollector.collect(dstAffineForOp);
+
+        // Clear and add back loads and stores.
+        mdg->clearNodeLoadAndStores(dstNode->id);
+        mdg->addToNode(
+            dstId, dstLoopCollector.loadOpInsts, dstLoopCollector.storeOpInsts,
+            dstLoopCollector.memrefLoads, dstLoopCollector.memrefStores,
+            dstLoopCollector.memrefFrees);
+
+        if (removeSrcNode) {
+          LDBG() << "Removing src loop " << srcId << " after fusion";
+          // srcNode is no longer valid after it is removed from mdg.
+          srcAffineForOp.erase();
+          mdg->removeNode(srcId);
+          srcNode = nullptr;
+        }
       }
-    }
+    } while (dstNodeChanged);
   }
-  return false;
-}

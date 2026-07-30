@@ -1,41 +1,29 @@
-补丁 4 个文件全部干净打上了。后面那个 git apply -3 报错是因为已经打过一次了，不用管。
+```
+Producer-consumer affine loop fusion builds the producer slice from the
+producer stores only. If the producer's own loops carry a dependence, the slice
+can drop iterations that the kept ones are computed from. The original producer
+loop is then deleted, so the fused code loads values that nothing stores. Both
+the input and the output pass the verifier. In the reproducer the producer
+computes `tmp[i] = tmp[i - 1] + in[i]` and the consumer reads only the even
+points, so `tmp[1], tmp[3], ..., tmp[13]` are no longer computed.
 
-有个多出来的文件
+The old guard was `hasCyclicDependence`, which needs a cycle in the op level
+dependence graph. Here the only edge is store to load, so the graph is acyclic
+and the guard never fires. It also only rejected fusion that adds computation,
+not fusion that drops it.
 
-mlir/test/Conversion/FuncToLLVM/func-to-llvm.mlir | 2 +-
+The fix adds `hasLoopCarriedDependence`, which reports a dependence at any
+depth belonging to a loop of the nest without needing a cycle, and rejects a
+slice whose additional compute fraction is negative once the fusion depth is
+chosen. Test added to `mlir/test/Dialect/Affine/loop-fusion-4.mlir`.
 
-这个不是我补丁里的。我的补丁只动 4 个文件。这一行改动是你之前留下的，跟这次 issue 无关，提 PR 前要清掉。
+Fixes #212041
 
-先看看是什么：
+Assisted by: Claude Opus 5
+```
 
-bash
-git diff mlir/test/Conversion/FuncToLLVM/func-to-llvm.mlir
+标题：
 
-如果确认是误改，撤掉：
-
-bash
-git checkout mlir/test/Conversion/FuncToLLVM/func-to-llvm.mlir
-
-然后 git diff --stat 应该只剩 4 个文件。
-
-接着编译测试
-bash
-ninja -C build check-mlir-dialect-affine
-
-过了之后跑一下整个 MLIR 测试套件，因为 hasLoopCarriedDependence 是新增公开 API，其他地方可能有连带影响：
-
-bash
-ninja -C build check-mlir
-最后手动确认 reproducer
-bash
-build/bin/mlir-opt input.mlir \
-  --pass-pipeline='builtin.module(func.func(affine-loop-fusion{mode=producer maximal}))'
-
-两个 affine.for 原样输出就对了。想看它为什么拒绝，加 debug：
-
-bash
-build/bin/mlir-opt input.mlir \
-  --pass-pipeline='builtin.module(func.func(affine-loop-fusion{mode=producer maximal}))' \
-  --debug-only=affine-loop-fusion 2>&1 | grep -i "carried\|omits"
-
-应该能看到那两条新的 LDBG 输出。
+```
+[MLIR][Affine] Don't slice a producer whose loops carry a dependence
+```

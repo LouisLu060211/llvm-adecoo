@@ -1,6 +1,15 @@
-git checkout mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp \
+(.venv) yaolu@toronto:~/llvm-project-src$ git checkout mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp \
              mlir/lib/Dialect/Affine/Analysis/LoopAnalysis.cpp \
              mlir/include/mlir/Dialect/Affine/Analysis/LoopAnalysis.h \
              mlir/test/Dialect/Affine/loop-fusion-4.mlir
 git apply /path/to/affine-loop-fusion-recurrence-v2.patch
 ninja -C build check-mlir-dialect-affine
+Updated 3 paths from the index
+error: can't open patch '/path/to/affine-loop-fusion-recurrence-v2.patch': No such file or directory
+ninja: Entering directory `build'
+[50/51  98% - 1 processes] Running lit suite /home/yaolu/llvm-project-src/mlir/test/Dialect/Affine
+
+Testing Time: 5.18s
+
+Total Discovered Tests: 71
+  Passed: 71 (100.00%)

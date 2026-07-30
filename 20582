@@ -1,2 +1,90 @@
-build/bin/mlir-opt input.mlir \
-  --pass-pipeline='builtin.module(func.func(affine-loop-fusion{mode=producer maximal}))'
+(.venv) yaolu@toronto:~/llvm-project-src$ ninja -C build check-mlir-dialect-affine
+ninja: Entering directory `build'
+[504/505  99% - 1 processes] Running lit suite /home/yaolu/llvm-project-src/mlir/test/Dialect/Affine
+FAIL: MLIR :: Dialect/Affine/loop-fusion-2.mlir (59 of 71)
+******************** TEST 'MLIR :: Dialect/Affine/loop-fusion-2.mlir' FAILED ********************
+Exit Code: 1
+
+Command Output (stdout):
+--
+# RUN: at line 1
+/home/yaolu/llvm-project-src/build/bin/mlir-opt -allow-unregistered-dialect /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Dialect/Affine/loop-fusion-2.mlir -pass-pipeline='builtin.module(func.func(affine-loop-fusion))' -split-input-file | /home/yaolu/llvm-project-src/build/bin/FileCheck /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Dialect/Affine/loop-fusion-2.mlir
+# executed command: /home/yaolu/llvm-project-src/build/bin/mlir-opt -allow-unregistered-dialect /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Dialect/Affine/loop-fusion-2.mlir '-pass-pipeline=builtin.module(func.func(affine-loop-fusion))' -split-input-file
+# executed command: /home/yaolu/llvm-project-src/build/bin/FileCheck /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Dialect/Affine/loop-fusion-2.mlir
+# .---command stderr------------
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Dialect/Affine/loop-fusion-2.mlir:813:17: error: CHECK-NEXT: is not on the line after the previous match
+# |  // CHECK-NEXT: affine.for %{{.*}} = 0 to 1024 {
+# |                 ^
+# | <stdin>:404:2: note: 'next' match was here
+# |  affine.for %arg5 = 0 to 1024 {
+# |  ^
+# | <stdin>:402:3: note: previous match ended here
+# |  }
+# |   ^
+# | <stdin>:403:1: note: non-matching line after previous match is here
+# |  }
+# | ^
+# | 
+# | Input file: <stdin>
+# | Check file: /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Dialect/Affine/loop-fusion-2.mlir
+# | 
+# | -dump-input=help explains the following input dump.
+# | 
+# | Input was:
+# | <<<<<<
+# |             .
+# |             .
+# |             .
+# |           397:  %2 = arith.mulf %1, %0 : f32 
+# |           398:  %3 = affine.load %arg2[%arg5, %arg6] : memref<1024x1024xf32> 
+# |           399:  %4 = arith.addf %3, %2 : f32 
+# |           400:  affine.store %4, %arg2[%arg5, %arg6] : memref<1024x1024xf32> 
+# |           401:  } 
+# |           402:  } 
+# | next:813'0      {   search range start (exclusive)
+# |           403:  } 
+# |           404:  affine.for %arg5 = 0 to 1024 { 
+# | next:813'1      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   error: match on wrong line
+# |           405:  affine.for %arg6 = 0 to 1024 { 
+# |           406:  affine.for %arg7 = 0 to 1024 { 
+# |           407:  %0 = affine.load %arg3[%arg7, %arg6] : memref<1024x1024xf32> 
+# |           408:  %1 = affine.load %arg2[%arg5, %arg7] : memref<1024x1024xf32> 
+# |           409:  %2 = arith.mulf %1, %0 : f32 
+# |             .
+# |             .
+# |             .
+# |           417:  } 
+# |           418: } 
+# |           419:  
+# |           420: // ----- 
+# |           421: module { 
+# |           422:  func.func @should_fuse_self_dependence_multi_store_producer() { 
+# | next:813'2                                                                     }  search range end (exclusive)
+# |           423:  %alloc = memref.alloc() : memref<1xf32> 
+# |           424:  %alloc_0 = memref.alloc() : memref<10xf32> 
+# |           425:  %cst = arith.constant 7.000000e+00 : f32 
+# |           426:  affine.for %arg0 = 0 to 10 { 
+# |           427:  affine.store %cst, %alloc_0[%arg0] : memref<10xf32> 
+# |             .
+# |             .
+# |             .
+# | >>>>>>
+# `-----------------------------
+# error: command failed with exit status: 1
+
+--
+
+********************
+********************
+Failed Tests (1):
+  MLIR :: Dialect/Affine/loop-fusion-2.mlir
+
+
+Testing Time: 3.48s
+
+Total Discovered Tests: 71
+  Passed: 70 (98.59%)
+  Failed:  1 (1.41%)
+FAILED: [code=1] tools/mlir/test/CMakeFiles/check-mlir-dialect-affine /home/yaolu/llvm-project-src/build/tools/mlir/test/CMakeFiles/check-mlir-dialect-affine 
+cd /home/yaolu/llvm-project-src/build/tools/mlir/test && /usr/bin/python3.10 /home/yaolu/llvm-project-src/build/./bin/llvm-lit -sv /home/yaolu/llvm-project-src/mlir/test/Dialect/Affine
+ninja: build stopped: subcommand failed.

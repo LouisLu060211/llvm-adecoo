@@ -1,15 +1,166 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ git checkout mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp \
-             mlir/lib/Dialect/Affine/Analysis/LoopAnalysis.cpp \
-             mlir/include/mlir/Dialect/Affine/Analysis/LoopAnalysis.h \
-             mlir/test/Dialect/Affine/loop-fusion-4.mlir
-git apply /path/to/affine-loop-fusion-recurrence-v2.patch
+路径问题绕不过去，那就不用文件了。把下面**整块**复制粘贴到终端，它会自己生成补丁并打上。
+
+先确认在仓库根目录：
+
+```bash
+cd ~/llvm-project-src
+```
+
+然后粘贴这一整块：````bash
+cat > /tmp/fix.patch <<'PATCH_EOF'
+diff --git a/mlir/include/mlir/Dialect/Affine/Analysis/LoopAnalysis.h b/mlir/include/mlir/Dialect/Affine/Analysis/LoopAnalysis.h
+--- a/mlir/include/mlir/Dialect/Affine/Analysis/LoopAnalysis.h
++++ b/mlir/include/mlir/Dialect/Affine/Analysis/LoopAnalysis.h
+@@ -128,6 +128,15 @@
+ /// for aliases.
+ bool hasCyclicDependence(AffineForOp root);
+ 
++/// Returns true if any dependence in the affine nest rooted at `root` is
++/// carried by one of the loops of that nest (`root` inclusive). Such a nest
++/// can't be sliced by selecting an arbitrary subset of its iterations: the
++/// omitted iterations may be needed to produce the values computed by the
++/// retained ones. Dependences carried by loops outer to `root` and
++/// loop-independent dependences aren't relevant. This method doesn't
++/// consider/account for aliases.
++bool hasLoopCarriedDependence(AffineForOp root);
++
+ } // namespace affine
+ } // namespace mlir
+ 
+diff --git a/mlir/lib/Dialect/Affine/Analysis/LoopAnalysis.cpp b/mlir/lib/Dialect/Affine/Analysis/LoopAnalysis.cpp
+--- a/mlir/lib/Dialect/Affine/Analysis/LoopAnalysis.cpp
++++ b/mlir/lib/Dialect/Affine/Analysis/LoopAnalysis.cpp
+@@ -583,3 +583,29 @@
+   }
+   return graph.hasCycle();
+ }
++
++bool mlir::affine::hasLoopCarriedDependence(AffineForOp root) {
++  SmallVector<MemRefAccess> accesses;
++  root->walk([&](Operation *op) {
++    if (isa<AffineReadOpInterface, AffineWriteOpInterface>(op))
++      accesses.emplace_back(op);
++  });
++
++  unsigned rootDepth = getNestingDepth(root);
++  for (const auto &accA : accesses) {
++    for (const auto &accB : accesses) {
++      if (accA.memref != accB.memref)
++        continue;
++      unsigned numCommonLoops =
++          getNumCommonSurroundingLoops(*accA.opInst, *accB.opInst);
++      // Only consider depths corresponding to a loop of the nest rooted at
++      // `root`. Depth `numCommonLoops + 1` is the loop-independent one and is
++      // deliberately excluded: it never prevents iteration-wise slicing.
++      for (unsigned d = rootDepth + 1; d <= numCommonLoops; ++d) {
++        if (!noDependence(checkMemrefAccessDependence(accA, accB, d)))
++          return true;
++      }
++    }
++  }
++  return false;
++}
+diff --git a/mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp b/mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp
+--- a/mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp
++++ b/mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp
+@@ -1015,8 +1015,10 @@
+         // redundant execution of the source happens (1:1 pointwise dep on the
+         // producer-consumer memref access for example). Check this and allow
+         // fusion accordingly.
+-        if (hasCyclicDependence(srcAffineForOp)) {
+-          LDBG() << "Source nest has a cyclic dependence.";
++        bool srcHasLoopCarriedDep = hasCyclicDependence(srcAffineForOp) ||
++                                    hasLoopCarriedDependence(srcAffineForOp);
++        if (srcHasLoopCarriedDep) {
++          LDBG() << "Source nest has a dependence carried by its own loops.";
+           // Maximal fusion does not check for compute tolerance threshold; so
+           // perform the maximal fusion only when the redundanation computation
+           // is zero.
+@@ -1068,6 +1070,26 @@
+             depthSliceUnions[bestDstLoopDepth - 1];
+         assert(!bestSlice.isEmpty() && "Missing slice union for depth");
+ 
++        // A dependence carried by a loop of the source nest additionally
++        // requires the slice to reproduce every source iteration: dropping any
++        // of them would leave the retained iterations reading values that are
++        // never computed. A slice that omits source iterations performs
++        // strictly less computation than the original source nest, which shows
++        // up as a negative additional compute fraction. The redundant
++        // computation side is already handled above.
++        if (srcHasLoopCarriedDep) {
++          int64_t sliceCost;
++          int64_t fusedLoopNestComputeCost;
++          auto fraction = getAdditionalComputeFraction(
++              srcAffineForOp, dstAffineForOp, bestDstLoopDepth,
++              depthSliceUnions, sliceCost, fusedLoopNestComputeCost);
++          if (!fraction || *fraction < 0.0) {
++            LDBG() << "Can't fuse: the slice omits source iterations needed by "
++                   << "a dependence carried by the source nest.";
++            continue;
++          }
++        }
++
+         // Determine if 'srcId' can be removed after fusion, taking into
+         // account remaining dependences, escaping memrefs and the fusion
+         // insertion point.
+diff --git a/mlir/test/Dialect/Affine/loop-fusion-4.mlir b/mlir/test/Dialect/Affine/loop-fusion-4.mlir
+--- a/mlir/test/Dialect/Affine/loop-fusion-4.mlir
++++ b/mlir/test/Dialect/Affine/loop-fusion-4.mlir
+@@ -884,3 +884,38 @@
+   }
+   return %alloc : memref<1024x8192xf32>
+ }
++
++// -----
++
++// From https://github.com/llvm/llvm-project/issues/212041
++// The producer computes a recurrence: tmp[i] is computed from tmp[i - 1]. The
++// consumer reads only the even points, so a slice keyed off the producer stores
++// alone would retain only the even producer iterations and drop the odd
++// predecessors they are computed from. Leave the producer nest alone.
++
++// PRODUCER-CONSUMER-MAXIMAL-LABEL: func @producer_recurrence_no_fusion
++// PRODUCER-CONSUMER-LABEL:         func @producer_recurrence_no_fusion
++// ALL-LABEL:                       func @producer_recurrence_no_fusion
++func.func @producer_recurrence_no_fusion(%in: memref<32xf64>, %out: memref<32xf64>) {
++  %tmp = memref.alloc() : memref<32xf64>
++  %seed = arith.constant 2.900000e+01 : f64
++  affine.store %seed, %tmp[0] : memref<32xf64>
++  // PRODUCER-CONSUMER-MAXIMAL: affine.for %{{.*}} = 1 to 16
++  // PRODUCER-CONSUMER:         affine.for %{{.*}} = 1 to 16
++  // ALL:                       affine.for %{{.*}} = 1 to 16
++  affine.for %i = 1 to 16 {
++    %prev = affine.load %tmp[%i - 1] : memref<32xf64>
++    %src = affine.load %in[%i] : memref<32xf64>
++    %v = arith.addf %prev, %src : f64
++    affine.store %v, %tmp[%i] : memref<32xf64>
++  }
++  // PRODUCER-CONSUMER-MAXIMAL: affine.for %{{.*}} = 1 to 8
++  // PRODUCER-CONSUMER:         affine.for %{{.*}} = 1 to 8
++  // ALL:                       affine.for %{{.*}} = 1 to 8
++  affine.for %j = 1 to 8 {
++    %dst = affine.load %tmp[2 * %j] : memref<32xf64>
++    %v = arith.addf %dst, %dst : f64
++    affine.store %v, %out[%j] : memref<32xf64>
++  }
++  return
++}
+PATCH_EOF
+git apply -v /tmp/fix.patch && git diff --stat
+````
+
+`git diff --stat` 显示 4 个文件就成功了。
+
+行号是我拉的 `main`，你本地是 `450cf0aafe`。如果 `git apply` 报 hunk 失败，加 `-3` 让它三方合并：
+
+```bash
+git apply -3 /tmp/fix.patch
+```
+
+还不行就用 `patch -p1 --fuzz=3 < /tmp/fix.patch`。
+
+打完编译测试：
+
+```bash
 ninja -C build check-mlir-dialect-affine
-Updated 3 paths from the index
-error: can't open patch '/path/to/affine-loop-fusion-recurrence-v2.patch': No such file or directory
-ninja: Entering directory `build'
-[50/51  98% - 1 processes] Running lit suite /home/yaolu/llvm-project-src/mlir/test/Dialect/Affine
-
-Testing Time: 5.18s
-
-Total Discovered Tests: 71
-  Passed: 71 (100.00%)
+```

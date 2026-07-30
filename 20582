@@ -1,19 +1,6 @@
-// A dependence carried by a loop of the source nest additionally
-        // requires the slice to reproduce every source iteration: dropping any
-        // of them would leave the retained iterations reading values that are
-        // never computed. A slice that omits source iterations performs
-        // strictly less computation than the original source nest, which shows
-        // up as a negative additional compute fraction. Note that the
-        // redundant computation side is already handled above.
-        if (srcHasLoopCarriedDep) {
-          int64_t sliceCost;
-          int64_t fusedLoopNestComputeCost;
-          auto fraction = getAdditionalComputeFraction(
-              srcAffineForOp, dstAffineForOp, bestDstLoopDepth,
-              depthSliceUnions, sliceCost, fusedLoopNestComputeCost);
-          if (!fraction || *fraction < 0.0) {
-            LDBG() << "Can't fuse: the slice omits source iterations needed by "
-                   << "a dependence carried by the source nest.";
-            continue;
-          }
-        }
+git checkout mlir/lib/Dialect/Affine/Transforms/LoopFusion.cpp \
+             mlir/lib/Dialect/Affine/Analysis/LoopAnalysis.cpp \
+             mlir/include/mlir/Dialect/Affine/Analysis/LoopAnalysis.h \
+             mlir/test/Dialect/Affine/loop-fusion-4.mlir
+git apply /path/to/affine-loop-fusion-recurrence-v2.patch
+ninja -C build check-mlir-dialect-affine

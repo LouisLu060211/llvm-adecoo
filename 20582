@@ -1,523 +1,169 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ git status
-On branch affine-fusion-recurrence-slice
-Your branch is up to date with 'fork/affine-fusion-recurrence-slice'.
+这个是 SPIR-V 的，和之前那个 affine 无关。我先看了 pass 源码，原因很清楚。
 
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-        .ci/monolithic-macos.sh
-        .github/workflows/compiler-rt-libc-builtins-tests.yml
-        .github/workflows/libcxx-benchmark-commit.yml
-        .github/workflows/libcxx-pr-check-generated-files.yml
-        .github/workflows/libcxx-pr-conformance-tests.yaml
-        .github/workflows/libcxx-pr-test-tools.yml
-        bolt/docs/BOLTAArch64OptimizationStatus.md
-        bolt/docs/GettingStarted.md
-        bolt/docs/NewBackend.md
-        bolt/docs/index.md
-        bolt/test/AArch64/entry-point-at-function-end.s
-        bolt/test/X86/dwarf-inline-range-plt-shift.s
-        bolt/test/X86/dwarf4-dwarf64-ranges.test
-        bolt/test/X86/dwarf64-debug-info-aranges.test
-        bolt/test/X86/dwarf64-debug-names.test
-        bolt/test/X86/dwarf64-loclists.test
-        bolt/test/X86/dwarf64-lowpc-highpc-convert.test
-        bolt/test/X86/dwarf64-ref-addr.test
-        bolt/test/X86/dwarf64-split-dwarf.test
-        bolt/test/X86/dwarf64-str-offsets.test
-        bolt/test/X86/dwarf64-types.test
-        bolt/test/X86/dynsym-pwrite.test
-        bolt/test/X86/jump-table-empty-block-strict.s
-        bolt/test/X86/jump-table-failed-reanalysis.s
-        bolt/test/X86/mixed-dwarf32-dwarf64-debug-names.test
-        bolt/test/X86/mixed-dwarf32-dwarf64-rnglists.test
-        bolt/test/X86/mixed-dwarf32-dwarf64-str-offsets.test
-        bolt/test/X86/profile-symbols-mode.s
-        clang-tools-extra/clang-tidy/performance/ExpensiveValueOrCheck.cpp
-        clang-tools-extra/clang-tidy/performance/ExpensiveValueOrCheck.h
-        clang-tools-extra/clangd/LSPBinder.cpp
-        clang-tools-extra/docs/clang-tidy/checks/abseil/cleanup-ctad.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-addition.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-comparison.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-conversion-cast.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-division.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-factory-float.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-factory-scale.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-subtraction.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/duration-unnecessary-conversion.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/faster-strsplit-delimiter.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/no-internal-dependencies.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/no-namespace.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/redundant-strcat-calls.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/str-cat-append.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/string-find-startswith.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/string-find-str-contains.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/time-comparison.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/time-subtraction.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/unchecked-statusor-access.md
-        clang-tools-extra/docs/clang-tidy/checks/abseil/upgrade-duration-conversions.md
-        clang-tools-extra/docs/clang-tidy/checks/altera/id-dependent-backward-branch.md
-        clang-tools-extra/docs/clang-tidy/checks/altera/kernel-name-restriction.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-accept.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-accept4.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-creat.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-dup.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-epoll-create.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-epoll-create1.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-fopen.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-inotify-init.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-inotify-init1.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-memfd-create.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-open.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-pipe.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-pipe2.md
-        clang-tools-extra/docs/clang-tidy/checks/android/cloexec-socket.md
-        clang-tools-extra/docs/clang-tidy/checks/boost/use-to-string.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/assignment-in-if-condition.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/bad-signal-to-kill-thread.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/bool-pointer-implicit-conversion.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/command-processor.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/copy-constructor-mutates-argument.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/default-operator-new-on-overaligned-type.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/dynamic-static-initializers.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/float-loop-counter.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/forward-declaration-namespace.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/inaccurate-erase.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/incorrect-roundings.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/macro-parentheses.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/macro-repeated-side-effects.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/misplaced-pointer-arithmetic-in-alloc.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/multiple-statement-macro.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/no-escape.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/parent-virtual-call.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/posix-return.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/signed-bitwise.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/sizeof-container.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/spuriously-wake-up-functions.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/suspicious-include.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/terminating-continue.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/throw-keyword-missing.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/throwing-static-initialization.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/undelegated-constructor.md
-        clang-tools-extra/docs/clang-tidy/checks/bugprone/virtual-near-miss.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/arr39-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/con36-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/con54-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/ctr56-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl03-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl16-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl37-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl50-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl51-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl54-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl58-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/dcl59-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/env33-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/err09-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/err34-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/err52-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/err58-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/err60-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/err61-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/exp42-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/exp45-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/fio38-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/flp30-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/flp37-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/int09-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/mem57-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/msc24-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/msc30-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/msc32-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/msc33-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/msc50-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/msc51-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/msc54-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/oop11-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/oop54-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/oop57-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/oop58-cpp.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/pos44-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/pos47-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/sig30-c.md
-        clang-tools-extra/docs/clang-tidy/checks/cert/str34-c.md
-        clang-tools-extra/docs/clang-tidy/checks/concurrency/thread-canceltype-asynchronous.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/avoid-c-arrays.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/avoid-magic-numbers.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/avoid-reference-coroutine-parameters.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/c-copy-assignment-signature.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/explicit-constructor.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/explicit-virtual-functions.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/interfaces-global-init.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/macro-to-enum.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/narrowing-conversions.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/noexcept-destructor.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/noexcept-move-operations.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/noexcept-swap.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/non-private-member-variables-in-classes.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-bounds-array-to-pointer-decay.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-bounds-constant-array-index.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-bounds-pointer-arithmetic.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-type-cstyle-cast.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-type-reinterpret-cast.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-type-static-cast-downcast.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-type-union-access.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/pro-type-vararg.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/slicing.md
-        clang-tools-extra/docs/clang-tidy/checks/cppcoreguidelines/use-default-member-init.md
-        clang-tools-extra/docs/clang-tidy/checks/darwin/avoid-spinlock.md
-        clang-tools-extra/docs/clang-tidy/checks/darwin/dispatch-once-nonstatic.md
-        clang-tools-extra/docs/clang-tidy/checks/fuchsia/default-arguments-calls.md
-        clang-tools-extra/docs/clang-tidy/checks/fuchsia/default-arguments-declarations.md
-        clang-tools-extra/docs/clang-tidy/checks/fuchsia/header-anon-namespaces.md
-        clang-tools-extra/docs/clang-tidy/checks/fuchsia/multiple-inheritance.md
-        clang-tools-extra/docs/clang-tidy/checks/fuchsia/overloaded-operator.md
-        clang-tools-extra/docs/clang-tidy/checks/fuchsia/virtual-inheritance.md
-        clang-tools-extra/docs/clang-tidy/checks/google/build-explicit-make-pair.md
-        clang-tools-extra/docs/clang-tidy/checks/google/build-namespaces.md
-        clang-tools-extra/docs/clang-tidy/checks/google/build-using-namespace.md
-        clang-tools-extra/docs/clang-tidy/checks/google/default-arguments.md
-        clang-tools-extra/docs/clang-tidy/checks/google/explicit-constructor.md
-        clang-tools-extra/docs/clang-tidy/checks/google/global-names-in-headers.md
-        clang-tools-extra/docs/clang-tidy/checks/google/objc-avoid-nsobject-new.md
-        clang-tools-extra/docs/clang-tidy/checks/google/objc-function-naming.md
-        clang-tools-extra/docs/clang-tidy/checks/google/readability-braces-around-statements.md
-        clang-tools-extra/docs/clang-tidy/checks/google/readability-casting.md
-        clang-tools-extra/docs/clang-tidy/checks/google/readability-function-size.md
-        clang-tools-extra/docs/clang-tidy/checks/google/readability-namespace-comments.md
-        clang-tools-extra/docs/clang-tidy/checks/google/readability-todo.md
-        clang-tools-extra/docs/clang-tidy/checks/google/runtime-float.md
-        clang-tools-extra/docs/clang-tidy/checks/google/runtime-int.md
-        clang-tools-extra/docs/clang-tidy/checks/google/runtime-operator.md
-        clang-tools-extra/docs/clang-tidy/checks/linuxkernel/must-check-errs.md
-        clang-tools-extra/docs/clang-tidy/checks/llvm/else-after-return.md
-        clang-tools-extra/docs/clang-tidy/checks/llvm/header-guard.md
-        clang-tools-extra/docs/clang-tidy/checks/llvm/include-order.md
-        clang-tools-extra/docs/clang-tidy/checks/llvm/prefer-register-over-unsigned.md
-        clang-tools-extra/docs/clang-tidy/checks/llvm/qualified-auto.md
-        clang-tools-extra/docs/clang-tidy/checks/llvm/use-new-mlir-op-builder.md
-        clang-tools-extra/docs/clang-tidy/checks/llvmlibc/callee-namespace.md
-        clang-tools-extra/docs/clang-tidy/checks/llvmlibc/inline-function-decl.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/anonymous-namespace-in-header.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/confusable-identifiers.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/misleading-bidirectional.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/misleading-identifier.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/misplaced-const.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/new-delete-overloads.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/no-recursion.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/non-copyable-objects.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/non-private-member-variables-in-classes.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/predictable-rand.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/static-assert.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/unconventional-assign-operator.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/uniqueptr-reset-release.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/unused-alias-decls.md
-        clang-tools-extra/docs/clang-tidy/checks/misc/unused-using-decls.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/avoid-setjmp-longjmp.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/avoid-variadic-functions.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/deprecated-ios-base-aliases.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/redundant-void-arg.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/return-braced-init-list.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/shrink-to-fit.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/unary-static-assert.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/use-bool-literals.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/use-default.md
-        clang-tools-extra/docs/clang-tidy/checks/modernize/use-starts-ends-with.md
-        clang-tools-extra/docs/clang-tidy/checks/mpi/buffer-deref.md
-        clang-tools-extra/docs/clang-tidy/checks/mpi/type-mismatch.md
-        clang-tools-extra/docs/clang-tidy/checks/objc/assert-equals.md
-        clang-tools-extra/docs/clang-tidy/checks/objc/avoid-nserror-init.md
-        clang-tools-extra/docs/clang-tidy/checks/objc/dealloc-in-category.md
-        clang-tools-extra/docs/clang-tidy/checks/objc/forbidden-subclassing.md
-        clang-tools-extra/docs/clang-tidy/checks/objc/missing-hash.md
-        clang-tools-extra/docs/clang-tidy/checks/objc/super-self.md
-        clang-tools-extra/docs/clang-tidy/checks/openmp/exception-escape.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/expensive-value-or.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/faster-string-find.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/implicit-cast-in-loop.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/implicit-conversion-in-loop.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/inefficient-algorithm.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/move-constructor-init.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/noexcept-destructor.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/noexcept-move-constructor.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/noexcept-swap.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/trivially-destructible.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/type-promotion-in-math-fn.md
-        clang-tools-extra/docs/clang-tidy/checks/performance/use-std-move.md
-        clang-tools-extra/docs/clang-tidy/checks/portability/no-assembler.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/avoid-const-params-in-decls.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/avoid-nested-conditional-operator.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/container-data-pointer.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/convert-member-functions-to-static.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/delete-null-pointer.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/implicit-bool-cast.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/math-missing-parentheses.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/misplaced-array-index.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/redundant-function-ptr-dereference.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/redundant-smartptr-get.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/redundant-string-cstr.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/simplify-subscript-expr.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/static-definition-in-anonymous-namespace.md
-        clang-tools-extra/docs/clang-tidy/checks/readability/use-std-min-max.md
-        clang-tools-extra/docs/clang-tidy/checks/zircon/temporary-objects.md
-        clang-tools-extra/test/clang-doc/Inputs/invalid-utf8-comment.cpp
-        clang-tools-extra/test/clang-doc/json/invalid-utf8-comment.cpp
-        clang-tools-extra/test/clang-tidy/checkers/Inputs/Headers/std/optional
-        clang-tools-extra/test/clang-tidy/checkers/performance/expensive-value-or-size-threshold.cpp
-        clang-tools-extra/test/clang-tidy/checkers/performance/expensive-value-or.cpp
-        clang-tools-extra/test/clang-tidy/checkers/readability/named-parameter-ignored-types.cpp
-        clang/docs/AMDGPUSupport.md
-        clang/docs/APINotes.md
-        clang/docs/AllocToken.md
-        clang/docs/BoundsSafety.md
-        clang/docs/BoundsSafetyAdoptionGuide.md
-        clang/docs/BoundsSafetyImplPlans.md
-        clang/docs/CIR/index.md
-        clang/docs/CXXTypeAwareAllocators.md
-        clang/docs/ClangPlugins.md
-        clang/docs/CommandGuide/index.md
-        clang/docs/ControlFlowIntegrity.md
-        clang/docs/DebuggingCoroutines.md
-        clang/docs/ExternalClangExamples.md
-        clang/docs/FAQ.md
-        clang/docs/IntroductionToTheClangAST.md
-        clang/docs/LibClang.md
-        clang/docs/LibFormat.md
-        clang/docs/LibTooling.md
-        clang/docs/RISCVSupport.md
-        clang/docs/ScalableStaticAnalysis/user-docs/SourceEditGeneration.rst
-        clang/docs/Tooling.md
-        clang/include/clang/Basic/BuiltinTraits.h
-        clang/include/clang/Basic/Traits.td
-        clang/include/clang/CIR/Dialect/IR/CIRStdOps.td
-        clang/include/clang/ScalableStaticAnalysis/Analyses/SharedLexicalRepresentation/
-        clang/include/clang/ScalableStaticAnalysis/Analyses/TypeConstrainedPointers/
-        clang/include/clang/ScalableStaticAnalysis/Frontend/SourceTransformationFrontendAction.h
-        clang/lib/Basic/BuiltinTraits.cpp
-        clang/lib/ScalableStaticAnalysis/Analyses/SharedLexicalRepresentation/
-        clang/lib/ScalableStaticAnalysis/Analyses/TypeConstrainedPointers/
-        clang/lib/ScalableStaticAnalysis/Frontend/SourceTransformationFrontendAction.cpp
-        clang/lib/Sema/SemaAPINotesInternal.h
-        clang/lib/StaticAnalyzer/Checkers/DanglingPtrDeref.cpp
-        clang/lib/StaticAnalyzer/Checkers/WebKit/RawPtrRefSafetyModel.cpp
-        clang/lib/StaticAnalyzer/Checkers/WebKit/RawPtrRefSafetyModel.h
-        clang/test/APINotes/Inputs/Headers/WhereParametersSema.apinotes
-        clang/test/APINotes/Inputs/Headers/WhereParametersSema.h
-        clang/test/APINotes/where-parameters-diagnostics.cpp
-        clang/test/APINotes/where-parameters-sema.cpp
-        clang/test/AST/ByteCode/virtual-bases-codegen.cpp
-        clang/test/AST/ByteCode/virtual-bases.cpp
-        clang/test/AST/HLSL/Textures-AST.hlsl
-        clang/test/AST/HLSL/Textures-scalar-AST.hlsl
-        clang/test/AST/HLSL/Textures-shorthand-AST.hlsl
-        clang/test/AST/HLSL/Textures-vector-AST.hlsl
-        clang/test/AST/ast-dump-deleted-defaulted-range.cpp
-        clang/test/Analysis/Checkers/WebKit/memory-unsafe-cast-cxxthis.cpp
-        clang/test/Analysis/Scalable/PointerFlow/system-header-opt-out.cpp
-        clang/test/Analysis/Scalable/TypeConstrainedPointers/
-        clang/test/Analysis/Scalable/call-graph-local-entities.cpp
-        clang/test/Analysis/Scalable/local-entities.cpp
-        clang/test/Analysis/Scalable/source-edit-generation/
-        clang/test/Analysis/Scalable/ssaf-linker/Outputs/lib-explicit-triple.json
-        clang/test/Analysis/Scalable/ssaf-linker/Outputs/lib-namespace-override.json
-        clang/test/Analysis/Scalable/ssaf-linker/Outputs/libempty.json
-        clang/test/Analysis/Scalable/ssaf-linker/Outputs/libtwo.json
-        clang/test/Analysis/Scalable/ssaf-linker/static-library-create.test
-        clang/test/Analysis/Scalable/ssaf-linker/static-library-help.test
-        clang/test/Analysis/Scalable/ssaf-linker/static-library-time.test
-        clang/test/Analysis/Scalable/ssaf-linker/static-library-verbose.test
-        clang/test/Analysis/cfg-compound-assignment-eval-order.cpp
-        clang/test/Analysis/dangling-ptr-deref.cpp
-        clang/test/Analysis/issue-173210-self-assign-init.c
-        clang/test/Analysis/issue-206798.cpp
-        clang/test/Analysis/issue-210183.cpp
-        clang/test/Analysis/lambda-capture-init-order.cpp
-        clang/test/Analysis/simplify-drops-concrete.c
-        clang/test/Analysis/std-c-library-functions-non-integral-ssize_t.cpp
-        clang/test/Analysis/z3/z3-atomic.c
-        clang/test/Analysis/z3/z3-bitint-arithmetic.c
-        clang/test/Analysis/z3/z3-logicalexpr-eval.c
-        clang/test/C/C2y/n3267.c
-        clang/test/CIR/CodeGen/arithmetic-fence-builtin.c
-        clang/test/CIR/CodeGen/bitint-memory.c
-        clang/test/CIR/CodeGen/bitint-split-storage-nyi.c
-        clang/test/CIR/CodeGen/call-conv-lowering-x86_64-indirect.c
-        clang/test/CIR/CodeGen/call-conv-lowering-x86_64.c
-        clang/test/CIR/CodeGen/default-func-attrs-invoke.cpp
-        clang/test/CIR/CodeGen/func-identity-attr.c
-        clang/test/CIR/CodeGen/func-identity-attr.cpp
-        clang/test/CIR/CodeGen/goto-indirect-cleanup-nyi.c
-        clang/test/CIR/CodeGen/goto-indirect-nested.c
-        clang/test/CIR/CodeGen/loop-cond-var-cleanup.cpp
-        clang/test/CIR/CodeGen/trivial-union-assign-nyi.cpp
-        clang/test/CIR/CodeGen/unions-with-zero-init.cpp
-        clang/test/CIR/CodeGenBuiltins/RISCV/riscv-xandesperf-rv32.c
-        clang/test/CIR/CodeGenBuiltins/RISCV/riscv-xandesperf-rv64.c
-        clang/test/CIR/CodeGenBuiltins/RISCV/riscv-zihintntl.c
-        clang/test/CIR/CodeGenCUDA/builtins-nvvm-atomic.cu
-        clang/test/CIR/CodeGenCUDA/builtins-nvvm-ldu.cu
-        clang/test/CIR/CodeGenCXX/typeid-most-derived.cpp
-        clang/test/CIR/CodeGenCoroutines/
-        clang/test/CIR/CodeGenHIP/amdgcn-buffer-rsrc-type.hip
-        clang/test/CIR/CodeGenHIP/builtins-amdgcn-gfx1250.hip
-        clang/test/CIR/CodeGenHIP/builtins-amdgcn-s-prefetch-inst-nyi.hip
-        clang/test/CIR/CodeGenOpenMP/target-host-op-filtering.c
-        clang/test/CIR/IR/fenv.cir
-        clang/test/CIR/IR/func-identity-attr.cir
-        clang/test/CIR/IR/goto-indirect.cir
-        clang/test/CIR/IR/invalid-loop-cleanup.cir
-        clang/test/CIR/IR/loop-cleanup.cir
-        clang/test/CIR/IR/std-ops-invalid.cir
-        clang/test/CIR/IR/std-ops.cir
-        clang/test/CIR/Transforms/abi-lowering/byval-sret-arg-attr-lowering.cir
-        clang/test/CIR/Transforms/abi-lowering/indirect-call-classification-attr.cir
-        clang/test/CIR/Transforms/abi-lowering/indirect-call-test-target.cir
-        clang/test/CIR/Transforms/abi-lowering/indirect-call.cir
-        clang/test/CIR/Transforms/abi-lowering/x86_64-aggregate-nyi.cir
-        clang/test/CIR/Transforms/abi-lowering/x86_64-empty-record.cir
-        clang/test/CIR/Transforms/abi-lowering/x86_64-int-nyi.cir
-        clang/test/CIR/Transforms/abi-lowering/x86_64-lang-addrspace-nyi.cir
-        clang/test/CIR/Transforms/abi-lowering/x86_64-scalars.cir
-        clang/test/CIR/Transforms/abi-lowering/x86_64-struct-direct.cir
-        clang/test/CIR/Transforms/abi-lowering/x86_64-struct-indirect.cir
-        clang/test/CIR/Transforms/flatten-loop-cleanup.cir
-        clang/test/CIR/Transforms/idiom-recognizer-guards-void-result.cpp
-        clang/test/CIR/Transforms/idiom-recognizer-guards.cpp
-        clang/test/CIR/Transforms/idiom-recognizer-inline-namespace.cpp
-        clang/test/CIR/Transforms/idiom-recognizer-strlen-guards.cir
-        clang/test/CIR/Transforms/idiom-recognizer.cir
-        clang/test/CXX/dcl/dcl.spec/dcl.type/dcl.type.general/
-        clang/test/ClangScanDeps/canonicalize-macros-multiarch.c
-        clang/test/ClangScanDeps/logging-drop-pcm.c
-        clang/test/ClangScanDeps/logging-simple-by-name.c
-        clang/test/ClangScanDeps/logging-simple.c
-        clang/test/ClangScanDeps/logging-two-threads.c
-        clang/test/ClangScanDeps/modules-async-scan.c
-        clang/test/CodeGen/AArch64/neon/store.c
-        clang/test/CodeGen/LoongArch/lsx/inline-asm-operand-types.c
-        clang/test/CodeGen/SystemZ/systemz-module.flags.c
-        clang/test/CodeGen/SystemZ/zos-check-lanuage.c
-        clang/test/CodeGen/builtin-trap.c
-        clang/test/CodeGen/mips-complex-abi.c
-        clang/test/CodeGen/ppc64-long-double-type-attr.c
-        clang/test/CodeGen/pragma-weak-darwin.c
-        clang/test/CodeGen/ptr-subtract-stable.c
-        clang/test/CodeGen/target-avx-function-abi.c
-        clang/test/CodeGenCXX/Inputs/override-layout-aligned-base.layout
-        clang/test/CodeGenCXX/msvc-global-delete-forwarding-at-delete-site.cpp
-        clang/test/CodeGenCXX/override-layout-aligned-base.cpp
-        clang/test/CodeGenCXX/target-avx-method-abi.cpp
-        clang/test/CodeGenCoroutines/gh188230-coro-await-elidable-suspend-never-final.cpp
-        clang/test/CodeGenHIP/builtins-amdgcn-prefetch.hip
-        clang/test/CodeGenHLSL/builtins/InterlockedXor.hlsl
-        clang/test/CodeGenHLSL/builtins/RWBuffer-Interlocked.hlsl
-        clang/test/CodeGenHLSL/builtins/RWByteAddressBuffer-InterlockedAdd.hlsl
-        clang/test/CodeGenHLSL/builtins/RWByteAddressBuffer-InterlockedOr.hlsl
-        clang/test/CodeGenHLSL/builtins/RWByteAddressBuffer-InterlockedXor.hlsl
-        clang/test/CodeGenHLSL/builtins/RasterizerOrderedByteAddressBuffer-InterlockedAdd.hlsl
-        clang/test/CodeGenHLSL/builtins/RasterizerOrderedByteAddressBuffer-InterlockedOr.hlsl
-        clang/test/CodeGenHLSL/builtins/RasterizerOrderedByteAddressBuffer-InterlockedXor.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-CalculateLevelOfDetail.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-Gather.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-GetDimensions.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-Load.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-Mips.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-Sample.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-SampleBias.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-SampleCmp.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-SampleCmpLevelZero.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-SampleGrad.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-SampleLevel.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-Subscript.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-default-explicit-binding.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-default.hlsl
-        clang/test/CodeGenHLSL/resources/Textures-shorthand-contexts.hlsl
-        clang/test/CodeGenHLSL/semantics/flat-decoration.ps.hlsl
-        clang/test/CodeGenObjCXX/alloc-token-pointer.mm
-        clang/test/CodeGenOpenCL/amdgpu-module-flag-xnack-sramecc.cl
-        clang/test/CodeGenOpenCL/amdgpu-wavefront-size-from-subarch.cl
-        clang/test/CodeGenOpenCL/amdgpu-xnack-any-only.cl
-        clang/test/CodeGenOpenCL/builtins-amdgcn-gfx13.cl
-        clang/test/CodeGenOpenCL/builtins-amdgcn-global-async-load-lds.cl
-        clang/test/Driver/Inputs/resource_dir/lib/cygwin/
-        clang/test/Driver/Inputs/resource_dir_with_amdgpu_per_target_subdir/
-        clang/test/Driver/Inputs/resource_dir_with_per_target_subdir/lib/x86_64-pc-windows-cygnus/
-        clang/test/Driver/cygwin-print-file-name.c
-        clang/test/Driver/darwin-hip-spirv-version.hip
-        clang/test/Driver/hip-fpie-option-freebsd.hip
-        clang/test/Driver/hip-link-offload-binary.c
-        clang/test/Driver/openmp-invalid-target-id.c
-        clang/test/Driver/print-cxx-stdlib.cpp
-        clang/test/Driver/sycl-rtlib-sysroot-mismatch.cpp
-        clang/test/ExtractAPI/availability_typedef_anonymous_record.c
-        clang/test/ExtractAPI/invalid_utf8_doc_comment.c
-        clang/test/ExtractAPI/objc_nullability.m
-        clang/test/Index/USR/class-type-tpl-arg.cpp
-        clang/test/Interpreter/pch-pic-mismatch.cpp
-        clang/test/Interpreter/pcm-pic-mismatch.cpp
-        clang/test/Interpreter/used-global-after-error.cpp
-        clang/test/Layout/ms-arm64-aligned-base-tail-padding.cpp
-        clang/test/Misc/amdgcn.unsupported_core_3.1.cl
-        clang/test/Modules/gmf-internal-linkage-in-template.cppm
-        clang/test/OpenMP/dims_modifier_ast_print.cpp
-        clang/test/OpenMP/dims_modifier_messages.cpp
-        clang/test/OpenMP/openmp_offload_weak_vtables.cpp
-        clang/test/OpenMP/target_map_nested_ptr_member_mapper_codegen.cpp
-        clang/test/OpenMP/update_clause_ast_dump.cpp
-        clang/test/PCH/unused-local-typedef-determinism.cpp
-        clang/test/Parser/cxx2c-expansion-statements-non-compound-stmt-body.cpp
-        clang/test/Parser/decltype-crash.cpp
-        clang/test/ParserHLSL/hlsl_is_ms_attr.hlsl
-        clang/test/Preprocessor/GH101342.c
-        clang/test/Preprocessor/amdgpu-subarch-cc1-target-cpu.cl
-        clang/test/Sema/LifetimeSafety/annotation-suggestions-fixits.c
-        clang/test/Sema/inline-asm-validate-loongarch.c
-        clang/test/Sema/warn-stringop-overread-fortify.c
-        clang/test/Sema/warn-stringop-overread.c
-        clang/test/SemaCXX/atomic-auto.cpp
-        clang/test/SemaCXX/atomic-constexpr.cpp
-        clang/test/SemaCXX/builtin-dependent-call.cpp
-        clang/test/SemaCXX/expansion-statements-local-extern-decls.cpp
-        clang/test/SemaCXX/ms-ptr-qualifiers.cpp
-        clang/test/SemaCXX/qualified-function-typeof.cpp
-        clang/test/SemaCXX/warn-unused-local-typedef-deterministic-order.cpp
-        clang/test/SemaHLSL/Attributes/
-        clang/test/SemaHLSL/BuiltIns/ByteAddressBuffer-InterlockedAdd-errors.hlsl
-        clang/test/SemaHLSL/BuiltIns/ByteAddressBuffer-InterlockedAdd-sm65-errors.hlsl
-        clang/test/SemaHLSL/BuiltIns/InterlockedXor-errors.hlsl
-        clang/test/SemaHLSL/Resources/Textures-CalculateLevelOfDetail.hlsl
-        clang/test/SemaHLSL/Resources/Textures-GetDimensions.hlsl
-        clang/test/SemaHLSL/Resources/Textures-Load-errors.hlsl
-        clang/test/SemaHLSL/Resources/Textures-SampleBias.hlsl
-        clang/test/SemaHLSL/Resources/Textures-SampleCmp.hlsl
-        clang/test/SemaHLSL/Resources/Textures-SampleCmpLevelZero.hlsl
-        clang/test/SemaHLSL/Resources/Textures-SampleGrad.hlsl
-        clang/test/SemaHLSL/Resources/Textures-SampleLevel.hlsl
-        clang/test/SemaHLSL/Resources/Textures-Sema.hlsl
-        clang/test/SemaHLSL/Resources/Textures-Subscript.hlsl
-        clang/test/SemaHLSL/Resources/Textures-derivative-availability.hlsl
-        clang/test/SemaHLSL/Resources/Textures-double-element-type-errors.hlsl
-        clang/test/SemaHLSL/Resources/Textures-integer-element-type.hlsl
-        clang/test/SemaHLSL/Textures-Gather.hlsl
-        clang/test/SemaHLSL/Textures-GatherCmp-Vulkan.hlsl
-        clang/test/SemaHLSL/Textures-mips-errors.hlsl
-        clang/test/SemaOpenCL/builtins-amdgcn-cmp-deprecated.cl
-        clang/test/SemaOpenCL/builtins-extended-image-supported.cl
-        clang/test/SemaOpenMP/gh197162.c
-        clang/test/SemaTemplate/GH195988.cpp
+根因
 
-nothing added to commit but untracked files present (use "git add" to track)
-(.venv) yaolu@toronto:~/llvm-project-src$ git branch -vv
-* affine-fusion-recurrence-slice          38003f8ca100 [fork/affine-fusion-recurrence-slice] [mlir][affine] Add regression test for fold with detached block
-  backup-alias-analysis-fix               1760eccb7a5d [mlir] Avoid crash in test alias analysis operand printing
-  fix-affine-for-fold-detached-block      da4eb6dd9bdc [fork/fix-affine-for-fold-detached-block] [mlir][affine] Add regression test for fold with detached block
-  fix-alias-analysis-modref-crash         ef412f265602 [mlir] Avoid crash in test alias analysis operand printing
-  fix-linalg-masked-contiguous-extract    a1384710cd7b [fork/fix-linalg-masked-contiguous-extract] Revert "[LoongArch] Custom scalar UINT_TO_FP and FP_TO_UINT with LSX instructions" (#206632)
-  fix-linalg-masked-contiguous-extract-v2 5d1aba6d8705 [fork/fix-linalg-masked-contiguous-extract-v2] update
-  fix-linalg-vectorize-crash              2bb60d6d6374 [upstream/main: ahead 3, behind 1440] Fix a.mlir crash
-  fix-memref-mem2reg-overflow             c5bd3c3c0000 [fork/fix-memref-mem2reg-overflow: ahead 1, behind 1] Add regression test for mem2reg overflow fix in MemRefMemorySlot.cpp (bug #204297 / #205245)
-  fix-narrow-type-mask-crash              7bbb6400d202 [fork/fix-narrow-type-mask-crash] Fix narrow type mask crash
-  fix-remove-dead-values-poison-crash     03f89a246523 [fork/fix-remove-dead-values-poison-crash: ahead 1] [mlir][linalg] Fix masking for rank-reducing contiguous extracts
-  fix-vector-bitcast-breakdown            ef412f265602 [fork/fix-vector-bitcast-breakdown: ahead 1] [mlir] Avoid crash in test alias analysis operand printing
-  main                                    1434c4b3e9a8 [origin/main: ahead 2, behind 2604] Avoid crash in test alias analysis operand printing
-(.venv) yaolu@toronto:~/llvm-project-src$ git stash list
-(.venv) yaolu@toronto:~/llvm-project-src$ git stash list
+UpdateVCEPass.cpp 里对 spirv.GlobalVariable 有专门处理，但只覆盖了三样：
+
+binding / descriptor_set → 硬编码要求 Shader
+linkage_attributes → 走 requireLinkage
+变量类型 → 走通用的 type 需求
+
+漏了 built_in。 而 BuiltIn 装饰的操作数本身在 SPIR-V 规范的 BuiltIn 表里有自己的能力要求。ODS 里数据其实已经有了：
+
+tablegen
+def SPIRV_BI_SubgroupId : I32EnumAttrCase<"SubgroupId", 40> {
+  list<Availability> availability = [
+    Capability<[SPIRV_C_GroupNonUniform, SPIRV_C_Kernel]>
+  ];
+}
+
+pass 从来没去读它，所以推导出的 VCE 里没有 GroupNonUniform，spirv-val 就挂了。
+
+50 个 BuiltIn 带 Extension 要求，5 个带 MinVersion，所以三样都要处理，不只是 capability。
+
+修法
+
+built_in 存的是 OptionalAttr<StrAttr>，先用 symbolizeBuiltIn 转成枚举，再查可用性。
+
+顺手把现有的 requireLinkage 泛化成通用 lambda，两处共用。LinkageType 的所有 case 都没有 MinVersion，所以加上版本处理对它是零行为变化。
+
+Ran 2 commands
+Ran 2 commands
+
+复制粘贴下面整块到仓库根目录：
+
+bash
+cat > /tmp/spirv.patch <<'PATCH_EOF'
+diff --git a/mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp b/mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp
+--- a/mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp
++++ b/mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp
+@@ -152,21 +152,36 @@
+     valueTypes.append(op->operand_type_begin(), op->operand_type_end());
+     valueTypes.append(op->result_type_begin(), op->result_type_end());
+ 
+-    // Per the SPIR-V spec Decoration table, the `LinkageAttributes` decoration
+-    // requires the `Linkage` capability, and specific linkage types pull in
+-    // additional extensions (e.g., `LinkOnceODR` -> `SPV_KHR_linkonce_odr`).
+-    auto requireLinkage = [&](spirv::LinkageType linkageType) -> LogicalResult {
+-      if (auto caps = spirv::getCapabilities(linkageType)) {
++    // Some enum values used as attributes carry their own requirements per the
++    // SPIR-V spec. Examples are the `LinkageAttributes` decoration, whose
++    // linkage type requires the `Linkage` capability and may pull in extensions
++    // (e.g., `LinkOnceODR` -> `SPV_KHR_linkonce_odr`), and the `BuiltIn`
++    // decoration, whose operand has its own entry in the BuiltIn table (e.g.,
++    // `SubgroupId` -> `GroupNonUniform` or `Kernel`).
++    auto requireEnumAvailability = [&](auto enumValue) -> LogicalResult {
++      if (auto caps = spirv::getCapabilities(enumValue)) {
+         SmallVector<ArrayRef<spirv::Capability>, 1> capCandidates = {*caps};
+         if (failed(checkAndUpdateCapabilityRequirements(
+                 op, targetEnv, capCandidates, deducedCapabilities)))
+           return failure();
+       }
+-      if (auto exts = spirv::getExtensions(linkageType)) {
++      if (auto exts = spirv::getExtensions(enumValue)) {
+         SmallVector<ArrayRef<spirv::Extension>, 1> extCandidates = {*exts};
+         if (failed(checkAndUpdateExtensionRequirements(
+                 op, targetEnv, extCandidates, deducedExtensions)))
+           return failure();
+       }
++      if (std::optional<spirv::Version> minVersion =
++              spirv::getMinVersion(enumValue)) {
++        deducedVersion = std::max(deducedVersion, *minVersion);
++        if (deducedVersion > allowedVersion) {
++          return op->emitError("'")
++                 << op->getName() << "' requires min version "
++                 << spirv::stringifyVersion(deducedVersion)
++                 << " but target environment allows up to "
++                 << spirv::stringifyVersion(allowedVersion);
++        }
++      }
+       return success();
+     };
+ 
+@@ -186,15 +201,28 @@
+           return WalkResult::interrupt();
+       }
+ 
++      // The `BuiltIn` decoration's operand carries its own requirements per the
++      // SPIR-V spec BuiltIn table. These are not implied by the variable's type
++      // or storage class, so they have to be queried separately.
++      if (std::optional<StringRef> builtInName = globalVar.getBuiltIn()) {
++        std::optional<spirv::BuiltIn> builtIn =
++            spirv::symbolizeBuiltIn(*builtInName);
++        if (!builtIn)
++          return globalVar.emitError("unknown 'built_in' value '")
++                 << *builtInName << "'";
++        if (failed(requireEnumAvailability(*builtIn)))
++          return WalkResult::interrupt();
++      }
++
+       if (auto linkage = globalVar.getLinkageAttributes())
+-        if (failed(requireLinkage(linkage->getLinkageType().getValue())))
++        if (failed(
++                requireEnumAvailability(linkage->getLinkageType().getValue())))
+           return WalkResult::interrupt();
+     }
+ 
+     if (auto funcOp = dyn_cast<spirv::FuncOp>(op))
+       if (auto linkage = funcOp.getLinkageAttributes())
+-        if (failed(requireLinkage(linkage->getLinkageType().getValue())))
++        if (failed(
++                requireEnumAvailability(linkage->getLinkageType().getValue())))
+           return WalkResult::interrupt();
+ 
+     // If the op is FunctionLike make sure to process input and result types.
+diff --git a/mlir/test/Dialect/SPIRV/Transforms/vce-deduction.mlir b/mlir/test/Dialect/SPIRV/Transforms/vce-deduction.mlir
+--- a/mlir/test/Dialect/SPIRV/Transforms/vce-deduction.mlir
++++ b/mlir/test/Dialect/SPIRV/Transforms/vce-deduction.mlir
+@@ -439,3 +439,24 @@
+       linkage_type = <Weak>>
+   } : !spirv.ptr<i32, Private>
+ }
++
++// The `BuiltIn` decoration's operand has its own capability requirement per the
++// SPIR-V spec BuiltIn table: `SubgroupId` needs `GroupNonUniform` or `Kernel`.
++// See https://github.com/llvm/llvm-project/issues/213193.
++
++// CHECK: requires #spirv.vce<v1.3, [GroupNonUniform, Shader, Matrix], []>
++spirv.module Logical GLSL450 attributes {
++  spirv.target_env = #spirv.target_env
++    #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
++    #spirv.resource_limits<>>
++} {
++  spirv.GlobalVariable @subgroup_id built_in("SubgroupId") : !spirv.ptr<i32, Input>
++
++  spirv.func @kernel() "None" attributes {kernel} {
++    %address = spirv.mlir.addressof @subgroup_id : !spirv.ptr<i32, Input>
++    %id = spirv.Load "Input" %address : i32
++    spirv.Return
++  }
++
++  spirv.EntryPoint "GLCompute" @kernel, @subgroup_id
++  spirv.ExecutionMode @kernel "LocalSize", 1, 1, 1
++}
+PATCH_EOF
+git apply -v /tmp/spirv.patch && git diff --stat
+那行 CHECK 我没法验证
+
+// CHECK: requires #spirv.vce<v1.3, [GroupNonUniform, Shader, Matrix], []> 是我推的，不是跑出来的。
+
+推的依据：GroupNonUniform 先插入，因为 builtin 块在类型处理之前；Shader 来自 Input 存储类；Matrix 是 addAllImpliedCapabilities 从 Shader 补的；版本被 GroupNonUniform 的 min version 抬到 v1.3。
+
+集合顺序和版本都可能和我猜的不一样。跑一下拿真实输出：
+
+bash
+ninja -C build mlir-opt
+build/bin/mlir-opt -spirv-update-vce \
+  mlir/test/Dialect/SPIRV/Transforms/vce-deduction.mlir 2>&1 | grep SubgroupId -B2
+
+拿到实际那行，替换掉 CHECK。然后：
+
+bash
+ninja -C build check-mlir-dialect-spirv
+再验一遍 issue 的复现
+bash
+build/bin/mlir-opt --no-implicit-module input.mlir --spirv-update-vce |
+build/bin/mlir-translate --no-implicit-module --serialize-spirv |
+spirv-val --target-env vulkan1.1 -
+
+应该不再报错。

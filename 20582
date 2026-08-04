@@ -1,54 +1,47 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ cat mlir/test/Integration/Dialect/XeGPU/LANE/no-xegpu-ops.mlir
-// RUN: mlir-opt %s --gpu-async-region --gpu-lower-to-xevm-pipeline="xegpu-op-level=lane" \
-// RUN: | mlir-runner \
-// RUN:   --shared-libs=%mlir_levelzero_runtime \
-// RUN:   --shared-libs=%mlir_runner_utils \
-// RUN:   --entry-point-result=void \
-// RUN: | FileCheck %s
+看到了。这个文件塞不进去，理由很实在。
 
-module @add attributes {gpu.container_module} {
-  memref.global "private" constant @__constant_2x2x2xf32_0 : memref<2x2x2xf32> = dense<[[[1.1, 2.2], [3.3, 4.4]], [[5.5, 6.6], [7.7, 8.8 ]]]>
-  memref.global "private" constant @__constant_2x2x2xf32 : memref<2x2x2xf32> = dense<[[[1.2, 2.3], [4.5, 5.8]], [[7.2, 8.3], [10.5, 11.8]]]>
-  func.func @main() {
-    %0 = memref.get_global @__constant_2x2x2xf32 : memref<2x2x2xf32>
-    %1 = memref.get_global @__constant_2x2x2xf32_0 : memref<2x2x2xf32>
-    %2 = call @test(%0, %1) : (memref<2x2x2xf32>, memref<2x2x2xf32>) -> memref<2x2x2xf32>
-    %cast = memref.cast %2 : memref<2x2x2xf32> to memref<*xf32>
-    call @printMemrefF32(%cast) : (memref<*xf32>) -> ()
-    return
-  }
-  func.func private @printMemrefF32(memref<*xf32>)
-  func.func @test(%arg0: memref<2x2x2xf32>, %arg1: memref<2x2x2xf32>) -> memref<2x2x2xf32> {
-    %c2 = arith.constant 2 : index
-    %c1 = arith.constant 1 : index
-    %mem = gpu.alloc () : memref<2x2x2xf32>
-    gpu.memcpy %mem, %arg1 : memref<2x2x2xf32>, memref<2x2x2xf32>
-    %memref_0 = gpu.alloc () : memref<2x2x2xf32>
-    gpu.memcpy %memref_0, %arg0 : memref<2x2x2xf32>, memref<2x2x2xf32>
-    %memref_2 = gpu.alloc () : memref<2x2x2xf32>
-    gpu.launch_func @test_kernel::@test_kernel blocks in (%c2, %c2, %c2) threads in (%c1, %c1, %c1)
-          args(%memref_0 : memref<2x2x2xf32>, %mem : memref<2x2x2xf32>, %memref_2 : memref<2x2x2xf32>)
-    %alloc = memref.alloc() : memref<2x2x2xf32>
-    gpu.memcpy %alloc, %memref_2 : memref<2x2x2xf32>, memref<2x2x2xf32>
-    gpu.dealloc %memref_2 : memref<2x2x2xf32>
-    gpu.dealloc %memref_0 : memref<2x2x2xf32>
-    gpu.dealloc %mem : memref<2x2x2xf32>
-    return %alloc : memref<2x2x2xf32>
-  }
-  gpu.module @test_kernel {
-    gpu.func @test_kernel(%arg0: memref<2x2x2xf32>, %arg1: memref<2x2x2xf32>, %arg2: memref<2x2x2xf32>) kernel {
-      %0 = gpu.block_id x
-      %1 = gpu.block_id y
-      %2 = gpu.block_id z
-      %3 = memref.load %arg0[%0, %1, %2] : memref<2x2x2xf32>
-      %4 = memref.load %arg1[%0, %1, %2] : memref<2x2x2xf32>
-      %5 = arith.addf %3, %4 : f32
-      memref.store %5, %arg2[%0, %1, %2] : memref<2x2x2xf32>
+它是端到端跑真硬件的：`mlir-runner` 加 `%mlir_levelzero_runtime`，需要 Intel GPU 和 Level Zero 运行时。CHECK 检查的是**运行结果的数值**，不是 IR。
+
+如果把 `math.isinf` 塞进这个 kernel，你本地跑不了，没法验证；而且它测的是数值正确性，不是"pass 有没有把 op 转掉"，方向不对。这个 bug 的本质是 IR 里残留了 op，用 IR 检查才对得上。
+
+## 所以新建一个纯 lit 文件
+
+跑这一整块：
+
+```bash
+mkdir -p mlir/test/Dialect/GPU
+cat > mlir/test/Dialect/GPU/lower-to-xevm-pipeline-math.mlir <<'EOF'
+// RUN: mlir-opt %s --gpu-lower-to-xevm-pipeline="xegpu-op-level=lane" | FileCheck %s
+
+// `convert-math-to-xevm` only maps the Math ops that have a native or OpenCL
+// counterpart. The rest must still be lowered, or they survive into
+// serialization and translation to LLVM IR fails.
+// See https://github.com/llvm/llvm-project/issues/213583.
+
+// CHECK-LABEL: gpu.module @kernels
+// CHECK-NOT: math.
+module attributes {gpu.container_module} {
+  gpu.module @kernels {
+    gpu.func @classify_inf(%input : memref<1xf32>,
+                           %output : memref<1xi32>) kernel {
+      %c0 = arith.constant 0 : index
+      %zero = arith.constant 0 : i32
+      %one = arith.constant 1 : i32
+      %value = memref.load %input[%c0] : memref<1xf32>
+      %is_inf = math.isinf %value : f32
+      %result = arith.select %is_inf, %one, %zero : i32
+      memref.store %result, %output[%c0] : memref<1xi32>
       gpu.return
     }
   }
-  // CHECK: [2.3, 4.5]
-  // CHECK: [7.8, 10.2]
-  // CHECK: [12.7, 14.9]
-  // CHECK: [18.2, 20.6]
 }
+EOF
+```
+
+然后跑：
+
+```bash
+build/bin/llvm-lit -v mlir/test/Dialect/GPU/lower-to-xevm-pipeline-math.mlir
+```
+
+输出发我。

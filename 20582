@@ -1,4 +1,22 @@
-yaolu@toronto:~/llvm-project-src$  source /home/yaolu/llvm-project-src/.venv/bin/activate
-(.venv) yaolu@toronto:~/llvm-project-src$ git reset --hard
-HEAD is now at 88fb1a93f4dd [clang][bytecode][NFC] Use auto* if we can (#213209)
-(.venv) yaolu@toronto:~/llvm-project-src$ 
+(.venv) yaolu@toronto:~/llvm-project-src$ git status
+On branch affine-fusion-recurrence-slice
+Your branch and 'fork/affine-fusion-recurrence-slice' have diverged,
+and have 2810 and 2 different commits each, respectively.
+  (use "git pull" to merge the remote branch into yours)
+
+nothing to commit, working tree clean
+(.venv) yaolu@toronto:~/llvm-project-src$ git log --online -3
+fatal: unrecognized argument: --online
+(.venv) yaolu@toronto:~/llvm-project-src$ git switch -c fix-xevm-math-isinf
+Switched to a new branch 'fix-xevm-math-isinf'
+(.venv) yaolu@toronto:~/llvm-project-src$ git show --stat affine-fusion-recurrence-slice
+commit 88fb1a93f4dd4e2bc5637b5e30ff0fab9edc21a9 (HEAD -> fix-xevm-math-isinf, upstream/main, affine-fusion-recurrence-slice)
+Author: Timm Baeder <tbaeder@redhat.com>
+Date:   Fri Jul 31 08:47:05 2026 +0200
+
+    [clang][bytecode][NFC] Use auto* if we can (#213209)
+    
+    Instead of just auto.
+
+ clang/lib/AST/ByteCode/Interp.cpp | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)

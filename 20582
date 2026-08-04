@@ -1,22 +1,52 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ git status
-On branch affine-fusion-recurrence-slice
-Your branch and 'fork/affine-fusion-recurrence-slice' have diverged,
-and have 2810 and 2 different commits each, respectively.
-  (use "git pull" to merge the remote branch into yours)
+三条命令，按顺序跑。
 
-nothing to commit, working tree clean
-(.venv) yaolu@toronto:~/llvm-project-src$ git log --online -3
-fatal: unrecognized argument: --online
-(.venv) yaolu@toronto:~/llvm-project-src$ git switch -c fix-xevm-math-isinf
-Switched to a new branch 'fix-xevm-math-isinf'
-(.venv) yaolu@toronto:~/llvm-project-src$ git show --stat affine-fusion-recurrence-slice
-commit 88fb1a93f4dd4e2bc5637b5e30ff0fab9edc21a9 (HEAD -> fix-xevm-math-isinf, upstream/main, affine-fusion-recurrence-slice)
-Author: Timm Baeder <tbaeder@redhat.com>
-Date:   Fri Jul 31 08:47:05 2026 +0200
+## 1. 把 fusion 分支拨回去
 
-    [clang][bytecode][NFC] Use auto* if we can (#213209)
-    
-    Instead of just auto.
+```bash
+git branch -f affine-fusion-recurrence-slice fork/affine-fusion-recurrence-slice
+```
 
- clang/lib/AST/ByteCode/Interp.cpp | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+## 2. 改 XeVM 代码
+
+```bash
+cat > /tmp/fixxevm.py <<'PYEOF'
+import sys, os
+SRC = "mlir/lib/Dialect/GPU/Pipelines/GPUToXeVMPipeline.cpp"
+if not os.path.isfile(SRC):
+    sys.exit("error: run from the root of your llvm-project checkout")
+s = open(SRC).read()
+
+OLD = """    pm.addNestedPass<gpu::GPUModuleOp>(
+        arith::createArithEmulateUnsupportedFloats(arithEmulateOptions));
+  }
+  pm.addNestedPass<gpu::GPUModuleOp>(createCSEPass());
+  pm.addNestedPass<gpu::GPUModuleOp>(createReconcileUnrealizedCastsPass());"""
+
+NEW = """    pm.addNestedPass<gpu::GPUModuleOp>(
+        arith::createArithEmulateUnsupportedFloats(arithEmulateOptions));
+  }
+  // Lower whatever Math ops are left. `convert-math-to-xevm` above only maps
+  // the ops that have a native or OpenCL counterpart; the rest (e.g.
+  // `math.isinf`) have no XeVM lowering and would otherwise survive into
+  // serialization, where translation to LLVM IR fails. This must run after the
+  // XeVM-specific conversions so those keep taking priority.
+  pm.addNestedPass<gpu::GPUModuleOp>(createConvertMathToLLVMPass());
+  pm.addNestedPass<gpu::GPUModuleOp>(createCSEPass());
+  pm.addNestedPass<gpu::GPUModuleOp>(createReconcileUnrealizedCastsPass());"""
+
+n = s.count(OLD)
+if n != 1:
+    sys.exit("error: matched %d times, expected 1" % n)
+open(SRC, "w").write(s.replace(OLD, NEW))
+print("patched " + SRC)
+PYEOF
+python3 /tmp/fixxevm.py
+```
+
+## 3. 编译
+
+```bash
+ninja -C build mlir-opt
+```
+
+编过了再往下走，出错就把报错发我。

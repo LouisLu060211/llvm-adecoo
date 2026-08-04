@@ -1,47 +1,56 @@
-看到了。这个文件塞不进去，理由很实在。
+对，就这两个。
 
-它是端到端跑真硬件的：`mlir-runner` 加 `%mlir_levelzero_runtime`，需要 Intel GPU 和 Level Zero 运行时。CHECK 检查的是**运行结果的数值**，不是 IR。
-
-如果把 `math.isinf` 塞进这个 kernel，你本地跑不了，没法验证；而且它测的是数值正确性，不是"pass 有没有把 op 转掉"，方向不对。这个 bug 的本质是 IR 里残留了 op，用 IR 检查才对得上。
-
-## 所以新建一个纯 lit 文件
-
-跑这一整块：
+## 第 2 步：暂存
 
 ```bash
-mkdir -p mlir/test/Dialect/GPU
-cat > mlir/test/Dialect/GPU/lower-to-xevm-pipeline-math.mlir <<'EOF'
-// RUN: mlir-opt %s --gpu-lower-to-xevm-pipeline="xegpu-op-level=lane" | FileCheck %s
-
-// `convert-math-to-xevm` only maps the Math ops that have a native or OpenCL
-// counterpart. The rest must still be lowered, or they survive into
-// serialization and translation to LLVM IR fails.
-// See https://github.com/llvm/llvm-project/issues/213583.
-
-// CHECK-LABEL: gpu.module @kernels
-// CHECK-NOT: math.
-module attributes {gpu.container_module} {
-  gpu.module @kernels {
-    gpu.func @classify_inf(%input : memref<1xf32>,
-                           %output : memref<1xi32>) kernel {
-      %c0 = arith.constant 0 : index
-      %zero = arith.constant 0 : i32
-      %one = arith.constant 1 : i32
-      %value = memref.load %input[%c0] : memref<1xf32>
-      %is_inf = math.isinf %value : f32
-      %result = arith.select %is_inf, %one, %zero : i32
-      memref.store %result, %output[%c0] : memref<1xi32>
-      gpu.return
-    }
-  }
-}
-EOF
+git add mlir/lib/Dialect/GPU/Pipelines/GPUToXeVMPipeline.cpp \
+        mlir/test/Dialect/GPU/lower-to-xevm-pipeline-math.mlir
 ```
 
-然后跑：
+## 第 3 步：格式检查
 
 ```bash
-build/bin/llvm-lit -v mlir/test/Dialect/GPU/lower-to-xevm-pipeline-math.mlir
+git clang-format
 ```
 
-输出发我。
+如果有输出说改了文件，再 `git add -A`。没输出就直接下一步。
+
+两条跑完，把 `git clang-format` 的输出发我。
+
+user然后## 第 4 步：提交
+
+```bash
+git commit -F- <<'MSG'
+[MLIR][GPU] Lower remaining Math ops in the XeVM pipeline
+
+`convert-math-to-xevm` only maps the Math ops that have a native or OpenCL
+counterpart. Anything else it doesn't cover, such as `math.isinf`, stays in
+the `gpu.module` through the rest of the device-side pipeline and reaches
+serialization, where translation to LLVM IR fails with a missing
+`LLVMTranslationDialectInterface` registration.
+
+Add `convert-math-to-llvm` after the XeVM-specific conversions, mirroring what
+the NVVM pipeline already does. Running it last keeps the XeVM lowerings taking
+priority and leaves the generic path to handle the remainder.
+
+Fixes #213583
+MSG
+```
+
+## 第 5 步：推送
+
+先确认 fork 的 remote 名字：
+
+```bash
+git remote -v
+```
+
+假设叫 `fork`：
+
+```bash
+git push -u fork fix-xevm-math-isinf
+```
+
+输出里会有一个创建 PR 的链接。
+
+两步跑完，把 `git remote -v` 的输出发我，我确认名字对不对。

@@ -1,52 +1,21 @@
-三条命令，按顺序跑。
-
-## 1. 把 fusion 分支拨回去
-
-```bash
-git branch -f affine-fusion-recurrence-slice fork/affine-fusion-recurrence-slice
-```
-
-## 2. 改 XeVM 代码
-
-```bash
-cat > /tmp/fixxevm.py <<'PYEOF'
-import sys, os
-SRC = "mlir/lib/Dialect/GPU/Pipelines/GPUToXeVMPipeline.cpp"
-if not os.path.isfile(SRC):
-    sys.exit("error: run from the root of your llvm-project checkout")
-s = open(SRC).read()
-
-OLD = """    pm.addNestedPass<gpu::GPUModuleOp>(
-        arith::createArithEmulateUnsupportedFloats(arithEmulateOptions));
-  }
-  pm.addNestedPass<gpu::GPUModuleOp>(createCSEPass());
-  pm.addNestedPass<gpu::GPUModuleOp>(createReconcileUnrealizedCastsPass());"""
-
-NEW = """    pm.addNestedPass<gpu::GPUModuleOp>(
-        arith::createArithEmulateUnsupportedFloats(arithEmulateOptions));
-  }
-  // Lower whatever Math ops are left. `convert-math-to-xevm` above only maps
-  // the ops that have a native or OpenCL counterpart; the rest (e.g.
-  // `math.isinf`) have no XeVM lowering and would otherwise survive into
-  // serialization, where translation to LLVM IR fails. This must run after the
-  // XeVM-specific conversions so those keep taking priority.
-  pm.addNestedPass<gpu::GPUModuleOp>(createConvertMathToLLVMPass());
-  pm.addNestedPass<gpu::GPUModuleOp>(createCSEPass());
-  pm.addNestedPass<gpu::GPUModuleOp>(createReconcileUnrealizedCastsPass());"""
-
-n = s.count(OLD)
-if n != 1:
-    sys.exit("error: matched %d times, expected 1" % n)
-open(SRC, "w").write(s.replace(OLD, NEW))
-print("patched " + SRC)
-PYEOF
-python3 /tmp/fixxevm.py
-```
-
-## 3. 编译
-
-```bash
-ninja -C build mlir-opt
-```
-
-编过了再往下走，出错就把报错发我。
+(.venv) yaolu@toronto:~/llvm-project-src$ find mlir/test -iname '*xevm*' | head -20
+mlir/test/Integration/Dialect/XeVM
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_bf8.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_e2m1.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_raw.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_f8.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_load_store_pack_register.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_bf16_to_bf8.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_bf16_to_f8.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_load_store_transpose.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_load_store.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip_fp4.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip_bf16.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_store_cst.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_dpas.mlir
+mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip_fp4_bf16.mlir
+mlir/test/Dialect/LLVMIR/xevm.mlir
+mlir/test/Target/LLVMIR/xevm.mlir
+mlir/test/Conversion/XeVMToLLVM
+mlir/test/Conversion/XeVMToLLVM/xevm_mx-to-llvm.mlir

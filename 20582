@@ -1,24 +1,4 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ grep -rl "gpu-lower-to-xevm-pipeline" mlir/test
-mlir/test/Integration/Dialect/XeGPU/SG/simple_gemm.mlir
-mlir/test/Integration/Dialect/XeGPU/LANE/xegpu_dpas_mx_prepacked_bf8.mlir
-mlir/test/Integration/Dialect/XeGPU/LANE/load_store_subview.mlir
-mlir/test/Integration/Dialect/XeGPU/LANE/xegpu_dpas_mx_prepacked_e2m1.mlir
-mlir/test/Integration/Dialect/XeGPU/LANE/simple_gemm.mlir
-mlir/test/Integration/Dialect/XeGPU/LANE/no-xegpu-ops.mlir
-mlir/test/Integration/Dialect/XeGPU/WG/simple_3d_mxfp_gemm.mlir
-mlir/test/Integration/Dialect/XeGPU/WG/simple_mxfp_gemm.mlir
-mlir/test/Integration/Dialect/XeGPU/WG/simple_mxfp_gemm_quantizeA_F4.mlir
-mlir/test/Integration/Dialect/XeGPU/WG/simple_gemm.mlir
-mlir/test/Integration/Dialect/XeGPU/WG/simple_3d_gemm.mlir
-mlir/test/Integration/Dialect/XeGPU/WG/simple_mxfp_gemm_dequantizeB_F4.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_bf8.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_e2m1.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/gpu_printf.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_raw.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_f8.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_bf16_to_bf8.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_block_scaled_dpas_bf16_to_f8.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip_fp4.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip_bf16.mlir
-mlir/test/Integration/Dialect/XeVM/GPU/xevm_truncf_extf_roundtrip_fp4_bf16.mlir
+(.venv) yaolu@toronto:~/llvm-project-src$ cat mlir/test/Integreation/Dialect/XeGPU/LANE/no-xegpu-ops.mlir
+cat: mlir/test/Integreation/Dialect/XeGPU/LANE/no-xegpu-ops.mlir: No such file or directory
+(.venv) yaolu@toronto:~/llvm-project-src$ cat mlir/test/Intergration/Dialect/XeGPU/LANE/no-xegpu-ops.mlir
+cat: mlir/test/Intergration/Dialect/XeGPU/LANE/no-xegpu-ops.mlir: No such file or directory

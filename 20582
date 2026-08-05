@@ -1,9 +1,15 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/llvm-lit mlir/test/Conversion/VectorToSPIRV/ 2>%1 | tail -8
-  MLIR :: Conversion/VectorToSPIRV/vector-to-spirv.mlir
+`vector-to-spirv.mlir` 挂了,预期之中，测试的 CHECK 还写着旧输出。
 
+看具体哪几个用例挂：
 
-Testing Time: 0.33s
+```bash
+build/bin/llvm-lit -v mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir 2>&1 | grep "error:" | head -20
+```
 
-Total Discovered Tests: 2
-  Passed: 1 (50.00%)
-  Failed: 1 (50.00%)
+再看测试里有几个相关用例：
+
+```bash
+grep -n "func.func @vector_load\|func.func @vector_store\|spirv.Bitcast" mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
+```
+
+两条都跑，输出发我。我需要知道要改多少个 CHECK。

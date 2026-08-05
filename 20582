@@ -1,15 +1,28 @@
-`vector-to-spirv.mlir` 挂了,预期之中，测试的 CHECK 还写着旧输出。
-
-看具体哪几个用例挂：
-
-```bash
-build/bin/llvm-lit -v mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir 2>&1 | grep "error:" | head -20
-```
-
-再看测试里有几个相关用例：
-
-```bash
-grep -n "func.func @vector_load\|func.func @vector_store\|spirv.Bitcast" mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
-```
-
-两条都跑，输出发我。我需要知道要改多少个 CHECK。
+(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/llvm-lit -v mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir 2>&1 | grep "error:" | head -20
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1121:11: error: CHECK: expected string not found in input
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1155:17: error: CHECK-SAME: expected string not found in input
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1174:11: error: CHECK: expected string not found in input
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1194:11: error: CHECK: expected string not found in input
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1206:17: error: CHECK-SAME: expected string not found in input
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1244:11: error: CHECK: expected string not found in input
+# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1258:11: error: CHECK: expected string not found in input
+# | check:1121'1                                                                                                                                                                               error: no match found in search range
+# error: command failed with exit status: 1
+(.venv) yaolu@toronto:~/llvm-project-src$ grep -n "func.func @vector_load\|func.func @vector_store\|spirv.Bitcast" mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
+7://       CHECK:   spirv.Bitcast %[[ARG0]] : vector<2xf32> to vector<4xf16>
+8://       CHECK:   spirv.Bitcast %[[ARG1]] : vector<2xf16> to f32
+1121://       CHECK:   %[[S5:.+]] = spirv.Bitcast %[[S4]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+1124:func.func @vector_load(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {
+1144:func.func @vector_load_single_elem(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<1xf32> {
+1152:func.func @vector_load_aligned(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {
+1174://       CHECK:   %[[S8:.+]] = spirv.Bitcast %[[S7]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+1177:func.func @vector_load_2d(%arg0 : memref<4x4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {
+1194://       CHECK:   %[[S5:.+]] = spirv.Bitcast %[[S4]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+1196:func.func @vector_store(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xf32>) {
+1203:func.func @vector_store_aligned(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xf32>) {
+1223:func.func @vector_store_single_elem(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<1xf32>) {
+1244://       CHECK:   %[[S8:.+]] = spirv.Bitcast %[[S7]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+1246:func.func @vector_store_2d(%arg0 : memref<4x4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xf32>) {
+1258://       CHECK:   %[[S5:.+]] = spirv.Bitcast %{{.+}} : !spirv.ptr<i32, StorageBuffer> to !spirv.ptr<vector<4xi32>, StorageBuffer>
+1260:func.func @vector_store_index(%arg0 : memref<4xindex, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xindex>) {
+1274:func.func @vector_load(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {

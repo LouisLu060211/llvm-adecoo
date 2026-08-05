@@ -1,20 +1,61 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ cat /tmp/input.mlir
-module attributes {
-  gpu.container_module,
-  spirv.target_env = #spirv.target_env
-    #spirv.vce<v1.3, [Shader], [SPV_KHR_storage_buffer_storage_class]>,
-    #spirv.resource_limits<>>
-} {
-  gpu.module @kernels {
-    gpu.func @copy_vector(%src : memref<16xf32>, %dst : memref<16xf32>) kernel
-        attributes {
-          spirv.entry_point_abi =
-            #spirv.entry_point_abi<workgroup_size = [1, 1, 1]>
-        } {
-      %c0 = arith.constant 0 : index
-      %value = vector.load %src[%c0] : memref<16xf32>, vector<4xf32>
-      vector.store %value, %dst[%c0] : memref<16xf32>, vector<4xf32>
-      gpu.return
-    }
-  }
-}
+(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/llvm-lit -v mlir/test/Conversion/VectorToSPIRV/ 2>&1 | tail -60
+# |           ^
+# | <stdin>:1143:82: note: scanning from here
+# |  %1 = builtin.unrealized_conversion_cast %arg1 : vector<4xindex> to vector<4xi32>
+# |                                                                                  ^
+# | <stdin>:1143:82: note: pattern attempts to capture variables: "S5"
+# |  %1 = builtin.unrealized_conversion_cast %arg1 : vector<4xindex> to vector<4xi32>
+# |                                                                                  ^
+# | 
+# | Input file: <stdin>
+# | Check file: /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
+# | 
+# | -dump-input=help explains the following input dump.
+# | 
+# | Input was:
+# | <<<<<<
+# |               .
+# |               .
+# |               .
+# |             853:  %1 = builtin.unrealized_conversion_cast %c0 : index to i32 
+# |             854:  %cst = arith.constant 0.000000e+00 : f32 
+# |             855:  %cst0_i32 = spirv.Constant 0 : i32 
+# |             856:  %cst0_i32_0 = spirv.Constant 0 : i32 
+# |             857:  %cst1_i32 = spirv.Constant 1 : i32 
+# |             858:  %2 = spirv.AccessChain %0[%cst0_i32, %1] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32 -> !spirv.ptr<f32, StorageBuffer> 
+# | check:1121'0                                                                                                                                         {                                     search range start (exclusive)
+# | check:1121'1                                                                                                                                                                               error: no match found in search range
+# | check:1121'2                                                                                                                                                                               with "S4" equal to "2"
+# | check:1121'3                                                                                                                                                                               pattern attempts to capture variables: "S5"
+# |             859:  %cst0_i32_1 = spirv.Constant 0 : i32 
+# |             860:  %cst0_i32_2 = spirv.Constant 0 : i32 
+# |             861:  %cst1_i32_3 = spirv.Constant 1 : i32 
+# |             862:  %3 = spirv.AccessChain %0[%cst0_i32_1, %1] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32 -> !spirv.ptr<f32, StorageBuffer> 
+# |             863:  %4 = spirv.Load "StorageBuffer" %3 : f32 
+# |               .
+# |               .
+# |               .
+# |             883:  %12 = spirv.AccessChain %0[%cst0_i32_11, %11] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32 -> !spirv.ptr<f32, StorageBuffer> 
+# |             884:  %13 = spirv.Load "StorageBuffer" %12 : f32 
+# |             885:  %14 = spirv.CompositeConstruct %4, %7, %10, %13 : (f32, f32, f32, f32) -> vector<4xf32> 
+# |             886:  return %14 : vector<4xf32> 
+# |             887:  } 
+# |             888:  func.func @vector_load_single_elem(%arg0: memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<1xf32> { 
+# | check:1121'4                          
+# | ...
+# `---data was truncated (10240/27871) (change limit with -D output_limit=N)
+# error: command failed with exit status: 1
+
+--
+
+********************
+********************
+Failed Tests (1):
+  MLIR :: Conversion/VectorToSPIRV/vector-to-spirv.mlir
+
+
+Testing Time: 0.40s
+
+Total Discovered Tests: 2
+  Passed: 1 (50.00%)
+  Failed: 1 (50.00%)

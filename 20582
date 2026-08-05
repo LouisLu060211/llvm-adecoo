@@ -1,21 +1,17 @@
-"no such file" 通常是这两个原因之一。
-
-## 先确认路径
-
-```bash
-pwd
+(.venv) yaolu@toronto:~/llvm-project-src$ ls -d */ | head
+bolt/
+build/
+build-debug/
+clang/
+clang-tools-extra/
+cmake/
+compiler-rt/
+cross-project-tests/
+flang/
+flang-rt/
+(.venv) yaolu@toronto:~/llvm-project-src$ pwd
 ls build/bin/mlir-opt
 ls /tmp/input.mlir
-```
-
-三条一起跑，输出发我。
-
-`pwd` 应该是 `/home/yaolu/llvm-project-src`。如果不是，先 `cd ~/llvm-project-src`。
-
-如果 `/tmp/input.mlir` 不存在，说明第 1 步那个 `cat > /tmp/input.mlir <<'EOF'` 没跑成功，重跑一遍。
-
-如果 `build/bin/mlir-opt` 不存在，那 build 目录名可能不叫 `build`，看一下：
-
-```bash
-ls -d */ | head
-```
+/home/yaolu/llvm-project-src
+build/bin/mlir-opt
+ls: cannot access '/tmp/input.mlir': No such file or directory

@@ -1,28 +1,27 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/llvm-lit -v mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir 2>&1 | grep "error:" | head -20
-# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1121:11: error: CHECK: expected string not found in input
-# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1155:17: error: CHECK-SAME: expected string not found in input
-# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1174:11: error: CHECK: expected string not found in input
-# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1194:11: error: CHECK: expected string not found in input
-# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1206:17: error: CHECK-SAME: expected string not found in input
-# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1244:11: error: CHECK: expected string not found in input
-# | /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir:1258:11: error: CHECK: expected string not found in input
-# | check:1121'1                                                                                                                                                                               error: no match found in search range
-# error: command failed with exit status: 1
-(.venv) yaolu@toronto:~/llvm-project-src$ grep -n "func.func @vector_load\|func.func @vector_store\|spirv.Bitcast" mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
-7://       CHECK:   spirv.Bitcast %[[ARG0]] : vector<2xf32> to vector<4xf16>
-8://       CHECK:   spirv.Bitcast %[[ARG1]] : vector<2xf16> to f32
-1121://       CHECK:   %[[S5:.+]] = spirv.Bitcast %[[S4]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
-1124:func.func @vector_load(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {
-1144:func.func @vector_load_single_elem(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<1xf32> {
-1152:func.func @vector_load_aligned(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {
-1174://       CHECK:   %[[S8:.+]] = spirv.Bitcast %[[S7]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
-1177:func.func @vector_load_2d(%arg0 : memref<4x4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {
-1194://       CHECK:   %[[S5:.+]] = spirv.Bitcast %[[S4]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
-1196:func.func @vector_store(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xf32>) {
-1203:func.func @vector_store_aligned(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xf32>) {
-1223:func.func @vector_store_single_elem(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<1xf32>) {
-1244://       CHECK:   %[[S8:.+]] = spirv.Bitcast %[[S7]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
-1246:func.func @vector_store_2d(%arg0 : memref<4x4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xf32>) {
-1258://       CHECK:   %[[S5:.+]] = spirv.Bitcast %{{.+}} : !spirv.ptr<i32, StorageBuffer> to !spirv.ptr<vector<4xi32>, StorageBuffer>
-1260:func.func @vector_store_index(%arg0 : memref<4xindex, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xindex>) {
-1274:func.func @vector_load(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<4xf32> {
+七处要改。先看清楚测试文件的结构,特别是 1274 行还有第二个 `vector_load`，可能是另一个 RUN 前缀。七个失败全在 `[Shader]` 的 module 里,Logical 寻址，正好是应该走标量路径的。1274 那个是"无 module 属性"的用例，本来就不转换，不受影响。
+
+让我把那段读全，一次写好所有替换。看到了,还有个我没料到的：`vector_load_aligned` 也挂了。标量路径丢掉了 alignment。
+
+这在语义上是安全的,不声明对齐永远合法，只有声称了做不到的对齐才有问题。而且单个 f32 天然 4 字节对齐。但这是行为变化，PR 描述里要说明。
+
+我还没看到 1215 到 1270 那段。发我：
+
+```bash
+sed -n '1215,1272p' mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
+```
+
+拿到之后我一次给你完整的测试更新脚本，七处一起改。
+
+## 先说清整体思路
+
+新的 CHECK 不写死每一条指令,那样太脆，四个 access chain 加常量加 IAdd 一大堆。改成检查关键性质：
+
+```
+//   CHECK-NOT:   spirv.Bitcast
+// CHECK-COUNT-4: spirv.Load "StorageBuffer" %{{.+}} : f32
+//       CHECK:   %[[R0:.+]] = spirv.CompositeConstruct
+```
+
+这样既验证了 bitcast 没了、拆成了四个标量访问，又不会因为常量编号变化而失效。
+
+`vector_load_single_elem` 和 `vector_store_single_elem` 不受影响,单元素本来就不走 bitcast。

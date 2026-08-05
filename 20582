@@ -1,1 +1,3 @@
-build/bin/mlir-opt /tmp/input.mlir '--pass-pipeline=builtin.module(spirv-attach-target{ver=v1.3 caps=Shader exts=SPV_KHR_storage_buffer_storage_class},test-convert-to-spirv{convert-gpu-modules=true nest-in-gpu-module=true},gpu.module(spirv.module(spirv-lower-abi-attrs,spirv-update-vce)))'
+(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/mlir-opt /tmp/input.mlir '--pass-pipeline=builtin.module(spirv-attach-target{ver=v1.3 caps=Shader exts=SPV_KHR_storage_buffer_storage_class},test-convert-to-spirv{convert-gpu-modules=true nest-in-gpu-module=true},gpu.module(spirv.module(spirv-lower-abi-attrs,spirv-update-vce)))'
+/tmp/input.mlir:3:39: error: expected '<'
+  spirv.target_env = #spirv.target_env

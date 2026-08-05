@@ -1,59 +1,94 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ sed -n '1215,1272p' mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
-//       CHECK:  %[[S1:.+]] = builtin.unrealized_conversion_cast %[[ARG1]] : vector<1xf32> to f32
-//       CHECK:  %[[C0:.+]] = arith.constant 0 : index
-//       CHECK:  %[[S2:.+]] = builtin.unrealized_conversion_cast %[[C0]] : index to i32
-//       CHECK:  %[[CST1:.+]] = spirv.Constant 0 : i32
-//       CHECK:  %[[CST2:.+]] = spirv.Constant 0 : i32
-//       CHECK:  %[[CST3:.+]] = spirv.Constant 1 : i32
-//       CHECK:  %[[S4:.+]] = spirv.AccessChain %[[S0]][%[[CST1]], %[[S2]]] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32 -> !spirv.ptr<f32, StorageBuffer>
-//       CHECK:  spirv.Store "StorageBuffer" %[[S4]], %[[S1]] : f32
-func.func @vector_store_single_elem(%arg0 : memref<4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<1xf32>) {
-  %idx = arith.constant 0 : index
-  vector.store %arg1, %arg0[%idx] : memref<4xf32, #spirv.storage_class<StorageBuffer>>, vector<1xf32>
-  return
-}
+七处齐了。跑这个更新测试：
 
-// CHECK-LABEL: @vector_store_2d
-//  CHECK-SAME: (%[[ARG0:.*]]: memref<4x4xf32, #spirv.storage_class<StorageBuffer>>
-//  CHECK-SAME:  %[[ARG1:.*]]: vector<4xf32>
-//       CHECK:   %[[S0:.+]] = builtin.unrealized_conversion_cast %[[ARG0]] : memref<4x4xf32, #spirv.storage_class<StorageBuffer>> to !spirv.ptr<!spirv.struct<(!spirv.array<16 x f32, stride=4> [0])>, StorageBuffer>
-//       CHECK:   %[[C0:.+]] = arith.constant 0 : index
-//       CHECK:   %[[S1:.+]] = builtin.unrealized_conversion_cast %[[C0]] : index to i32
-//       CHECK:   %[[C1:.+]] = arith.constant 1 : index
-//       CHECK:   %[[S2:.+]] = builtin.unrealized_conversion_cast %[[C1]] : index to i32
-//       CHECK:   %[[CST0_1:.+]] = spirv.Constant 0 : i32
-//       CHECK:   %[[CST0_2:.+]] = spirv.Constant 0 : i32
-//       CHECK:   %[[CST4:.+]] = spirv.Constant 4 : i32
-//       CHECK:   %[[S3:.+]] = spirv.IMul %[[S1]], %[[CST4]] : i32
-//       CHECK:   %[[CST1:.+]] = spirv.Constant 1 : i32
-//       CHECK:   %[[S6:.+]] = spirv.IAdd %[[S2]], %[[S3]] : i32
-//       CHECK:   %[[S7:.+]] = spirv.AccessChain %[[S0]][%[[CST0_1]], %[[S6]]] : !spirv.ptr<!spirv.struct<(!spirv.array<16 x f32, stride=4> [0])>, StorageBuffer>, i32, i32
-//       CHECK:   %[[S8:.+]] = spirv.Bitcast %[[S7]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
-//       CHECK:   spirv.Store "StorageBuffer" %[[S8]], %[[ARG1]] : vector<4xf32>
-func.func @vector_store_2d(%arg0 : memref<4x4xf32, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xf32>) {
-  %idx_0 = arith.constant 0 : index
-  %idx_1 = arith.constant 1 : index
-  vector.store %arg1, %arg0[%idx_0, %idx_1] : memref<4x4xf32, #spirv.storage_class<StorageBuffer>>, vector<4xf32>
-  return
-}
+````bash
+cat > /tmp/t.py <<'PYEOF'
+import sys, os
+T = "mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir"
+if not os.path.isfile(T):
+    sys.exit("error: run from the root of your llvm-project checkout")
+s = open(T).read()
 
-// CHECK-LABEL: @vector_store_index
-//  CHECK-SAME: (%[[ARG0:.*]]: memref<4xindex, #spirv.storage_class<StorageBuffer>>
-//  CHECK-SAME:  %[[ARG1:.*]]: vector<4xindex>
-//       CHECK:   %[[S0:.+]] = builtin.unrealized_conversion_cast %[[ARG0]] : memref<4xindex, #spirv.storage_class<StorageBuffer>> to !spirv.ptr<!spirv.struct<(!spirv.array<4 x i32, stride=4> [0])>, StorageBuffer>
-//       CHECK:   %[[S1:.+]] = builtin.unrealized_conversion_cast %[[ARG1]] : vector<4xindex> to vector<4xi32>
-//       CHECK:   %[[S5:.+]] = spirv.Bitcast %{{.+}} : !spirv.ptr<i32, StorageBuffer> to !spirv.ptr<vector<4xi32>, StorageBuffer>
-//       CHECK:   spirv.Store "StorageBuffer" %[[S5]], %[[S1]] : vector<4xi32>
-func.func @vector_store_index(%arg0 : memref<4xindex, #spirv.storage_class<StorageBuffer>>, %arg1 : vector<4xindex>) {
-  %idx = arith.constant 0 : index
-  vector.store %arg1, %arg0[%idx] : memref<4xindex, #spirv.storage_class<StorageBuffer>>, vector<4xindex>
-  return
-}
+def sub(old, new, tag):
+    global s
+    n = s.count(old)
+    if n != 1:
+        sys.exit("error: %s matched %d times, expected 1" % (tag, n))
+    s = s.replace(old, new)
 
-} // end module
+# 1. vector_load
+sub('''//       CHECK:   %[[CST1:.+]] = spirv.Constant 0 : i32
+//       CHECK:   %[[CST2:.+]] = spirv.Constant 0 : i32
+//       CHECK:   %[[CST3:.+]] = spirv.Constant 1 : i32
+//       CHECK:   %[[S4:.+]] = spirv.AccessChain %[[S0]][%[[CST1]], %[[S1]]] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32
+//       CHECK:   %[[S5:.+]] = spirv.Bitcast %[[S4]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+//       CHECK:   %[[R0:.+]] = spirv.Load "StorageBuffer" %[[S5]] : vector<4xf32>
+//       CHECK:   return %[[R0]] : vector<4xf32>''',
+'''//   CHECK-NOT:   spirv.Bitcast
+// CHECK-COUNT-4:   spirv.Load "StorageBuffer" %{{.+}} : f32
+//       CHECK:   %[[R0:.+]] = spirv.CompositeConstruct %{{.+}}, %{{.+}}, %{{.+}}, %{{.+}} : (f32, f32, f32, f32) -> vector<4xf32>
+//       CHECK:   return %[[R0]] : vector<4xf32>''', "vector_load")
 
-// -----
+# 2. vector_load_aligned
+sub('''  // CHECK: spirv.Load
+  // CHECK-SAME: ["Aligned", 8]
+  %0 = vector.load %arg0[%idx] { alignment = 8 }''',
+'''  // The alignment describes the vector access and does not carry over to the
+  // element accesses used under the Logical addressing model.
+  // CHECK-COUNT-4: spirv.Load "StorageBuffer" %{{.+}} : f32
+  //         CHECK: spirv.CompositeConstruct
+  %0 = vector.load %arg0[%idx] { alignment = 8 }''', "load_aligned")
 
-// Ensure the case without module attributes not crash.
+# 3. vector_load_2d
+sub('''//       CHECK:   %[[S8:.+]] = spirv.Bitcast %[[S7]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+//       CHECK:   %[[R0:.+]] = spirv.Load "StorageBuffer" %[[S8]] : vector<4xf32>
+//       CHECK:   return %[[R0]] : vector<4xf32>''',
+'''//   CHECK-NOT:   spirv.Bitcast
+// CHECK-COUNT-4:   spirv.Load "StorageBuffer" %{{.+}} : f32
+//       CHECK:   %[[R0:.+]] = spirv.CompositeConstruct %{{.+}}, %{{.+}}, %{{.+}}, %{{.+}} : (f32, f32, f32, f32) -> vector<4xf32>
+//       CHECK:   return %[[R0]] : vector<4xf32>''', "load_2d")
 
-// CHECK-LABEL: @vector_load
+# 4. vector_store
+sub('''//       CHECK:   %[[S4:.+]] = spirv.AccessChain %[[S0]][%[[CST1]], %[[S1]]] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32
+//       CHECK:   %[[S5:.+]] = spirv.Bitcast %[[S4]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+//       CHECK:   spirv.Store "StorageBuffer" %[[S5]], %[[ARG1]] : vector<4xf32>''',
+'''//   CHECK-NOT:   spirv.Bitcast
+// CHECK-COUNT-4:   spirv.CompositeExtract %[[ARG1]]''', "vector_store")
+
+# 5. vector_store_aligned
+sub('''  // CHECK: spirv.Store
+  // CHECK-SAME: ["Aligned", 8]
+  vector.store %arg1, %arg0[%idx] { alignment = 8 }''',
+'''  // The alignment describes the vector access and does not carry over to the
+  // element accesses used under the Logical addressing model.
+  // CHECK-COUNT-4: spirv.Store "StorageBuffer" %{{.+}}, %{{.+}} : f32
+  vector.store %arg1, %arg0[%idx] { alignment = 8 }''', "store_aligned")
+
+# 6. vector_store_2d
+sub('''//       CHECK:   %[[S8:.+]] = spirv.Bitcast %[[S7]] : !spirv.ptr<f32, StorageBuffer> to !spirv.ptr<vector<4xf32>, StorageBuffer>
+//       CHECK:   spirv.Store "StorageBuffer" %[[S8]], %[[ARG1]] : vector<4xf32>''',
+'''//   CHECK-NOT:   spirv.Bitcast
+// CHECK-COUNT-4:   spirv.CompositeExtract %[[ARG1]]''', "store_2d")
+
+# 7. vector_store_index
+sub('''//       CHECK:   %[[S5:.+]] = spirv.Bitcast %{{.+}} : !spirv.ptr<i32, StorageBuffer> to !spirv.ptr<vector<4xi32>, StorageBuffer>
+//       CHECK:   spirv.Store "StorageBuffer" %[[S5]], %[[S1]] : vector<4xi32>''',
+'''//   CHECK-NOT:   spirv.Bitcast
+// CHECK-COUNT-4:   spirv.CompositeExtract %[[S1]]''', "store_index")
+
+open(T, "w").write(s)
+print("patched " + T)
+PYEOF
+python3 /tmp/t.py && build/bin/llvm-lit mlir/test/Conversion/VectorToSPIRV/ 2>&1 | tail -6
+````
+
+输出发我。
+
+## 说明
+
+`CHECK-COUNT-4` 检查连续出现四次，比逐条写死常量编号稳。
+
+`CHECK-NOT: spirv.Bitcast` 卡在前一条 CHECK 和 COUNT-4 之间,原来 bitcast 就出现在那个位置。
+
+两个 aligned 用例的 CHECK 改成只验证拆成了四次访问，不再检查 `["Aligned", 8]`,因为标量路径丢掉了对齐信息。这是有意的，PR 里会写清楚。
+
+跑完如果还有挂的，把失败详情发我。

@@ -1,31 +1,38 @@
-只有一个错。`CompositeExtractOp::create` 要的是 `ArrayRef<int32_t>`，不是 `ArrayAttr`,我给的形式过时了。
+编过了。现在验证修好没有。
 
-改一行：
+## 第 1 步：造复现文件
 
-````bash
-cat > /tmp/fixup2.py <<'PYEOF'
-import sys, os
-SRC = "mlir/lib/Conversion/VectorToSPIRV/VectorToSPIRV.cpp"
-if not os.path.isfile(SRC):
-    sys.exit("error: run from the root of your llvm-project checkout")
-s = open(SRC).read()
+```bash
+cat > /tmp/input.mlir <<'EOF'
+module attributes {
+  gpu.container_module,
+  spirv.target_env = #spirv.target_env
+    #spirv.vce<v1.3, [Shader], [SPV_KHR_storage_buffer_storage_class]>,
+    #spirv.resource_limits<>>
+} {
+  gpu.module @kernels {
+    gpu.func @copy_vector(%src : memref<16xf32>, %dst : memref<16xf32>) kernel
+        attributes {
+          spirv.entry_point_abi =
+            #spirv.entry_point_abi<workgroup_size = [1, 1, 1]>
+        } {
+      %c0 = arith.constant 0 : index
+      %value = vector.load %src[%c0] : memref<16xf32>, vector<4xf32>
+      vector.store %value, %dst[%c0] : memref<16xf32>, vector<4xf32>
+      gpu.return
+    }
+  }
+}
+EOF
+```
 
-OLD = """        Value element = spirv::CompositeExtractOp::create(
-            rewriter, loc, adaptor.getValueToStore(),
-            rewriter.getI32ArrayAttr({static_cast<int32_t>(i)}));"""
-NEW = """        Value element = spirv::CompositeExtractOp::create(
-            rewriter, loc, adaptor.getValueToStore(),
-            ArrayRef<int32_t>{static_cast<int32_t>(i)});"""
+## 第 2 步：看还有没有指针 bitcast
 
-n = s.count(OLD)
-if n != 1:
-    sys.exit("error: matched %d times, expected 1" % n)
-open(SRC, "w").write(s.replace(OLD, NEW))
-print("fixed " + SRC)
-PYEOF
-python3 /tmp/fixup2.py && ninja -C build mlir-opt
-````
+```bash
+build/bin/mlir-opt /tmp/input.mlir \
+  '--pass-pipeline=builtin.module(spirv-attach-target{ver=v1.3 caps=Shader exts=SPV_KHR_storage_buffer_storage_class},test-convert-to-spirv{convert-gpu-modules=true nest-in-gpu-module=true},gpu.module(spirv.module(spirv-lower-abi-attrs,spirv-update-vce)))'
+```
 
-那个重载是 `create(builder, location, composite, ArrayRef<int32_t> indices)`,result type 它自己推。
+输出里应该看不到 `spirv.Bitcast`，取而代之的是四个 `spirv.Load` 加一个 `spirv.CompositeConstruct`。
 
-编译输出发我。
+输出发我。

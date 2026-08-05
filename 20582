@@ -1,61 +1,231 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/llvm-lit -v mlir/test/Conversion/VectorToSPIRV/ 2>&1 | tail -60
-# |           ^
-# | <stdin>:1143:82: note: scanning from here
-# |  %1 = builtin.unrealized_conversion_cast %arg1 : vector<4xindex> to vector<4xi32>
-# |                                                                                  ^
-# | <stdin>:1143:82: note: pattern attempts to capture variables: "S5"
-# |  %1 = builtin.unrealized_conversion_cast %arg1 : vector<4xindex> to vector<4xi32>
-# |                                                                                  ^
-# | 
-# | Input file: <stdin>
-# | Check file: /media/compiler/63c81e05-749e-41e3-b855-1c2ab50a47cd/yaolu/llvm-project-src/mlir/test/Conversion/VectorToSPIRV/vector-to-spirv.mlir
-# | 
-# | -dump-input=help explains the following input dump.
-# | 
-# | Input was:
-# | <<<<<<
-# |               .
-# |               .
-# |               .
-# |             853:  %1 = builtin.unrealized_conversion_cast %c0 : index to i32 
-# |             854:  %cst = arith.constant 0.000000e+00 : f32 
-# |             855:  %cst0_i32 = spirv.Constant 0 : i32 
-# |             856:  %cst0_i32_0 = spirv.Constant 0 : i32 
-# |             857:  %cst1_i32 = spirv.Constant 1 : i32 
-# |             858:  %2 = spirv.AccessChain %0[%cst0_i32, %1] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32 -> !spirv.ptr<f32, StorageBuffer> 
-# | check:1121'0                                                                                                                                         {                                     search range start (exclusive)
-# | check:1121'1                                                                                                                                                                               error: no match found in search range
-# | check:1121'2                                                                                                                                                                               with "S4" equal to "2"
-# | check:1121'3                                                                                                                                                                               pattern attempts to capture variables: "S5"
-# |             859:  %cst0_i32_1 = spirv.Constant 0 : i32 
-# |             860:  %cst0_i32_2 = spirv.Constant 0 : i32 
-# |             861:  %cst1_i32_3 = spirv.Constant 1 : i32 
-# |             862:  %3 = spirv.AccessChain %0[%cst0_i32_1, %1] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32 -> !spirv.ptr<f32, StorageBuffer> 
-# |             863:  %4 = spirv.Load "StorageBuffer" %3 : f32 
-# |               .
-# |               .
-# |               .
-# |             883:  %12 = spirv.AccessChain %0[%cst0_i32_11, %11] : !spirv.ptr<!spirv.struct<(!spirv.array<4 x f32, stride=4> [0])>, StorageBuffer>, i32, i32 -> !spirv.ptr<f32, StorageBuffer> 
-# |             884:  %13 = spirv.Load "StorageBuffer" %12 : f32 
-# |             885:  %14 = spirv.CompositeConstruct %4, %7, %10, %13 : (f32, f32, f32, f32) -> vector<4xf32> 
-# |             886:  return %14 : vector<4xf32> 
-# |             887:  } 
-# |             888:  func.func @vector_load_single_elem(%arg0: memref<4xf32, #spirv.storage_class<StorageBuffer>>) -> vector<1xf32> { 
-# | check:1121'4                          
-# | ...
-# `---data was truncated (10240/27871) (change limit with -D output_limit=N)
-# error: command failed with exit status: 1
+输出显示转换生效了,四个 AccessChain 加四个 Load 再 CompositeConstruct。但我看到一个**真问题**：
 
---
+```
+858:  %2 = spirv.AccessChain %0[%cst0_i32, %1]     <- 没人用，死代码
+862:  %3 = spirv.AccessChain %0[%cst0_i32_1, %1]   <- 第 0 个元素
+863:  %4 = spirv.Load "StorageBuffer" %3 : f32
+```
 
-********************
-********************
-Failed Tests (1):
-  MLIR :: Conversion/VectorToSPIRV/vector-to-spirv.mlir
+`%2` 是函数开头那次 `getElementPtr` 建的，走标量路径后没用上，变成死代码。连带 856、857 两个常量也是死的。
 
+Reviewer 一定会挑这个。得把开头那次调用挪到分支后面。
 
-Testing Time: 0.40s
+## 先还原再重打
 
-Total Discovered Tests: 2
-  Passed: 1 (50.00%)
-  Failed: 1 (50.00%)
+```bash
+git checkout mlir/lib/Conversion/VectorToSPIRV/VectorToSPIRV.cpp
+```
+
+## 再跑这个
+
+let me verify it applies cleanly first.还原之后跑这个,它做完整的改动，包括把 access chain 的创建挪到分支后面：
+
+````bash
+cat > /tmp/v2s.py <<'PYEOF'
+import sys, os
+SRC = "mlir/lib/Conversion/VectorToSPIRV/VectorToSPIRV.cpp"
+if not os.path.isfile(SRC):
+    sys.exit("error: run from the root of your llvm-project checkout")
+s = open(SRC).read()
+
+def sub(old, new, tag):
+    global s
+    n = s.count(old)
+    if n != 1:
+        sys.exit("error: %s matched %d times, expected 1" % (tag, n))
+    s = s.replace(old, new)
+
+sub("struct VectorLoadOpConverter final", '''/// Returns true if a pointer `OpBitcast` is valid for the target. Under the
+/// Logical addressing model pointers are opaque and can only be derived through
+/// `OpAccessChain`, so a pointer to the element type cannot be cast to a
+/// pointer to the vector type.
+static bool allowsPointerBitcast(const SPIRVTypeConverter &typeConverter) {
+  return typeConverter.allows(spirv::Capability::Addresses) ||
+         typeConverter.allows(
+             spirv::Capability::PhysicalStorageBufferAddresses);
+}
+
+/// Returns `indices` with the innermost index advanced by `offset`, so that the
+/// consecutive elements covered by a vector access can be addressed one at a
+/// time.
+static SmallVector<Value> offsetInnermostIndex(ValueRange indices,
+                                               int64_t offset, Location loc,
+                                               OpBuilder &builder) {
+  SmallVector<Value> result(indices.begin(), indices.end());
+  if (offset == 0 || result.empty())
+    return result;
+  Value innermost = result.back();
+  Value offsetValue = spirv::ConstantOp::create(
+      builder, loc, innermost.getType(),
+      builder.getIntegerAttr(innermost.getType(), offset));
+  result.back() = spirv::IAddOp::create(builder, loc, innermost, offsetValue);
+  return result;
+}
+
+struct VectorLoadOpConverter final''', "helper")
+
+# --- load: move the access chain below the new branch ---
+sub("""    const auto &typeConverter = *getTypeConverter<SPIRVTypeConverter>();
+    auto loc = loadOp.getLoc();
+    Value accessChain =
+        spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                             adaptor.getIndices(), loc, rewriter);
+    if (!accessChain)
+      return rewriter.notifyMatchFailure(
+          loadOp, "failed to get memref element pointer");
+
+    spirv::StorageClass storageClass = attr.getValue();""",
+"""    const auto &typeConverter = *getTypeConverter<SPIRVTypeConverter>();
+    auto loc = loadOp.getLoc();
+
+    spirv::StorageClass storageClass = attr.getValue();""", "load head")
+
+sub("""    auto vectorPtrType = spirv::PointerType::get(spirvVectorType, storageClass);
+
+    std::optional<uint64_t> alignment = loadOp.getAlignment();""",
+"""    std::optional<uint64_t> alignment = loadOp.getAlignment();""", "load ptrtype")
+
+sub("""    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (vectorType.getNumElements() == 1)
+            ? accessChain
+            : spirv::BitcastOp::create(rewriter, loc, vectorPtrType,
+                                       accessChain);
+
+    rewriter.replaceOpWithNewOp<spirv::LoadOp>(loadOp, spirvVectorType,""",
+"""    int64_t numElements = vectorType.getNumElements();
+
+    // Without a pointer bitcast the vector cannot be loaded in one step. Load
+    // each element through its own access chain and assemble the vector. The
+    // alignment is dropped because it describes the vector access, not the
+    // individual element accesses.
+    if (numElements != 1 && !allowsPointerBitcast(typeConverter)) {
+      if (memrefType.getRank() == 0)
+        return rewriter.notifyMatchFailure(
+            loadOp, "cannot split a vector load from a rank-0 memref");
+      auto convertedVectorType = dyn_cast<VectorType>(spirvVectorType);
+      if (!convertedVectorType)
+        return rewriter.notifyMatchFailure(loadOp, "unsupported vector type");
+
+      Type elementType = convertedVectorType.getElementType();
+      SmallVector<Value> elements;
+      elements.reserve(numElements);
+      for (int64_t i = 0; i < numElements; ++i) {
+        SmallVector<Value> elementIndices =
+            offsetInnermostIndex(adaptor.getIndices(), i, loc, rewriter);
+        Value elementPtr =
+            spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                                 elementIndices, loc, rewriter);
+        if (!elementPtr)
+          return rewriter.notifyMatchFailure(
+              loadOp, "failed to get memref element pointer");
+        elements.push_back(
+            spirv::LoadOp::create(rewriter, loc, elementType, elementPtr));
+      }
+      rewriter.replaceOpWithNewOp<spirv::CompositeConstructOp>(
+          loadOp, spirvVectorType, elements);
+      return success();
+    }
+
+    Value accessChain =
+        spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                             adaptor.getIndices(), loc, rewriter);
+    if (!accessChain)
+      return rewriter.notifyMatchFailure(
+          loadOp, "failed to get memref element pointer");
+
+    auto vectorPtrType = spirv::PointerType::get(spirvVectorType, storageClass);
+
+    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (numElements == 1)
+            ? accessChain
+            : spirv::BitcastOp::create(rewriter, loc, vectorPtrType,
+                                       accessChain);
+
+    rewriter.replaceOpWithNewOp<spirv::LoadOp>(loadOp, spirvVectorType,""",
+"load body")
+
+# --- store ---
+sub("""    const auto &typeConverter = *getTypeConverter<SPIRVTypeConverter>();
+    auto loc = storeOp.getLoc();
+    Value accessChain =
+        spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                             adaptor.getIndices(), loc, rewriter);
+    if (!accessChain)
+      return rewriter.notifyMatchFailure(
+          storeOp, "failed to get memref element pointer");
+
+    std::optional<uint64_t> alignment = storeOp.getAlignment();""",
+"""    const auto &typeConverter = *getTypeConverter<SPIRVTypeConverter>();
+    auto loc = storeOp.getLoc();
+
+    std::optional<uint64_t> alignment = storeOp.getAlignment();""", "store head")
+
+sub("""    auto vectorPtrType = spirv::PointerType::get(spirvVectorType, storageClass);
+
+    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (vectorType.getNumElements() == 1)
+            ? accessChain
+            : spirv::BitcastOp::create(rewriter, loc, vectorPtrType,
+                                       accessChain);
+""",
+"""    int64_t numElements = vectorType.getNumElements();
+
+    // Mirror of the load path: without a pointer bitcast each element has to be
+    // extracted and stored through its own access chain.
+    if (numElements != 1 && !allowsPointerBitcast(typeConverter)) {
+      if (memrefType.getRank() == 0)
+        return rewriter.notifyMatchFailure(
+            storeOp, "cannot split a vector store to a rank-0 memref");
+      for (int64_t i = 0; i < numElements; ++i) {
+        SmallVector<Value> elementIndices =
+            offsetInnermostIndex(adaptor.getIndices(), i, loc, rewriter);
+        Value elementPtr =
+            spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                                 elementIndices, loc, rewriter);
+        if (!elementPtr)
+          return rewriter.notifyMatchFailure(
+              storeOp, "failed to get memref element pointer");
+        Value element = spirv::CompositeExtractOp::create(
+            rewriter, loc, adaptor.getValueToStore(),
+            ArrayRef<int32_t>{static_cast<int32_t>(i)});
+        spirv::StoreOp::create(rewriter, loc, elementPtr, element);
+      }
+      rewriter.eraseOp(storeOp);
+      return success();
+    }
+
+    Value accessChain =
+        spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                             adaptor.getIndices(), loc, rewriter);
+    if (!accessChain)
+      return rewriter.notifyMatchFailure(
+          storeOp, "failed to get memref element pointer");
+
+    auto vectorPtrType = spirv::PointerType::get(spirvVectorType, storageClass);
+
+    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (numElements == 1)
+            ? accessChain
+            : spirv::BitcastOp::create(rewriter, loc, vectorPtrType,
+                                       accessChain);
+""", "store body")
+
+open(SRC, "w").write(s)
+print("patched " + SRC)
+PYEOF
+python3 /tmp/v2s.py && ninja -C build mlir-opt
+````
+
+编完再跑一次转换，确认 `%2` 那个死 access chain 没了。然后我们再一起处理测试。

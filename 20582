@@ -1,3 +1,25 @@
-1 error generated.
-[262/1135  23% - 1 processes] Building CXX object tools/mlir/lib/Conversion/OpenMPToLLVM/CMakeFiles/obj.MLIROpenMPToLLVM.dir/OpenMPToLLVM.cpp.o
-ninja: build stopped: subcommand failed.
+(.venv) yaolu@toronto:~/llvm-project-src$ ninja -C build mlir-opt 2>&1 | grep -B3 -A20 "error:" | head -40
+[67/514  13% - 66 processes] Building CXX object tools/mlir/lib/Conversion/VectorToSPIRV/CMakeFiles/obj.MLIRVectorToSPIRV.dir/VectorToSPIRV.cpp.o
+FAILED: [code=1] tools/mlir/lib/Conversion/VectorToSPIRV/CMakeFiles/obj.MLIRVectorToSPIRV.dir/VectorToSPIRV.cpp.o 
+/usr/bin/clang++ -D_DEBUG -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_USE_CXX11_ABI=1 -D_GNU_SOURCE -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -I/home/yaolu/llvm-project-src/build/tools/mlir/lib/Conversion/VectorToSPIRV -I/home/yaolu/llvm-project-src/mlir/lib/Conversion/VectorToSPIRV -I/home/yaolu/llvm-project-src/build/tools/mlir/include -I/home/yaolu/llvm-project-src/mlir/include -I/home/yaolu/llvm-project-src/build/include -I/home/yaolu/llvm-project-src/llvm/include -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Werror=unguarded-availability-new -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wc++98-compat-extra-semi -Wimplicit-fallthrough -Wcovered-switch-default -Wno-noexcept-type -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Wsuggest-override -Wstring-conversion -Wno-pass-failed -Wmisleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections -Wundef -Werror=mismatched-tags -Werror=global-constructors -O2 -g -DNDEBUG -UNDEBUG -fno-exceptions -funwind-tables -fno-rtti -std=c++17 -MD -MT tools/mlir/lib/Conversion/VectorToSPIRV/CMakeFiles/obj.MLIRVectorToSPIRV.dir/VectorToSPIRV.cpp.o -MF tools/mlir/lib/Conversion/VectorToSPIRV/CMakeFiles/obj.MLIRVectorToSPIRV.dir/VectorToSPIRV.cpp.o.d -o tools/mlir/lib/Conversion/VectorToSPIRV/CMakeFiles/obj.MLIRVectorToSPIRV.dir/VectorToSPIRV.cpp.o -c /home/yaolu/llvm-project-src/mlir/lib/Conversion/VectorToSPIRV/VectorToSPIRV.cpp
+/home/yaolu/llvm-project-src/mlir/lib/Conversion/VectorToSPIRV/VectorToSPIRV.cpp:913:25: error: no matching function for call to 'create'
+        Value element = spirv::CompositeExtractOp::create(
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/yaolu/llvm-project-src/build/tools/mlir/include/mlir/Dialect/SPIRV/IR/SPIRVOps.h.inc:27775:29: note: candidate function not viable: no known conversion from 'mlir::ArrayAttr' to 'ArrayRef<int32_t>' (aka 'ArrayRef<int>') for 4th argument
+  static CompositeExtractOp create(::mlir::OpBuilder &builder, ::mlir::Location location, Value composite, ArrayRef<int32_t> indices);
+                            ^
+/home/yaolu/llvm-project-src/build/tools/mlir/include/mlir/Dialect/SPIRV/IR/SPIRVOps.h.inc:27779:29: note: candidate function not viable: no known conversion from 'mlir::ConversionPatternRewriter' to '::mlir::ImplicitLocOpBuilder &' for 1st argument
+  static CompositeExtractOp create(::mlir::ImplicitLocOpBuilder &builder, ::mlir::Type component, ::mlir::Value composite, ::mlir::ArrayAttr indices);
+                            ^
+/home/yaolu/llvm-project-src/build/tools/mlir/include/mlir/Dialect/SPIRV/IR/SPIRVOps.h.inc:27782:29: note: candidate function not viable: no known conversion from 'mlir::ConversionPatternRewriter' to '::mlir::ImplicitLocOpBuilder &' for 1st argument
+  static CompositeExtractOp create(::mlir::ImplicitLocOpBuilder &builder, ::mlir::TypeRange resultTypes, ::mlir::Value composite, ::mlir::ArrayAttr indices);
+                            ^
+/home/yaolu/llvm-project-src/build/tools/mlir/include/mlir/Dialect/SPIRV/IR/SPIRVOps.h.inc:27784:29: note: candidate function not viable: no known conversion from 'mlir::vector::StoreOpGenericAdaptor<mlir::ValueRange>::ValueT' (aka 'mlir::Value') to '::mlir::TypeRange' for 3rd argument
+  static CompositeExtractOp create(::mlir::OpBuilder &builder, ::mlir::Location location, ::mlir::TypeRange resultTypes, ::mlir::ValueRange operands, ::llvm::ArrayRef<::mlir::NamedAttribute> attributes = {});
+                            ^
+/home/yaolu/llvm-project-src/build/tools/mlir/include/mlir/Dialect/SPIRV/IR/SPIRVOps.h.inc:27785:29: note: candidate function not viable: no known conversion from 'mlir::ConversionPatternRewriter' to '::mlir::ImplicitLocOpBuilder &' for 1st argument
+  static CompositeExtractOp create(::mlir::ImplicitLocOpBuilder &builder, ::mlir::TypeRange resultTypes, ::mlir::ValueRange operands, ::llvm::ArrayRef<::mlir::NamedAttribute> attributes = {});
+                            ^
+/home/yaolu/llvm-project-src/build/tools/mlir/include/mlir/Dialect/SPIRV/IR/SPIRVOps.h.inc:27788:29: note: candidate function not viable: no known conversion from 'mlir::ConversionPatternRewriter' to '::mlir::ImplicitLocOpBuilder &' for 1st argument
+  static CompositeExtractOp create(::mlir::ImplicitLocOpBuilder &builder, ::mlir::TypeRange resultTypes, ::mlir::ValueRange operands, const Properties &properties, ::llvm::ArrayRef<::mlir::NamedAttribute> discardableAttributes = {});
+                            ^

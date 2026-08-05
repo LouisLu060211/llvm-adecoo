@@ -1,56 +1,199 @@
-对，就这两个。
+先看清楚现有的 helper，我才能给出能编译的代码。## 改法
 
-## 第 2 步：暂存
+在两个 converter 里加一条分支：Logical 寻址下不做指针 bitcast，改成逐元素访问。
+
+跑这一整块：
+
+````bash
+cat > /tmp/fixv2s.py <<'PYEOF'
+import sys, os
+SRC = "mlir/lib/Conversion/VectorToSPIRV/VectorToSPIRV.cpp"
+if not os.path.isfile(SRC):
+    sys.exit("error: run from the root of your llvm-project checkout")
+s = open(SRC).read()
+
+HELPER = '''/// Returns true if a pointer `OpBitcast` is valid for the target. Under the
+/// Logical addressing model pointers are opaque and can only be derived through
+/// `OpAccessChain`, so casting a pointer to the element type into a pointer to
+/// the vector type is rejected by validation.
+static bool allowsPointerBitcast(const SPIRVTypeConverter &typeConverter) {
+  return typeConverter.allows(spirv::Capability::Addresses) ||
+         typeConverter.allows(
+             spirv::Capability::PhysicalStorageBufferAddresses);
+}
+
+/// Returns `indices` with the innermost index advanced by `offset`, so that the
+/// consecutive elements covered by a vector access can be addressed one at a
+/// time.
+static SmallVector<Value> offsetInnermostIndex(ValueRange indices,
+                                               int64_t offset, Location loc,
+                                               OpBuilder &builder) {
+  SmallVector<Value> result(indices.begin(), indices.end());
+  if (offset == 0 || result.empty())
+    return result;
+  Value innermost = result.back();
+  Value offsetValue = spirv::ConstantOp::create(
+      builder, loc, innermost.getType(),
+      builder.getIntegerAttr(innermost.getType(), offset));
+  result.back() = spirv::IAddOp::create(builder, loc, innermost, offsetValue);
+  return result;
+}
+
+struct VectorLoadOpConverter final'''
+
+OLD_H = "struct VectorLoadOpConverter final"
+if s.count(OLD_H) != 1:
+    sys.exit("error: anchor for helper insertion not unique")
+s = s.replace(OLD_H, HELPER)
+
+OLD_LOAD = """    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (vectorType.getNumElements() == 1)
+            ? accessChain
+            : spirv::BitcastOp::create(rewriter, loc, vectorPtrType,
+                                       accessChain);
+
+    rewriter.replaceOpWithNewOp<spirv::LoadOp>(loadOp, spirvVectorType,
+                                               castedAccessChain,
+                                               memoryAccessAttr, alignmentAttr);
+
+    return success();"""
+
+NEW_LOAD = """    int64_t numElements = vectorType.getNumElements();
+
+    // Without pointer bitcasts the vector cannot be loaded in one step. Load
+    // each element through its own access chain and assemble the vector. The
+    // alignment is dropped here because it describes the vector access, not the
+    // individual element accesses.
+    if (numElements != 1 && !allowsPointerBitcast(typeConverter)) {
+      if (memrefType.getRank() == 0)
+        return rewriter.notifyMatchFailure(
+            loadOp, "cannot split a vector load from a rank-0 memref");
+      auto convertedVectorType = dyn_cast<VectorType>(spirvVectorType);
+      if (!convertedVectorType)
+        return rewriter.notifyMatchFailure(loadOp, "unsupported vector type");
+
+      Type elementType = convertedVectorType.getElementType();
+      SmallVector<Value> elements;
+      elements.reserve(numElements);
+      for (int64_t i = 0; i < numElements; ++i) {
+        SmallVector<Value> elementIndices =
+            offsetInnermostIndex(adaptor.getIndices(), i, loc, rewriter);
+        Value elementPtr =
+            spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                                 elementIndices, loc, rewriter);
+        if (!elementPtr)
+          return rewriter.notifyMatchFailure(
+              loadOp, "failed to get memref element pointer");
+        elements.push_back(
+            spirv::LoadOp::create(rewriter, loc, elementType, elementPtr));
+      }
+      rewriter.replaceOpWithNewOp<spirv::CompositeConstructOp>(
+          loadOp, spirvVectorType, elements);
+      return success();
+    }
+
+    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (numElements == 1) ? accessChain
+                           : spirv::BitcastOp::create(rewriter, loc,
+                                                      vectorPtrType,
+                                                      accessChain);
+
+    rewriter.replaceOpWithNewOp<spirv::LoadOp>(loadOp, spirvVectorType,
+                                               castedAccessChain,
+                                               memoryAccessAttr, alignmentAttr);
+
+    return success();"""
+
+if s.count(OLD_LOAD) != 1:
+    sys.exit("error: load converter body did not match")
+s = s.replace(OLD_LOAD, NEW_LOAD)
+
+OLD_STORE = """    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (vectorType.getNumElements() == 1)
+            ? accessChain
+            : spirv::BitcastOp::create(rewriter, loc, vectorPtrType,
+                                       accessChain);
+
+    auto memoryAccess = spirv::MemoryAccess::None;"""
+
+NEW_STORE = """    int64_t numElements = vectorType.getNumElements();
+
+    // Mirror of the load path: without pointer bitcasts each element has to be
+    // extracted and stored through its own access chain.
+    if (numElements != 1 && !allowsPointerBitcast(typeConverter)) {
+      if (memrefType.getRank() == 0)
+        return rewriter.notifyMatchFailure(
+            storeOp, "cannot split a vector store to a rank-0 memref");
+      for (int64_t i = 0; i < numElements; ++i) {
+        SmallVector<Value> elementIndices =
+            offsetInnermostIndex(adaptor.getIndices(), i, loc, rewriter);
+        Value elementPtr =
+            spirv::getElementPtr(typeConverter, memrefType, adaptor.getBase(),
+                                 elementIndices, loc, rewriter);
+        if (!elementPtr)
+          return rewriter.notifyMatchFailure(
+              storeOp, "failed to get memref element pointer");
+        Value element = spirv::CompositeExtractOp::create(
+            rewriter, loc, adaptor.getValueToStore(),
+            rewriter.getI32ArrayAttr({static_cast<int32_t>(i)}));
+        spirv::StoreOp::create(rewriter, loc, elementPtr, element);
+      }
+      rewriter.eraseOp(storeOp);
+      return success();
+    }
+
+    // For single element vectors, we don't need to bitcast the access chain to
+    // the original vector type. Both is going to be the same, a pointer
+    // to a scalar.
+    Value castedAccessChain =
+        (numElements == 1) ? accessChain
+                           : spirv::BitcastOp::create(rewriter, loc,
+                                                      vectorPtrType,
+                                                      accessChain);
+
+    auto memoryAccess = spirv::MemoryAccess::None;"""
+
+if s.count(OLD_STORE) != 1:
+    sys.exit("error: store converter body did not match")
+s = s.replace(OLD_STORE, NEW_STORE)
+
+open(SRC, "w").write(s)
+print("patched " + SRC)
+PYEOF
+python3 /tmp/fixv2s.py && ninja -C build mlir-opt
+````
+
+## 说明
+
+`allowsPointerBitcast` 判断能不能对指针做 bitcast。Logical 模型下没有 `Addresses` 能力，返回 false，走标量路径。OpenCL 那边有，保持原来的快路径不变。
+
+`offsetInnermostIndex` 把最内层索引加上偏移。`getElementPtr` 会自己线性化，所以只要喂不同的索引就能拿到相邻元素的指针。
+
+标量路径丢掉了 alignment。原来那个 alignment 描述的是整个向量访问，对单个元素不适用。保守起见先不传。
+
+## 我不确定的地方
+
+这段没编译过，几个 API 可能对不上：
+
+- `spirv::CompositeExtractOp::create` 的参数顺序和 attr 形式
+- `spirv::ConstantOp::create` 接不接受 `(builder, loc, type, attr)` 这个签名
+- `spirv::StoreOp::create` 的两参数版本存不存在
+
+编译报错就把错误发我，逐个修。
+
+编过之后先跑复现，确认 `spirv-val` 通过。然后：
 
 ```bash
-git add mlir/lib/Dialect/GPU/Pipelines/GPUToXeVMPipeline.cpp \
-        mlir/test/Dialect/GPU/lower-to-xevm-pipeline-math.mlir
+ninja -C build check-mlir-conversion-vectortospirv
 ```
 
-## 第 3 步：格式检查
-
-```bash
-git clang-format
-```
-
-如果有输出说改了文件，再 `git add -A`。没输出就直接下一步。
-
-两条跑完，把 `git clang-format` 的输出发我。
-
-user然后## 第 4 步：提交
-
-```bash
-git commit -F- <<'MSG'
-[MLIR][GPU] Lower remaining Math ops in the XeVM pipeline
-
-`convert-math-to-xevm` only maps the Math ops that have a native or OpenCL
-counterpart. Anything else it doesn't cover, such as `math.isinf`, stays in
-the `gpu.module` through the rest of the device-side pipeline and reaches
-serialization, where translation to LLVM IR fails with a missing
-`LLVMTranslationDialectInterface` registration.
-
-Add `convert-math-to-llvm` after the XeVM-specific conversions, mirroring what
-the NVVM pipeline already does. Running it last keeps the XeVM lowerings taking
-priority and leaves the generic path to handle the remainder.
-
-Fixes #213583
-MSG
-```
-
-## 第 5 步：推送
-
-先确认 fork 的 remote 名字：
-
-```bash
-git remote -v
-```
-
-假设叫 `fork`：
-
-```bash
-git push -u fork fix-xevm-math-isinf
-```
-
-输出里会有一个创建 PR 的链接。
-
-两步跑完，把 `git remote -v` 的输出发我，我确认名字对不对。
+现有测试大概率会挂,它们的 CHECK 里写的是 `spirv.Bitcast`。那些测试如果用的是 Vulkan target env，就得更新成新的输出。挂了发我看。

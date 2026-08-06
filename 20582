@@ -1,34 +1,20 @@
-第 3 步：提交
-
-bash
-git commit -F- <<'MSG'
-[MLIR][SPIRV] Split vector accesses under the Logical addressing model
-
-`VectorLoadOpConverter` and `VectorStoreOpConverter` cast the element pointer
-returned by the access chain into a pointer to the vector type, so the whole
-vector can be moved in one step. Under the Logical addressing model pointers are
-opaque and can only be derived through `OpAccessChain`, so the resulting module
-is rejected by spirv-val even though the conversion itself succeeds.
-
-Take that path only when the target allows pointer bitcasts. Otherwise address
-each element through its own access chain and assemble or disassemble the vector
-with `OpCompositeConstruct` and `OpCompositeExtract`.
-
-The alignment on the original op is dropped on the split path, since it
-describes the vector access rather than the element accesses. Dropping an
-alignment claim is always valid, and each element access is naturally aligned.
-
-Fixes #213192
-MSG
-
-第 4 步：推送
-
-bash
-git remote -v
-
-确认 fork 叫什么，然后：
-
-bash
-git push -u fork fix-vector-spirv-logical-ptr
-
-先跑 check-mlir，输出发我。
+(.venv) yaolu@toronto:~/llvm-project-src$ git status --short
+(.venv) yaolu@toronto:~/llvm-project-src$ git log --online -3
+fatal: unrecognized argument: --online
+(.venv) yaolu@toronto:~/llvm-project-src$ git branch -vv
+  affine-fusion-recurrence-slice          38003f8ca100 [fork/affine-fusion-recurrence-slice] [mlir][affine] Add regression test for fold with detached block
+  backup-alias-analysis-fix               1760eccb7a5d [mlir] Avoid crash in test alias analysis operand printing
+  fix-213516                              c15a90d299f4 [upstream/main: behind 11] [RISCV][MC] Add experimental Smijt, Ssijt, Smehv, and Ssehv support (#213431)
+  fix-213905                              c15a90d299f4 [upstream/main: behind 11] [RISCV][MC] Add experimental Smijt, Ssijt, Smehv, and Ssehv support (#213431)
+  fix-affine-for-fold-detached-block      da4eb6dd9bdc [fork/fix-affine-for-fold-detached-block] [mlir][affine] Add regression test for fold with detached block
+  fix-alias-analysis-modref-crash         ef412f265602 [mlir] Avoid crash in test alias analysis operand printing
+  fix-linalg-masked-contiguous-extract    a1384710cd7b [fork/fix-linalg-masked-contiguous-extract] Revert "[LoongArch] Custom scalar UINT_TO_FP and FP_TO_UINT with LSX instructions" (#206632)
+  fix-linalg-masked-contiguous-extract-v2 5d1aba6d8705 [fork/fix-linalg-masked-contiguous-extract-v2] update
+  fix-linalg-vectorize-crash              2bb60d6d6374 [upstream/main: ahead 3, behind 5828] Fix a.mlir crash
+  fix-memref-mem2reg-overflow             c5bd3c3c0000 [fork/fix-memref-mem2reg-overflow: ahead 1, behind 1] Add regression test for mem2reg overflow fix in MemRefMemorySlot.cpp (bug #204297 / #205245)
+  fix-narrow-type-mask-crash              7bbb6400d202 [fork/fix-narrow-type-mask-crash] Fix narrow type mask crash
+  fix-remove-dead-values-poison-crash     03f89a246523 [fork/fix-remove-dead-values-poison-crash: ahead 1] [mlir][linalg] Fix masking for rank-reducing contiguous extracts
+  fix-vector-bitcast-breakdown            ef412f265602 [fork/fix-vector-bitcast-breakdown: ahead 1] [mlir] Avoid crash in test alias analysis operand printing
+* fix-vector-spirv-logical-ptr            4126fb29ae14 [fork/fix-vector-spirv-logical-ptr] [MLIR][SPIRV] Split vector accesses under the Logical addressing model
+  fix-xevm-math-isinf                     9a0508ed3b13 [fork/fix-xevm-math-isinf] [MLIR][GPU] Lower remaining Math ops in the XeVM pipeline
+(.venv) yaolu@toronto:~/llvm-project-src$ 

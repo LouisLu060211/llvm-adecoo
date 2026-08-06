@@ -1,50 +1,46 @@
-两个问题。
-
-**一是 RUN 行没有 `-verify-diagnostics`**，所以 `expected-error` 不起作用。
-
-**二是刚才那次 heredoc 又被吃了字符**,输出里 `head -3` 那行和测试内容混在一起了，说明写进去的内容是坏的。
-
-先撤掉：
+## 第 1 步：确认改了哪些文件
 
 ```bash
-git checkout mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix.mlir
+git status --short
 ```
 
-## 换个做法
+应该是两行：一个 `M` 是 `XeGPUToXeVM.cpp`，一个 `??` 是新建的测试文件。
 
-`-verify-diagnostics` 加到现有 RUN 行会影响整个文件，风险大。单独建一个测试文件更干净：
+## 第 2 步：暂存加格式检查
 
 ```bash
-python3 - <<'PYEOF'
-content = '''// RUN: mlir-opt -split-input-file -convert-xegpu-to-xevm -verify-diagnostics %s
-
-// A result with more than one non-unit dimension cannot be flattened into the
-// single contiguous access this lowering emits. Report it instead of tripping
-// an assertion.
-// See https://github.com/llvm/llvm-project/issues/208902.
-
-gpu.module @test_kernel [#xevm.target<chip = "pvc">] {
-  gpu.func @load_matrix_2d_result(%arg0: memref<4x8xf32>) kernel {
-    %alloca = memref.alloca() : memref<4x8xf32, 3>
-    %mdesc = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
-    // expected-error@+1 {{failed to legalize operation 'xegpu.load_matrix'}}
-    %res = xegpu.load_matrix %mdesc[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
-    %c0 = arith.constant 0 : index
-    vector.store %res, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>
-    gpu.return
-  }
-}
-'''
-open('mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix_invalid.mlir', 'w').write(content)
-print("written")
-PYEOF
-cat mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix_invalid.mlir
+git add -A
+git clang-format
+git add -A
 ```
 
-先看 `cat` 出来的内容完整不完整，特别是带 `!` 的那两行。完整了再跑：
+`git clang-format` 有输出就说明调整了格式，已经用第二个 `git add -A` 收进去了。
+
+## 第 3 步：提交
 
 ```bash
-build/bin/llvm-lit -v mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix_invalid.mlir
+git commit -F- <<'MSG'
+[MLIR][XeGPU] Don't assert on a multi-dimensional load_matrix result
+
+`LoadStoreMatrixToXeVMPattern` emits a single contiguous access, so it flattens
+the result of `xegpu.load_matrix` into a 1D vector. It asserted that the result
+had at most one non-unit dimension rather than checking, so a valid op with a
+genuinely 2D result, such as a `vector<4x8xf32>`, aborted the compiler.
+
+Report a match failure instead. The op is left in place and the conversion
+reports it as unlegalized, which is the normal way an unsupported combination
+surfaces.
+
+Fixes #208902
+MSG
 ```
 
-输出发我。
+## 第 4 步：推送
+
+```bash
+git push -u fork fix-xegpu-2d-matrix
+```
+
+输出里会有创建 PR 的链接。
+
+四步跑完，把 `git status --short` 和推送结果发我。

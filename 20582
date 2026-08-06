@@ -1,30 +1,7 @@
-链接是最后一步，等它跑完。大型可执行文件链接慢，一两分钟正常。
-
-跑完之后验证:
-
-## 第 1 步：造复现文件
-
-```bash
-python3 -c "
-open('/tmp/a.mlir','w').write('''module {
+(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/mlir-opt -convert-xegpu-to-xevm /tmp/a.mlir
+module {
   func.func @m(%arg0: index) {
     %alloca = memref.alloca() : memref<4x8xf32, 3>
-    %0 = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
-    %1 = xegpu.load_matrix %0[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
     return
   }
 }
-''')
-print('written')
-"
-```
-
-## 第 2 步：跑
-
-```bash
-build/bin/mlir-opt -convert-xegpu-to-xevm /tmp/a.mlir
-```
-
-不再崩溃就对了。输出里 `xegpu.load_matrix` 应该原样保留,pattern 放弃匹配，op 留着。
-
-输出发我。

@@ -1,32 +1,33 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ python3 - <<'PYEOF'
-content = '''module {
-  func.func @m(%arg0: memref<4x8xf32>) {
+这才是真实行为。之前那次没报错，是因为 %1 没人用，op 被当死代码清掉了。
+
+现在结果被用上，pattern 放弃匹配，转换框架报 "failed to legalize"。这是正确的,断言崩溃变成了正常的错误诊断。用户能看懂哪一行不支持，编译器不再 abort。
+
+加测试
+
+用 -verify-diagnostics 检查这条错误信息：
+
+bash
+cat >> mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix.mlir <<'EOF'
+
+// -----
+
+// A result with more than one non-unit dimension cannot be flattened into the
+// single contiguous access this lowering emits. Report it instead of tripping
+// an assertion.
+// See https://github.com/llvm/llvm-project/issues/208902.
+
+gpu.module @load_matrix_2d_result {
+  gpu.func @load_matrix_2d_result(%arg0: memref<4x8xf32>) kernel {
     %alloca = memref.alloca() : memref<4x8xf32, 3>
-    %0 = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
-    %1 = xegpu.load_matrix %0[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
+    %mdesc = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
+    // expected-error@+1 {{failed to legalize operation 'xegpu.load_matrix'}}
+    %res = xegpu.load_matrix %mdesc[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
     %c0 = arith.constant 0 : index
-    vector.store %1, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>
-    return
+    vector.store %res, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>
+    gpu.return
   }
 }
-'''
-open('/tmp/a.mlir', 'w').write(content)
-print("written")
-PYEOF
-written
-(.venv) yaolu@toronto:~/llvm-project-src$ cat /tmp/a.mlir
-module {
-  func.func @m(%arg0: memref<4x8xf32>) {
-    %alloca = memref.alloca() : memref<4x8xf32, 3>
-    %0 = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
-    %1 = xegpu.load_matrix %0[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
-    %c0 = arith.constant 0 : index
-    vector.store %1, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>
-    return
-  }
-}
-(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/mlir-opt -convert-xegpu-to-xevm /tmp/a.mlir
-/tmp/a.mlir:5:10: error: failed to legalize operation 'xegpu.load_matrix' that was explicitly marked illegal: %3 = "xegpu.load_matrix"(%2) <{const_offsets = array<i64: 0, 0>}> : (!xegpu.mem_desc<4x8xf32>) -> vector<4x8xf32>
-    %1 = xegpu.load_matrix %0[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
-         ^
-/tmp/a.mlir:5:10: note: see current operation: %3 = "xegpu.load_matrix"(%2) <{const_offsets = array<i64: 0, 0>}> : (!xegpu.mem_desc<4x8xf32>) -> vector<4x8xf32>
+EOF
+head -3 mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix.mlir
+
+head -3 是要看 RUN 行有没有 -verify-diagnostics。没有的话这个测试跑不了，得调整。

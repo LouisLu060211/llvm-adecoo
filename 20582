@@ -1,5 +1,8 @@
-(.venv) yaolu@toronto:~/llvm-project-src$ python3 -c "
-open('/tmp/a.mlir','w').write('''module {
+bash 把 `!` 当成历史展开了，把那两行吃掉了。用单引号的 heredoc 绕开：
+
+```bash
+python3 - <<'PYEOF'
+content = '''module {
   func.func @m(%arg0: memref<4x8xf32>) {
     %alloca = memref.alloca() : memref<4x8xf32, 3>
     %0 = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
@@ -9,12 +12,22 @@ open('/tmp/a.mlir','w').write('''module {
     return
   }
 }
-''')
-print('written')
-"
+'''
+open('/tmp/a.mlir', 'w').write(content)
+print("written")
+PYEOF
+```
+
+确认内容完整：
+
+```bash
+cat /tmp/a.mlir
+```
+
+五行都在就跑：
+
+```bash
 build/bin/mlir-opt -convert-xegpu-to-xevm /tmp/a.mlir
-bash: !xegpu.mem_desc: event not found
-bash: !xegpu.mem_desc: event not found
-written
-/tmp/a.mlir:5:18: error: use of undeclared SSA value name
-    vector.store %1, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>
+```
+
+输出发我。

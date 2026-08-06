@@ -1,13 +1,4 @@
-这才是真实行为。之前那次没报错，是因为 %1 没人用，op 被当死代码清掉了。
-
-现在结果被用上，pattern 放弃匹配，转换框架报 "failed to legalize"。这是正确的,断言崩溃变成了正常的错误诊断。用户能看懂哪一行不支持，编译器不再 abort。
-
-加测试
-
-用 -verify-diagnostics 检查这条错误信息：
-
-bash
-cat >> mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix.mlir <<'EOF'
+(.venv) yaolu@toronto:~/llvm-project-src$ cat >> mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix.mlir <<'EOF'
 
 // -----
 
@@ -22,12 +13,7 @@ gpu.module @load_matrix_2d_result {
     %mdesc = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
     // expected-error@+1 {{failed to legalize operation 'xegpu.load_matrix'}}
     %res = xegpu.load_matrix %mdesc[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
-    %c0 = arith.constant 0 : index
-    vector.store %res, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>
-    gpu.return
-  }
-}
-EOF
-head -3 mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix.mlir
+head -3 mlir/test/Conversion/XeGPUToXeVM/loadstore_matrix.mliror<4x8xf32>
+// RUN: mlir-opt  -split-input-file -convert-xegpu-to-xevm %s | FileCheck %s
 
-head -3 是要看 RUN 行有没有 -verify-diagnostics。没有的话这个测试跑不了，得调整。
+gpu.module @test_kernel [#xevm.target<chip = "pvc">] {

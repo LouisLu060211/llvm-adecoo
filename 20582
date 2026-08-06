@@ -1,7 +1,4 @@
-bash 把 `!` 当成历史展开了，把那两行吃掉了。用单引号的 heredoc 绕开：
-
-```bash
-python3 - <<'PYEOF'
+(.venv) yaolu@toronto:~/llvm-project-src$ python3 - <<'PYEOF'
 content = '''module {
   func.func @m(%arg0: memref<4x8xf32>) {
     %alloca = memref.alloca() : memref<4x8xf32, 3>
@@ -16,18 +13,20 @@ content = '''module {
 open('/tmp/a.mlir', 'w').write(content)
 print("written")
 PYEOF
-```
-
-确认内容完整：
-
-```bash
-cat /tmp/a.mlir
-```
-
-五行都在就跑：
-
-```bash
-build/bin/mlir-opt -convert-xegpu-to-xevm /tmp/a.mlir
-```
-
-输出发我。
+written
+(.venv) yaolu@toronto:~/llvm-project-src$ cat /tmp/a.mlir
+module {
+  func.func @m(%arg0: memref<4x8xf32>) {
+    %alloca = memref.alloca() : memref<4x8xf32, 3>
+    %0 = xegpu.create_mem_desc %alloca : memref<4x8xf32, 3> -> !xegpu.mem_desc<4x8xf32>
+    %1 = xegpu.load_matrix %0[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
+    %c0 = arith.constant 0 : index
+    vector.store %1, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>
+    return
+  }
+}
+(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/mlir-opt -convert-xegpu-to-xevm /tmp/a.mlir
+/tmp/a.mlir:5:10: error: failed to legalize operation 'xegpu.load_matrix' that was explicitly marked illegal: %3 = "xegpu.load_matrix"(%2) <{const_offsets = array<i64: 0, 0>}> : (!xegpu.mem_desc<4x8xf32>) -> vector<4x8xf32>
+    %1 = xegpu.load_matrix %0[0, 0] : !xegpu.mem_desc<4x8xf32> -> vector<4x8xf32>
+         ^
+/tmp/a.mlir:5:10: note: see current operation: %3 = "xegpu.load_matrix"(%2) <{const_offsets = array<i64: 0, 0>}> : (!xegpu.mem_desc<4x8xf32>) -> vector<4x8xf32>

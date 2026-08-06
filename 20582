@@ -1,46 +1,45 @@
-## 第 1 步：确认改了哪些文件
+LGTM 加一个小要求，照做就行。
 
-```bash
-git status --short
+## 回复
+
+```
+Done, thanks!
 ```
 
-应该是两行：一个 `M` 是 `XeGPUToXeVM.cpp`，一个 `??` 是新建的测试文件。
+## 先把注释改掉
 
-## 第 2 步：暂存加格式检查
+我写的那段五行注释确实啰嗦。改成一行：
 
 ```bash
+python3 - <<'PYEOF'
+SRC = "mlir/lib/Conversion/XeGPUToXeVM/XeGPUToXeVM.cpp"
+s = open(SRC).read()
+OLD = """        // This pattern emits a single contiguous access, so the result has to
+        // be flattenable to a 1D vector. A result with more than one non-unit
+        // dimension is valid IR but is not something this lowering can
+        // express, so bail out instead of asserting.
+        if (llvm::count_if("""
+NEW = """        // Only a result flattenable to 1D can be a single contiguous access.
+        if (llvm::count_if("""
+assert s.count(OLD) == 1, s.count(OLD)
+open(SRC, "w").write(s.replace(OLD, NEW))
+print("done")
+PYEOF
+```
+
+如果他的意思是注释全删，那就把 `NEW` 里那行注释也去掉。一行的版本我觉得该留,不然读代码的人不知道为什么有这个限制。他说的是 "verbose"，不是 "remove all comments"。
+
+## 然后
+
+```bash
+ninja -C build mlir-opt
 git add -A
 git clang-format
 git add -A
+git commit --amend --no-edit
+git push --force-with-lease
 ```
 
-`git clang-format` 有输出就说明调整了格式，已经用第二个 `git add -A` 收进去了。
+`--amend` 把改动并进原 commit。也可以新开一个 commit，合并时会 squash，两种都行。
 
-## 第 3 步：提交
-
-```bash
-git commit -F- <<'MSG'
-[MLIR][XeGPU] Don't assert on a multi-dimensional load_matrix result
-
-`LoadStoreMatrixToXeVMPattern` emits a single contiguous access, so it flattens
-the result of `xegpu.load_matrix` into a 1D vector. It asserted that the result
-had at most one non-unit dimension rather than checking, so a valid op with a
-genuinely 2D result, such as a `vector<4x8xf32>`, aborted the compiler.
-
-Report a match failure instead. The op is left in place and the conversion
-reports it as unlegalized, which is the normal way an unsupported combination
-surfaces.
-
-Fixes #208902
-MSG
-```
-
-## 第 4 步：推送
-
-```bash
-git push -u fork fix-xegpu-2d-matrix
-```
-
-输出里会有创建 PR 的链接。
-
-四步跑完，把 `git status --short` 和推送结果发我。
+推完再回 `Done, thanks!` 并 Resolve conversation。

@@ -1,9 +1,4 @@
-没崩，对了。但 `load_matrix` 整个消失了,因为它的结果 `%1` 没人用，被当作死代码清掉了。
-
-这样测试就没意义了,CHECK 不到东西。改成让结果被用上：
-
-```bash
-python3 -c "
+(.venv) yaolu@toronto:~/llvm-project-src$ python3 -c "
 open('/tmp/a.mlir','w').write('''module {
   func.func @m(%arg0: memref<4x8xf32>) {
     %alloca = memref.alloca() : memref<4x8xf32, 3>
@@ -18,8 +13,8 @@ open('/tmp/a.mlir','w').write('''module {
 print('written')
 "
 build/bin/mlir-opt -convert-xegpu-to-xevm /tmp/a.mlir
-```
-
-现在 `xegpu.load_matrix` 应该原样保留在输出里。
-
-输出发我。
+bash: !xegpu.mem_desc: event not found
+bash: !xegpu.mem_desc: event not found
+written
+/tmp/a.mlir:5:18: error: use of undeclared SSA value name
+    vector.store %1, %arg0[%c0, %c0] : memref<4x8xf32>, vector<4x8xf32>

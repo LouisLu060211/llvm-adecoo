@@ -1,45 +1,51 @@
-LGTM 加一个小要求，照做就行。
+工作区干净，没有需要恢复的东西。
 
-## 回复
+## 提醒一件事
 
+PR #214432 那条 review 意见,akroviakov 让你删掉冗长注释,好像还没处理。工作区干净说明要么已经提交推送了，要么还没开始改。
+
+确认一下：
+
+```bash
+git log --oneline -2
 ```
-Done, thanks!
+
+如果最新的 commit 还是原来那个，说明注释还没改。那个 PR 是 LGTM 状态，改完就能合并，值得先做完。
+
+## 开新分支做 Vulkan 那个
+
+```bash
+git fetch upstream
+git switch -c fix-vulkan-cout-precision upstream/main
 ```
 
-## 先把注释改掉
-
-我写的那段五行注释确实啰嗦。改成一行：
+然后改代码：
 
 ```bash
 python3 - <<'PYEOF'
-SRC = "mlir/lib/Conversion/XeGPUToXeVM/XeGPUToXeVM.cpp"
+import sys, os
+SRC = "mlir/lib/ExecutionEngine/VulkanRuntime.cpp"
+if not os.path.isfile(SRC):
+    sys.exit("error: run from the root of your llvm-project checkout")
 s = open(SRC).read()
-OLD = """        // This pattern emits a single contiguous access, so the result has to
-        // be flattenable to a 1D vector. A result with more than one non-unit
-        // dimension is valid IR but is not something this lowering can
-        // express, so bail out instead of asserting.
-        if (llvm::count_if("""
-NEW = """        // Only a result flattenable to 1D can be a single contiguous access.
-        if (llvm::count_if("""
-assert s.count(OLD) == 1, s.count(OLD)
+
+OLD = """    std::cout << "Compute shader execution time: " << std::setprecision(3)
+              << microsec << "us\\n";"""
+
+NEW = """    // std::setprecision is sticky on the stream, so save and restore the
+    // caller's formatting state rather than leaving it changed.
+    std::ios formatState(nullptr);
+    formatState.copyfmt(std::cout);
+    std::cout << "Compute shader execution time: " << std::setprecision(3)
+              << microsec << "us\\n";
+    std::cout.copyfmt(formatState);"""
+
+n = s.count(OLD)
+if n != 1:
+    sys.exit("error: matched %d times, expected 1" % n)
 open(SRC, "w").write(s.replace(OLD, NEW))
-print("done")
+print("patched " + SRC)
 PYEOF
 ```
 
-如果他的意思是注释全删，那就把 `NEW` 里那行注释也去掉。一行的版本我觉得该留,不然读代码的人不知道为什么有这个限制。他说的是 "verbose"，不是 "remove all comments"。
-
-## 然后
-
-```bash
-ninja -C build mlir-opt
-git add -A
-git clang-format
-git add -A
-git commit --amend --no-edit
-git push --force-with-lease
-```
-
-`--amend` 把改动并进原 commit。也可以新开一个 commit，合并时会 squash，两种都行。
-
-推完再回 `Done, thanks!` 并 Resolve conversation。
+先跑 `git log --oneline -2`，输出发我，我确认 PR 那边的状态。

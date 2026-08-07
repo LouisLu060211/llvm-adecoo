@@ -1,79 +1,53 @@
-yaolu@toronto:~/llvm-project-src$ grep -i "MLIR_ENABLE_VULKAN_RUNNER" build/CMakeCache.txt
-MLIR_ENABLE_VULKAN_RUNNER:BOOL=0
-yaolu@toronto:~/llvm-project-src$ ninja -C build mlir_vulkan_runtime
-ninja: Entering directory `build'
-[0/1   0% - 1 processes] Re-running CMake...
-CMake Warning at CMakeLists.txt:4 (message):
-  Your CMake version is 3.22.1.  Starting with LLVM 24, the minimum version
-  of CMake required to build LLVM will become 3.31.0, and using an older
-  CMake will become an error.  Please upgrade your CMake to at least 3.31.0
-  now to avoid issues in the future.
+## PR 描述
 
+```
+`std::setprecision` modifies the stream itself rather than a single insertion,
+so it stays in effect until something changes it back. The Vulkan runtime sets
+it to 3 while printing the compute shader execution time and never restores it.
+Every float printed afterwards, including by RunnerUtils, then comes out with
+three significant digits. A memref holding 858.5 prints as 858 after a kernel
+launch even though the stored bits are unchanged.
 
--- bolt project is disabled
--- clang project is disabled
--- clang-tools-extra project is disabled
--- cross-project-tests project is disabled
--- lld project is disabled
--- lldb project is disabled
--- mlir project is enabled
--- polly project is disabled
--- flang project is disabled
--- libc project is disabled
--- compiler-rt project is disabled
--- Doxygen disabled.
--- LLVM host triple: x86_64-unknown-linux-gnu
--- Native target architecture is X86
--- Threads enabled.
--- Ninja version: 1.10.1
--- Could NOT find OCaml (missing: OCAMLFIND OCAML_VERSION OCAML_STDLIB_PATH) 
--- Could NOT find OCaml (missing: OCAMLFIND OCAML_VERSION OCAML_STDLIB_PATH) 
--- OCaml bindings disabled.
--- LLVM default target triple: x86_64-unknown-linux-gnu
--- Building with -fPIC
-Precompiled headers are disabled by default with Clang <18. Pass -DCMAKE_DISABLE_PRECOMPILE_HEADERS=OFF to override.
--- Precompiled headers disabled.
--- Targeting AArch64
--- Targeting AMDGPU
--- Targeting ARM
--- Targeting AVR
--- Targeting BPF
--- Targeting Hexagon
--- Targeting Lanai
--- Targeting LoongArch
--- Targeting Mips
--- Targeting MSP430
--- Targeting NVPTX
--- Targeting PowerPC
--- Targeting RISCV
--- Targeting Sparc
--- Targeting SPIRV
--- Targeting SystemZ
--- Targeting VE
--- Targeting WebAssembly
--- Targeting X86
--- Targeting XCore
-CMake Warning at /home/yaolu/llvm-project-src/mlir/CMakeLists.txt:4 (message):
-  Your CMake version is 3.22.1.  Starting with LLVM 24, the minimum version
-  of CMake required to build LLVM will become 3.31.0, and using an older
-  CMake will become an error.  Please upgrade your CMake to at least 3.31.0
-  now to avoid issues in the future.
+Save the formatting state with `copyfmt` before the timing line and restore it
+after. `copyfmt` covers the flags and fill character as well as the precision,
+so nothing else leaks either.
 
+I could not build or run the Vulkan runner locally, so this is not verified end
+to end.
 
--- Could not find nvcc, please set CUDAToolkit_ROOT.
--- Searching for ocloc
--- ocloc not found
--- ocloc not found, MLIRXeVMTarget will not be able to use ocloc for native binary compilation.
--- Registering ExampleIRTransforms as a pass plugin (static build: OFF)
--- Registering Bye as a pass plugin (static build: OFF)
--- LLVM FileCheck Found: /usr/bin/FileCheck
--- Google Benchmark version: v1.9.5, normalized to 1.9.5
-CMake Warning at /home/yaolu/llvm-project-src/third-party/benchmark/CMakeLists.txt:329 (message):
-  Using std::regex with exceptions disabled is not fully supported
+Fixes #211992
 
+Assisted-by: Claude Opus 5
+```
 
--- Configuring done
--- Generating done
--- Build files have been written to: /home/yaolu/llvm-project-src/build
-ninja: warning: build log version is too old; starting over
-ninja: error: unknown target 'mlir_vulkan_runtime'
+## 标题
+
+```
+[MLIR] Restore std::cout formatting state in the Vulkan runtime
+```
+
+## 提交
+
+```bash
+git add -A
+git clang-format
+git add -A
+git commit -F- <<'MSG'
+[MLIR] Restore std::cout formatting state in the Vulkan runtime
+
+`std::setprecision` modifies the stream itself rather than a single insertion,
+so it stays in effect until something changes it back. The Vulkan runtime sets
+it to 3 while printing the compute shader execution time and never restores it,
+so every float printed afterwards, including by RunnerUtils, comes out with
+three significant digits. A memref holding 858.5 prints as 858 after a kernel
+launch even though the stored bits are unchanged.
+
+Save the formatting state with `copyfmt` before the timing line and restore it
+after.
+
+Fixes #211992
+MSG
+git push -u fork fix-vulkan-cout-precision
+```
+
+推完输出发我。

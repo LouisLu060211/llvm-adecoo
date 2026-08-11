@@ -1,97 +1,24 @@
-python3 /tmp/spv.py && ninja -C build mlir-opt"funcop")kageType().getValue())))s")tion
-patched mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp
-ninja: Entering directory `build'
-[0/1   0% - 1 processes] Re-running CMake...
-CMake Warning at CMakeLists.txt:4 (message):
-  Your CMake version is 3.22.1.  Starting with LLVM 24, the minimum version
-  of CMake required to build LLVM will become 3.31.0, and using an older
-  CMake will become an error.  Please upgrade your CMake to at least 3.31.0
-  now to avoid issues in the future.
+python3 - <<'PYEOF'
+content = '''module {
+  spirv.module Logical GLSL450 attributes {
+    spirv.target_env = #spirv.target_env
+      #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
+      #spirv.resource_limits<>>
+  } {
+    spirv.GlobalVariable @subgroup_id built_in("SubgroupId") : !spirv.ptr<i32, Input>
 
+    spirv.func @kernel() "None" attributes {kernel} {
+      %address = spirv.mlir.addressof @subgroup_id : !spirv.ptr<i32, Input>
+      %id = spirv.Load "Input" %address : i32
+      spirv.Return
+    }
 
--- bolt project is disabled
--- clang project is disabled
--- clang-tools-extra project is disabled
--- cross-project-tests project is disabled
--- lld project is disabled
--- lldb project is disabled
--- mlir project is enabled
--- polly project is disabled
--- flang project is disabled
--- libc project is disabled
--- compiler-rt project is disabled
--- Doxygen disabled.
--- LLVM host triple: x86_64-unknown-linux-gnu
--- Native target architecture is X86
--- Threads enabled.
--- Ninja version: 1.10.1
--- Could NOT find OCaml (missing: OCAMLFIND OCAML_VERSION OCAML_STDLIB_PATH) 
--- Could NOT find OCaml (missing: OCAMLFIND OCAML_VERSION OCAML_STDLIB_PATH) 
--- OCaml bindings disabled.
--- LLVM default target triple: x86_64-unknown-linux-gnu
--- Building with -fPIC
-Precompiled headers are disabled by default with Clang <18. Pass -DCMAKE_DISABLE_PRECOMPILE_HEADERS=OFF to override.
--- Precompiled headers disabled.
--- Targeting AArch64
--- Targeting AMDGPU
--- Targeting ARM
--- Targeting AVR
--- Targeting BPF
--- Targeting Hexagon
--- Targeting Lanai
--- Targeting LoongArch
--- Targeting Mips
--- Targeting MSP430
--- Targeting NVPTX
--- Targeting PowerPC
--- Targeting RISCV
--- Targeting Sparc
--- Targeting SPIRV
--- Targeting SystemZ
--- Targeting VE
--- Targeting WebAssembly
--- Targeting X86
--- Targeting XCore
-CMake Warning at /home/yaolu/llvm-project-src/mlir/CMakeLists.txt:4 (message):
-  Your CMake version is 3.22.1.  Starting with LLVM 24, the minimum version
-  of CMake required to build LLVM will become 3.31.0, and using an older
-  CMake will become an error.  Please upgrade your CMake to at least 3.31.0
-  now to avoid issues in the future.
-
-
--- Could not find nvcc, please set CUDAToolkit_ROOT.
--- Searching for ocloc
--- ocloc not found
--- ocloc not found, MLIRXeVMTarget will not be able to use ocloc for native binary compilation.
--- Registering ExampleIRTransforms as a pass plugin (static build: OFF)
--- Registering Bye as a pass plugin (static build: OFF)
--- LLVM FileCheck Found: /usr/bin/FileCheck
--- Google Benchmark version: v1.9.5, normalized to 1.9.5
-CMake Warning at /home/yaolu/llvm-project-src/third-party/benchmark/CMakeLists.txt:329 (message):
-  Using std::regex with exceptions disabled is not fully supported
-
-
--- Configuring done
--- Generating done
--- Build files have been written to: /home/yaolu/llvm-project-src/build
-ninja: warning: build log version is too old; starting over
-[2563/5589  45% - 66 processes] Building CXX object lib/CodeGen/CMakeFiles/LLVMCodeGen.dir/Rematerializer.cpp.o
-/home/yaolu/llvm-project-src/llvm/lib/CodeGen/Rematerializer.cpp:329:21: warning: loop variable '[Reg, Mask]' creates a copy from type 'const llvm::ArrayRef<std::pair<llvm::Register, llvm::LaneBitmask>>::value_type' (aka 'const std::pair<llvm::Register, llvm::LaneBitmask>') [-Wrange-loop-construct]
-    for (const auto [Reg, Mask] : getUnrematableDeps(DeletedRegIdx)) {
-                    ^
-/home/yaolu/llvm-project-src/llvm/lib/CodeGen/Rematerializer.cpp:329:10: note: use reference type 'const llvm::ArrayRef<std::pair<llvm::Register, llvm::LaneBitmask>>::value_type &' (aka 'const std::pair<llvm::Register, llvm::LaneBitmask> &') to prevent copying
-    for (const auto [Reg, Mask] : getUnrematableDeps(DeletedRegIdx)) {
-         ^~~~~~~~~~~~~~~~~~~~~~~~
-                    &
-1 warning generated.
-[5588/5589  99% - 1 processes] Linking CXX executable bin/mlir-opt
-(.venv) yaolu@toronto:~/llvm-project-src$ ninja -C build mlir-opt 2>&1 | grep -B2 -A8 "warning:" | head -30
-(.venv) yaolu@toronto:~/llvm-project-src$ touch mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp
-(.venv) yaolu@toronto:~/llvm-project-src$ ninja -C build mlir-opt 2>&1 | grep -B2 -A8 "warning:" | head -20
-(.venv) yaolu@toronto:~/llvm-project-src$ ninja -C build -t clean mlir/lib/Conversion/VectorToSPIRV/CMakeFiles/obj.MLIRVectorToSPIRV.dir/VectorToSPIRV.cpp.o
-ninja -C build mlir-opt 2>&1 | tee /tmp/mlir-build.log
-grep -n "warning:" /tmp/mlir-build.log | head -40
-Cleaning... ninja: error: unknown target 'mlir/lib/Conversion/VectorToSPIRV/CMakeFiles/obj.MLIRVectorToSPIRV.dir/VectorToSPIRV.cpp.o'
-0 files.
-ninja: Entering directory `build'
-ninja: no work to do.
+    spirv.EntryPoint "GLCompute" @kernel, @subgroup_id
+    spirv.ExecutionMode @kernel "LocalSize", 1, 1, 1
+  }
+}
+'''
+open('/tmp/b.mlir', 'w').write(content)
+print("written")
+PYEOF
+cat /tmp/b.mlir

@@ -1,53 +1,82 @@
-## PR 描述
+cat > /tmp/spv.py <<'PYEOF'
+import sys, os
 
-```
-`std::setprecision` modifies the stream itself rather than a single insertion,
-so it stays in effect until something changes it back. The Vulkan runtime sets
-it to 3 while printing the compute shader execution time and never restores it.
-Every float printed afterwards, including by RunnerUtils, then comes out with
-three significant digits. A memref holding 858.5 prints as 858 after a kernel
-launch even though the stored bits are unchanged.
+H = "mlir/include/mlir/Dialect/SPIRV/Analysis/LoopAnalysis.h"
+if not os.path.isfile("mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp"):
+    sys.exit("error: run from the root of your llvm-project checkout")
 
-Save the formatting state with `copyfmt` before the timing line and restore it
-after. `copyfmt` covers the flags and fill character as well as the precision,
-so nothing else leaks either.
+SRC = "mlir/lib/Dialect/SPIRV/Transforms/UpdateVCEPass.cpp"
+s = open(SRC).read()
 
-I could not build or run the Vulkan runner locally, so this is not verified end
-to end.
+def sub(old, new, tag):
+    global s
+    n = s.count(old)
+    if n != 1:
+        sys.exit("error: %s matched %d times, expected 1" % (tag, n))
+    s = s.replace(old, new)
 
-Fixes #211992
+sub("""    // Per the SPIR-V spec Decoration table, the `LinkageAttributes` decoration
+    // requires the `Linkage` capability, and specific linkage types pull in
+    // additional extensions (e.g., `LinkOnceODR` -> `SPV_KHR_linkonce_odr`).
+    auto requireLinkage = [&](spirv::LinkageType linkageType) -> LogicalResult {
+      if (auto caps = spirv::getCapabilities(linkageType)) {""",
+"""    // Some enum values used as attributes carry their own requirements per the
+    // SPIR-V spec. Examples are the `LinkageAttributes` decoration, whose
+    // linkage type requires the `Linkage` capability and may pull in extensions
+    // (e.g., `LinkOnceODR` -> `SPV_KHR_linkonce_odr`), and the `BuiltIn`
+    // decoration, whose operand has its own entry in the BuiltIn table (e.g.,
+    // `SubgroupId` -> `GroupNonUniform` or `Kernel`).
+    auto requireEnumAvailability = [&](auto enumValue) -> LogicalResult {
+      if (auto caps = spirv::getCapabilities(enumValue)) {""", "lambda head")
 
-Assisted-by: Claude Opus 5
-```
+sub("""      if (auto exts = spirv::getExtensions(linkageType)) {""",
+    """      if (auto exts = spirv::getExtensions(enumValue)) {""", "lambda exts")
 
-## 标题
+sub("""      if (auto linkage = globalVar.getLinkageAttributes())
+        if (failed(requireLinkage(linkage->getLinkageType().getValue())))
+          return WalkResult::interrupt();
+    }""",
+"""      // The `BuiltIn` decoration's operand carries its own requirements per
+      // the SPIR-V spec BuiltIn table. These are not implied by the variable's
+      // type or storage class, so they have to be queried separately.
+      if (std::optional<StringRef> builtInName = globalVar.getBuiltIn()) {
+        std::optional<spirv::BuiltIn> builtIn =
+            spirv::symbolizeBuiltIn(*builtInName);
+        if (!builtIn)
+          return globalVar.emitError("unknown 'built_in' value '")
+                 << *builtInName << "'";
+        if (failed(requireEnumAvailability(*builtIn)))
+          return WalkResult::interrupt();
+        // A few builtins are only available from a later version. Note that
+        // `getMinVersion` is only generated for enums that carry a version
+        // requirement, so this cannot be folded into the lambda above.
+        if (std::optional<spirv::Version> minVersion =
+                spirv::getMinVersion(*builtIn)) {
+          deducedVersion = std::max(deducedVersion, *minVersion);
+          if (deducedVersion > allowedVersion)
+            return globalVar.emitError("BuiltIn '")
+                   << *builtInName << "' requires min version "
+                   << spirv::stringifyVersion(deducedVersion)
+                   << " but target environment allows up to "
+                   << spirv::stringifyVersion(allowedVersion);
+        }
+      }
 
-```
-[MLIR] Restore std::cout formatting state in the Vulkan runtime
-```
+      if (auto linkage = globalVar.getLinkageAttributes())
+        if (failed(
+                requireEnumAvailability(linkage->getLinkageType().getValue())))
+          return WalkResult::interrupt();
+    }""", "globalvar")
 
-## 提交
+sub("""      if (auto linkage = funcOp.getLinkageAttributes())
+        if (failed(requireLinkage(linkage->getLinkageType().getValue())))
+          return WalkResult::interrupt();""",
+"""      if (auto linkage = funcOp.getLinkageAttributes())
+        if (failed(
+                requireEnumAvailability(linkage->getLinkageType().getValue())))
+          return WalkResult::interrupt();""", "funcop")
 
-```bash
-git add -A
-git clang-format
-git add -A
-git commit -F- <<'MSG'
-[MLIR] Restore std::cout formatting state in the Vulkan runtime
-
-`std::setprecision` modifies the stream itself rather than a single insertion,
-so it stays in effect until something changes it back. The Vulkan runtime sets
-it to 3 while printing the compute shader execution time and never restores it,
-so every float printed afterwards, including by RunnerUtils, comes out with
-three significant digits. A memref holding 858.5 prints as 858 after a kernel
-launch even though the stored bits are unchanged.
-
-Save the formatting state with `copyfmt` before the timing line and restore it
-after.
-
-Fixes #211992
-MSG
-git push -u fork fix-vulkan-cout-precision
-```
-
-推完输出发我。
+open(SRC, "w").write(s)
+print("patched " + SRC)
+PYEOF
+python3 /tmp/spv.py && ninja -C build mlir-opt

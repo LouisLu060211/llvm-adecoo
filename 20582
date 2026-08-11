@@ -1,5 +1,22 @@
-python3 - <<'PYEOF'
+(.venv) yaolu@toronto:~/llvm-project-src$ python3 - <<'PYEOF'
 content = '''module {
+  spirv.module Logical GLSL450 attributes {
+    spirv.target_env = #spirv.target_env
+      #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
+      #spirv.resource_limits<>>
+  } {
+    spirv.GlobalVariable @subgroup_id built_in("SubgroupId") : !spirv.ptr<i32, Input>
+
+    spirv.func @kernel() "None" attributes {kernel} {
+      %address = spirv.mlir.addressof @subgroup_id : !spirv.ptr<i32, Input>
+      %id = spirv.Load "Input" %address : i32
+      spirv.Return
+    }
+
+    spirv.EntryPoint "GLCompute" @kernel, @subgroup_id
+cat /tmp/b.mlir)r', 'w').write(content)ize", 1, 1, 1
+written
+module {
   spirv.module Logical GLSL450 attributes {
     spirv.target_env = #spirv.target_env
       #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
@@ -17,8 +34,83 @@ content = '''module {
     spirv.ExecutionMode @kernel "LocalSize", 1, 1, 1
   }
 }
-'''
-open('/tmp/b.mlir', 'w').write(content)
-print("written")
-PYEOF
-cat /tmp/b.mlir
+(.venv) yaolu@toronto:~/llvm-project-src$ 
+(.venv) yaolu@toronto:~/llvm-project-src$ 
+(.venv) yaolu@toronto:~/llvm-project-src$ python3 - <<'PYEOF'
+content = '''module {
+  spirv.module Logical GLSL450 attributes {
+    spirv.target_env = #spirv.target_env
+      #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
+      #spirv.resource_limits<>>
+  } {
+    spirv.GlobalVariable @subgroup_id built_in("SubgroupId") : !spirv.ptr<i32, Input>
+
+    spirv.func @kernel() "None" attributes {kernel} {
+      %address = spirv.mlir.addressof @subgroup_id : !spirv.ptr<i32, Input>
+      %id = spirv.Load "Input" %address : i32
+      spirv.Return
+    }
+
+    spirv.EntryPoint "GLCompute" @kernel, @subgroup_id
+} } spirv.ExecutionMode @kernel "LocalSize", 1, 1, 1
+> 
+> 
+> python3 - <<'PYEOF'
+content = '''module {
+  spirv.module Logical GLSL450 attributes {
+    spirv.target_env = #spirv.target_env
+      #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
+      #spirv.resource_limits<>>
+  } {
+    spirv.GlobalVariable @subgroup_id built_in("SubgroupId") : !spirv.ptr<i32, Input>
+
+    spirv.func @kernel() "None" attributes {kernel} {
+      %address = spirv.mlir.addressof @subgroup_id : !spirv.ptr<i32, Input>
+      %id = spirv.Load "Input" %address : i32
+      spirv.Return
+    }
+
+    spirv.EntryPoint "GLCompute" @kernel, @subgroup_id
+cat /tmp/b.mlir^C', 'w').write(content)ize", 1, 1, 1
+(.venv) yaolu@toronto:~/llvm-project-src$ ^C
+(.venv) yaolu@toronto:~/llvm-project-src$ 
+(.venv) yaolu@toronto:~/llvm-project-src$ 
+(.venv) yaolu@toronto:~/llvm-project-src$ python3 - <<'PYEOF'
+content = '''module {
+  spirv.module Logical GLSL450 attributes {
+    spirv.target_env = #spirv.target_env
+      #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
+      #spirv.resource_limits<>>
+  } {
+    spirv.GlobalVariable @subgroup_id built_in("SubgroupId") : !spirv.ptr<i32, Input>
+
+    spirv.func @kernel() "None" attributes {kernel} {
+      %address = spirv.mlir.addressof @subgroup_id : !spirv.ptr<i32, Input>
+      %id = spirv.Load "Input" %address : i32
+      spirv.Return
+    }
+
+    spirv.EntryPoint "GLCompute" @kernel, @subgroup_id
+cat /tmp/b.mlir)r', 'w').write(content)ize", 1, 1, 1
+written
+module {
+  spirv.module Logical GLSL450 attributes {
+    spirv.target_env = #spirv.target_env
+      #spirv.vce<v1.3, [Shader, GroupNonUniform], []>,
+      #spirv.resource_limits<>>
+  } {
+    spirv.GlobalVariable @subgroup_id built_in("SubgroupId") : !spirv.ptr<i32, Input>
+
+    spirv.func @kernel() "None" attributes {kernel} {
+      %address = spirv.mlir.addressof @subgroup_id : !spirv.ptr<i32, Input>
+      %id = spirv.Load "Input" %address : i32
+      spirv.Return
+    }
+
+    spirv.EntryPoint "GLCompute" @kernel, @subgroup_id
+    spirv.ExecutionMode @kernel "LocalSize", 1, 1, 1
+  }
+}
+(.venv) yaolu@toronto:~/llvm-project-src$ build/bin/mlir-opt -spirv-update-vce /tmp/b.mlir
+/tmp/b.mlir:3:41: error: expected '<'
+    spirv.target_env = #spirv.target_env

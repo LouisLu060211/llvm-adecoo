@@ -1,100 +1,16 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ bash build-tools/build.sh --help
-build.sh - Build the BiShengIR project.
-
-    SYNOPSIS:
-      build.sh
-                [--add-cmake-options CMAKE_OPTIONS]
-                [--bisheng-compiler BISHENG_COMPILER]
-                [--bishengir-publish VALUE]
-                [-o | --build PATH]
-                [-t | --build-bishengir-template]
-                [--build-shmem-template]
-                [--build-bishengir-doc]
-                [--build-test]
-                [--build-type BUILD_TYPE]
-                [--build-torch-mlir]
-                [--c-compiler C_COMPILER] [--cxx-compiler CXX_COMPILER]
-                [--disable-ccache]
-                [--fast-build]
-                [-h | --help]
-                [--install-prefix INSTALL_PREFIX]
-                [-j | --jobs JOBS]
-                [--llvm-source-dir DIR]
-                [--python-binding]
-                [-r | --rebuild]
-                [--safety-options]
-                [--safety-ld-options]
-                [--skip-rpath]
-                [--enable-cpu-runner]
-                [--coverage]
-                [--enable-bspub]
-                [--collect-binary OUTPUT_DIR]
-
-    Options:
-      --add-cmake-options CMAKE_OPTIONS    Add options to CMake; use quotes for multiple, e.g. --add-cmake-options '-DFOO=ON -DBAR=1'. (Default: null)
-      --bisheng-compiler BISHENG_COMPILER   Path to bisheng compiler. (Default: null)
-      --bishengir-publish VALUE            Whether to disable features is currently unpublished. (Default: ON)
-      -o, --build PATH                      Path to directory which CMake will use as the root of build directory
-                                           (Default: build)
-      --build-bishengir-doc                Whether to build BiShengIR documentation. (Default: disabled)
-      -t, --build-bishengir-template       Whether to build BiShengIR template. (Default: disabled)
-      --build-shmem-template               Whether to build shmem template. (Default: disabled)
-      -build-test                          Whether to build bishengir-test (Default: disabled)
-      --build-type BUILD_TYPE              Specifies the build type. (Default: Release)
-      --build-torch-mlir                   Whether to build torch-mlir. (Default: disabled)
-      --c-compiler C_COMPILER              The full path to the compiler for C (Default: clang)
-      --cxx-compiler CXX_COMPILER          The full path to the compiler for C++ (Default: clang++)
-      --disable-ccache                     Disable ccache to build toolchain. (Default: disabled)
-      --fast-build                         Skip the installation. (Default: disabled)
-      -h, --help                           Print this help message.
-      --install-prefix INSTALL_PREFIX      CMake install prefix. (Default: BUILD_DIR/install)
-      -j, --jobs JOBS                      Set the threads when building
-                                           (Default: use 3/4 of processing units)
-      --llvm-source-dir DIR                LLVM project's root directory. (Default: 'third-party/llvm-project')
-      --python-binding                     Whether to enable MLIR Python Binding (Default: disabled)
-      -r, --rebuild                        Rebuild (Default: disabled)
-      --safety-options                     Whether to build with safe compile options. (Default: disabled)
-      --safety-ld-options                  Whether to build with safe options for linking. (Default: disabled)
-      --skip-rpath                         Disable the Run-time Search Path option. (Default: disabled)
-      --torch-mlir-source-dir DIR          Torch-MLIR project's root directory. (Default: 'third-party/torch-mlir')
-      --enable-cpu-runner                  Enable the compilation of CPU runner targets
-      --coverage                           Build with gcov-compatible coverage instrumentation
-                                         (adds -fprofile-arcs -ftest-coverage -fprofile-update=atomic). (Default: disabled)
-      --enable-bspub                       Enable BSPUB DaVinci BiShengIR build. (Default: disabled)
-      --collect-binary [OUTPUT_DIR]      Collect built binaries and bc files to OUTPUT_DIR.
-                                           This is a standalone mode that skips the build process.
-                                           (Default: bishengir-output)
-      
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls third-party/
-llvm-project  shmem  torch-mlir
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cat .gitmodules 2>/dev/null
-[submodule "third-party/llvm-project"]
-        path = third-party/llvm-project
-        url = https://gitcode.com/Ascend/llvm-project.git
-        branch = Ascend/AscendNPU-IR/llvmorg-19.1.7
-[submodule "third-party/torch-mlir"]
-        path = third-party/torch-mlir
-        url = https://gitcode.com/Ascend/torch-mlir.git
-        branch = Ascend/AscendNPU-IR/main-20250716
-[submodule "third-party/shmem"]
-        path = third-party/shmem
-        url = https://gitcode.com/cann/shmem.git
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cmake --version; ninja --version; gcc --versionb
-cmake version 4.3.0
-
-CMake suite maintained and supported by Kitware (kitware.com/cmake).
-1.13.2
-gcc: error: unrecognized command-line option ‘--versionb’; did you mean ‘--version=’?
-gcc: fatal error: no input files
-compilation terminated.
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cmake --version; ninja --version; gcc --version
-cmake version 4.3.0
-
-CMake suite maintained and supported by Kitware (kitware.com/cmake).
-1.13.2
-gcc (GCC) 16.2.1 20260819 (Red Hat 16.2.1-2)
-Copyright (C) 2026 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ 
+yaolu@fremont:~$ ls third-party/llvm-project/
+ls: cannot access 'third-party/llvm-project/': No such file or directory
+yaolu@fremont:~$ 
+yaolu@fremont:~$ 
+yaolu@fremont:~$ 
+yaolu@fremont:~$ git submodule update --init --recursive third-party/llvm-project
+fatal: not a git repository (or any of the parent directories): .git
+yaolu@fremont:~$ 
+yaolu@fremont:~$ 
+yaolu@fremont:~$ pwd
+/home/yaolu
+yaolu@fremont:~$ cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls -d git
+ls: cannot access 'git': No such file or directory
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ find ~ -maxdepth 4 -name "AscendNPU-IR" -type d 2>/dev/null
+/home/yaolu/work/ascend/AscendNPU-IR

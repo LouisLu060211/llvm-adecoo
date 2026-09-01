@@ -1,22 +1,84 @@
-source /data/start_conda.sh
-Hocky Yudhiono
-source /data/start_conda.sh
-run this
-Hocky Yudhiono 00870384 2026-08-31 23:35
-clone this env called 'chaoran_cv', to your own env, name is up to you
+Multi-Distribution Environments on Bleeding-Edge Systems: A Guide to Podman and Distroboxmd
+2026-06-09 10:04 由 Janssen Vincentius 00916118 创建，于 2026-06-10 09:55 由 Janssen Vincentius 00916118 最后修改。 内容存疑 点我
+This document serves as an introduction and practical guide to navigating the user space environment on our fremont server. It explains why we use a hybrid distribution strategy and how you can seamlessly run legacy or toolchain-specific workflows without sacrificing hardware performance.
 
-conda activate *your_env_here*
-source /data/pri/Ascend/latest/ascend-toolkit/set_env.sh
-export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin
-export PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:$BISHENG_INSTALL_PATH:$PATH
+1. The Core Architecture Challenge
+Our flagship server, fremont, is powered by the AMD Threadripper PRO 9995WX processor. To maximize the performance of this chip, the host operating system must utilize the latest available Linux kernels. For this reason, fremont runs Fedora Server as its base distribution.
 
-export TRITON_PRINT_AUTOTUNING=1
-export TRITON_DEBUG=1
-export TRITON_ALWAYS_COMPILE=1
-export TRITON_DISABLE_FFTS=1
-export TRITON_DEBUG=1
-Hocky Yudhiono 00870384 2026-08-31 23:37
-you can create a folder under /home
-like mkdir /home/louis
-and work there
-dont mess with other people's home
+However, cutting-edge edge distributions ship with modern core libraries (glibc, libstdc++). This introduces compatibility challenges:
+
+Older or proprietary development toolchains often fail to compile or run against ultra-recent glibc versions.
+Production workflows (CANN Compatibility) frequently mandate certified, stable environments like Ubuntu 22.04 LTS.
+The Solution: Kernel/User Space Separation
+To bridge this gap, we decouple the operating system into two layers:
+
+Kernel Space (Host): Bleeding-edge Fedora kernel to fully exploit the Threadripper hardware.
+User Space (Container): An isolated Ubuntu 22.04 environment where libraries, package managers (apt), and binaries operate exactly as they would on a native Ubuntu machine.
+2. Technology Overview
+We achieve this isolation seamlessly using two key utilities: Podman and Distrobox.
+
+Podman
+Podman is a daemonless, open-source container engine designed to develop, manage, and run OCI containers.
+
+Why Podman over Docker? Podman runs containers in "rootless" mode by default. It integrates natively with Linux user namespaces, meaning you can run fully isolated environments without needing administrative (sudo) privileges on fremont.
+Distrobox
+While Podman provides the raw containerization, standard containers are highly isolated—they have their own file systems, cannot easily access host graphics cards, and do not share home directories. Distrobox solves this.
+
+Distrobox is a lightweight wrapper around Podman that lets you bring any Linux distribution into your terminal. It ensures tight integration with the host system by automatically sharing:
+
+Your $HOME directory and dotfiles.
+System sockets (X11/Wayland for GUI applications).
+SSH agents and network stacks.
+Attached hardware resources (Storage devices, USB devices, and GPUs).
+3. Quick Start Guide
+Step 1: Create your Ubuntu 22.04 Environment
+To spin up a personal Ubuntu 22.04 environment integrated with your current user account, run:
+
+distrobox create --name ubuntu-workspace --image ubuntu:22.04
+​
+Step 2: Enter the Environment
+Once created, you can enter the container instantly. Your prompt will change to reflect the Ubuntu environment, but you will still be in your same home directory:
+
+distrobox enter ubuntu-workspace
+​
+Step 3: Verify and Use
+Inside the Distrobox environment, you can verify that you are running an Ubuntu user space on top of the host's Fedora kernel:
+
+# Verify the User Space (Should output Ubuntu 22.04)
+cat /etc/os-release
+
+# Verify the Kernel (Should match the host Fedora kernel version)
+uname -r
+
+# Install packages normally using apt
+sudo apt update && sudo apt install -y build-essential
+​
+⚠️ Note: Because Distrobox maps your local user inside the container, sudo within the container works out-of-the-box for package management and does not affect the host Fedora system.
+
+4. Best Practices & Tips
+Persistent Data: Since Distrobox mounts your actual host $HOME directory, any files you modify in ~/ will persist even if you delete or recreate the Distrobox container.
+
+Isolate Configuration Conflicts: If your Ubuntu tools conflict with configuration files (.bashrc, .config) from Fedora, you can create a custom home directory for your container during creation:
+
+distrobox create --name isolated-ubuntu --image ubuntu:22.04 --home ~/distrobox/ubuntu
+​
+VSCode DevContainers: If you want to attach the VSCode / Cursor IDE to a distrobox container as $USER instead of root to eliminate issues with changing permissions, run the commands below:
+
+mkdir ${HOME}/.config/Code/User/globalStorage/ms-vscode-remote.remote-containers/nameConfigs
+# Replace <container-name> with the --name you set during distrobox creation.
+touch  ${HOME}/.config/Code/User/globalStorage/ms-vscode-remote.remote-containers/nameConfigs/<container-name>.json
+# Add the JSON template below to the created config
+vi ${HOME}/.config/Code/User/globalStorage/ms-vscode-remote.remote-containers/nameConfigs/<container-name>.json
+​
+JSON Template
+
+// JSON Template for nameConfig/<container-name>.json
+// Replace <username> with your username, you can get with `echo $USER`
+// Replace <UID> with your UID, you can get with `echo $UID`
+{
+    remoteUser: "<username>",
+    containerUser: "<username>",
+    updateRemoteUserUID: $updateRemote,
+    overrideCommand: $override,
+    runArgs: ["--user", "<UID>:<UID>"]
+ }

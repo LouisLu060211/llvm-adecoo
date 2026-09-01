@@ -1,67 +1,22 @@
-PS C:\Users\y84451117> ssh-keygen -t ed25519 -C "A5kernal"
-Generating public/private ed25519 key pair.
-Enter file in which to save the key (C:\Users\y84451117/.ssh/id_ed25519):
-Created directory 'C:\\Users\\y84451117/.ssh'.
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-Your identification has been saved in C:\Users\y84451117/.ssh/id_ed25519
-Your public key has been saved in C:\Users\y84451117/.ssh/id_ed25519.pub
-The key fingerprint is:
-SHA256:fwo5zAwbx/z2UZiTQGjXavArubOEZU3BWQuHXT+7VcY A5kernal
-The key's randomart image is:
-+--[ED25519 256]--+
-|         o+*o..  |
-|        +.=+o. o |
-|       . +o..  .E|
-|       o o+. + .+|
-|      o So..= ...|
-|       %o+.  o  o|
-|      o Oo+ o  . |
-|       .o+ + .   |
-|        .o. .    |
-+----[SHA256]-----+
-PS C:\Users\y84451117>
-PS C:\Users\y84451117> Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE/aeAVFoy/JtEzxH8AXSO2uiu5xMxYiGTPTlcayOyqq A5kernal
-PS C:\Users\y84451117> ssh root@141.61.33.141
-The authenticity of host '141.61.33.141 (141.61.33.141)' can't be established.
-ED25519 key fingerprint is SHA256:gSd+nX2U2Gyu3GJ1QrHy9CtqEvCsgCzqt8CU89JsxMU.
-This key is not known by any other names.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added '141.61.33.141' (ED25519) to the list of known hosts.
-Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-218-generic x86_64)
+source /data/start_conda.sh
+Hocky Yudhiono
+source /data/start_conda.sh
+run this
+Hocky Yudhiono 00870384 2026-08-31 23:35
+clone this env called 'chaoran_cv', to your own env, name is up to you
 
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/pro
+conda activate *your_env_here*
+source /data/pri/Ascend/latest/ascend-toolkit/set_env.sh
+export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin
+export PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:$BISHENG_INSTALL_PATH:$PATH
 
- System information as of Tue Sep  1 02:30:31 PM CST 2026
-
-  System load:                      50.38
-  Usage of /:                       89.2% of 3.43TB
-  Memory usage:                     22%
-  Swap usage:                       17%
-  Processes:                        2426
-  Users logged in:                  5
-  IPv4 address for enx9c69d36c2e45: 141.61.33.141
-
-  => / is using 89.2% of 3.43TB
-  => There are 68 zombie processes.
-
-
-Expanded Security Maintenance for Infrastructure is not enabled.
-
-9 updates can be applied immediately.
-3 of these updates are standard security updates.
-To see these additional updates run: apt list --upgradable
-
-Enable ESM Infra to receive additional future security updates.
-See https://ubuntu.com/esm or run: sudo pro status
-
-
-The list of available updates is more than a week old.
-To check for new updates run: sudo apt update
-Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
-
-
-Last login: Tue Sep  1 14:30:33 2026 from 141.3.171.119
+export TRITON_PRINT_AUTOTUNING=1
+export TRITON_DEBUG=1
+export TRITON_ALWAYS_COMPILE=1
+export TRITON_DISABLE_FFTS=1
+export TRITON_DEBUG=1
+Hocky Yudhiono 00870384 2026-08-31 23:37
+you can create a folder under /home
+like mkdir /home/louis
+and work there
+dont mess with other people's home

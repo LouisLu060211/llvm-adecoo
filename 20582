@@ -1,57 +1,67 @@
-测试跑了吗？`llvm-lit` 那条的输出我没看到。
+PS C:\Users\y84451117> ssh-keygen -t ed25519 -C "A5kernal"
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (C:\Users\y84451117/.ssh/id_ed25519):
+Created directory 'C:\\Users\\y84451117/.ssh'.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in C:\Users\y84451117/.ssh/id_ed25519
+Your public key has been saved in C:\Users\y84451117/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:fwo5zAwbx/z2UZiTQGjXavArubOEZU3BWQuHXT+7VcY A5kernal
+The key's randomart image is:
++--[ED25519 256]--+
+|         o+*o..  |
+|        +.=+o. o |
+|       . +o..  .E|
+|       o o+. + .+|
+|      o So..= ...|
+|       %o+.  o  o|
+|      o Oo+ o  . |
+|       .o+ + .   |
+|        .o. .    |
++----[SHA256]-----+
+PS C:\Users\y84451117>
+PS C:\Users\y84451117> Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE/aeAVFoy/JtEzxH8AXSO2uiu5xMxYiGTPTlcayOyqq A5kernal
+PS C:\Users\y84451117> ssh root@141.61.33.141
+The authenticity of host '141.61.33.141 (141.61.33.141)' can't be established.
+ED25519 key fingerprint is SHA256:gSd+nX2U2Gyu3GJ1QrHy9CtqEvCsgCzqt8CU89JsxMU.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '141.61.33.141' (ED25519) to the list of known hosts.
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-218-generic x86_64)
 
-先跑：
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
 
-```bash
-build/bin/llvm-lit -v mlir/test/Dialect/SPIRV/Transforms/vce-deduction.mlir
-```
+ System information as of Tue Sep  1 02:30:31 PM CST 2026
 
-过了再往下。测试没过就推，CI 会挂。
+  System load:                      50.38
+  Usage of /:                       89.2% of 3.43TB
+  Memory usage:                     22%
+  Swap usage:                       17%
+  Processes:                        2426
+  Users logged in:                  5
+  IPv4 address for enx9c69d36c2e45: 141.61.33.141
 
-## 通过之后
+  => / is using 89.2% of 3.43TB
+  => There are 68 zombie processes.
 
-**第 1 步：确认改了什么**
 
-```bash
-git status --short
-```
+Expanded Security Maintenance for Infrastructure is not enabled.
 
-应该是两个 `M`：`UpdateVCEPass.cpp` 和 `vce-deduction.mlir`。
+9 updates can be applied immediately.
+3 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
 
-**第 2 步：格式**
+Enable ESM Infra to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
 
-```bash
-git add -A
-git clang-format
-git add -A
-```
 
-**第 3 步：提交**
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
 
-```bash
-git commit -F- <<'MSG'
-[MLIR][SPIRV] Account for BuiltIn requirements when deducing the VCE triple
 
-`spirv-update-vce` handles the `binding` and `descriptor_set` attributes on a
-global variable, its linkage attributes, and its type, but never looks at
-`built_in`. The operand of a `BuiltIn` decoration has its own entry in the
-SPIR-V spec BuiltIn table, so a variable decorated with `SubgroupId` needs
-`GroupNonUniform` or `Kernel`. Neither is implied by the variable's type or
-storage class, so the deduced triple came out without it and spirv-val rejected
-the module.
-
-Query the availability of the builtin alongside the other requirements.
-`getMinVersion` is only generated for enums that carry a version requirement, so
-the version check stays outside the shared lambda.
-
-Fixes #213193
-MSG
-```
-
-**第 4 步：推送**
-
-```bash
-git push -u fork fix-spirv-vce-builtin
-```
-
-先跑测试，输出发我。
+Last login: Tue Sep  1 14:30:33 2026 from 141.3.171.119

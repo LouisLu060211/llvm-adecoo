@@ -1,5 +1,5 @@
-Host fremont
-    HostName 119.8.241.51
-    User yaolu
-    Port 3005
-    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:Louislu060211! %h %p
+Via XGate Proxy (Remote / Standard Corporate Network)
+By default, blue zone servers are only accessible via their public IPs over the Huawei-Guest WiFi network inside HKRC. However, arrangements have been made with the IT & Network department to allow access via XGate using an HTTP proxy.
+
+Proxy Address: Hkgpqwg00206.huawei.com:8080
+Authentication: Requires your Huawei ID and password.

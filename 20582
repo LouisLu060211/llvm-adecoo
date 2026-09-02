@@ -1,4 +1,7 @@
-distrobox enter a5-ubuntu
-rm -rf ~/work/ascend/AscendNPU-IR/build-ubuntu
-cd ~/work/ascend/AscendNPU-IR
-bash build-tools/build.sh -o build-ubuntu -j 32
+CMake Error at /home/yaolu/work/ascend/AscendNPU-IR/CMakeLists.txt:2 (cmake_minimum_required):
+  CMake 3.28.0 or higher is required.  You are running version 3.22.1
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/CMakeFiles/CMakeOutput.log".
+See also "/home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/CMakeFiles/CMakeError.log".

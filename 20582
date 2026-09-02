@@ -1,18 +1,18 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls -d .git
-.git
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls third-party/llvm-project/
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ df -h~
-df: invalid option -- '~'
-Try 'df --help' for more information.
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ df -h ~
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/md127       15T  3.2T   12T  22% /
+yaolu@fremont:~$ tmux new -s build
+
+duplicate session: build
+yaolu@fremont:~$ cd ~/work/ascend/AscendNPU-IR
 yaolu@fremont:~/work/ascend/AscendNPU-IR$ git submodule update --init --recursive third-party/llvm-project
-Submodule 'third-party/llvm-project' (https://gitcode.com/Ascend/llvm-project.git) registered for path 'third-party/llvm-project'
 Cloning into '/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project'...
-Ncat: An existing connection was forcibly closed by the remote host. .
-Connection to 119.8.241.51 closed by remote host.
-Connection to 119.8.241.51 closed.
-PS C:\Users\y84451117> 
-PS C:\Users\y84451117> 
-PS C:\Users\y84451117> 
+
+
+Submodule path 'third-party/llvm-project': checked out '3254a1b1c59d90f50167a76a7131dfd0d3e720fb'
+yaolu@fremont:~/work/ascend/AscendNPU-IR$
+yaolu@fremont:~/work/ascend/AscendNPU-IR$
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ rm -rf third-party/llvm-project
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ 
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ git submodule update --init --depth 1 third-party/llvm-project
+Submodule path 'third-party/llvm-project': checked out '3254a1b1c59d90f50167a76a7131dfd0d3e720fb'
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls third-party/llvm-project
+bolt   clang-tools-extra  CODE_OF_CONDUCT.md  CONTRIBUTING.md      flang  libclc  libcxxabi  LICENSE.TXT  lldb  llvm-libgcc  offload  polly  pyproject.toml  runtimes     third-party
+clang  cmake              compiler-rt         cross-project-tests  libc   libcxx  libunwind  lld          llvm  mlir         openmp   pstl   README.md       SECURITY.md  utils

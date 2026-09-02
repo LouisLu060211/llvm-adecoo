@@ -1,2 +1,7 @@
-git config --global user.name yaolu0211
-git config --global user.email apfhxc7pUWUZ-Bq1.yaolu0211@noreply.gitcode.com
+yaolu@fremont:~$ git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
+Cloning into 'Q3TritonKernel'...
+Username for 'https://gitcode.com': yaolu0211
+Password for 'https://yaolu0211@gitcode.com': 
+remote: <CH.00905401> HTTP Basic: Access denied.
+remote: The password-based authentication of Git has been removed. Please use your personal access token instead of the password. Request-id is whHkDTlMPx.
+fatal: Authentication failed for 'https://gitcode.com/TritonAscendTest/Q3TritonKernel.git/'

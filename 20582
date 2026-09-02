@@ -1,15 +1,46 @@
-Install tmux, then resume. Ninja picks up exactly where it stopped:
-
-bash
-sudo apt install -y tmux
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ sudo apt install -y tmux
 tmux new -s build
 cd ~/work/ascend/AscendNPU-IR
 bash build-tools/build.sh -o build-ubuntu -j 32
-
-Detach with Ctrl+B then D once it's running. Reattach later with tmux attach -t build.
-
-Before that, check whether it actually got anywhere or died early:
-
-bash
-ls ~/work/ascend/AscendNPU-IR/build-ubuntu/bin
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libevent-core-2.1-7 libutempter0
+The following NEW packages will be installed:
+  libevent-core-2.1-7 libutempter0 tmux
+0 upgraded, 3 newly installed, 0 to remove and 16 not upgraded.
+Need to get 531 kB of archives.
+After this operation, 1,365 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libevent-core-2.1-7 amd64 2.1.12-stable-1ubuntu0.1 [94.2 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy/main amd64 libutempter0 amd64 1.2.1-2build2 [8,848 B]
+Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 tmux amd64 3.2a-4ubuntu0.2 [428 kB]
+Fetched 531 kB in 2s (251 kB/s)
+Selecting previously unselected package libevent-core-2.1-7:amd64.
+(Reading database ... 45067 files and directories currently installed.)
+Preparing to unpack .../libevent-core-2.1-7_2.1.12-stable-1ubuntu0.1_amd64.deb ...
+Unpacking libevent-core-2.1-7:amd64 (2.1.12-stable-1ubuntu0.1) ...
+Selecting previously unselected package libutempter0:amd64.
+Preparing to unpack .../libutempter0_1.2.1-2build2_amd64.deb ...
+Unpacking libutempter0:amd64 (1.2.1-2build2) ...
+Selecting previously unselected package tmux.
+Preparing to unpack .../tmux_3.2a-4ubuntu0.2_amd64.deb ...
+Unpacking tmux (3.2a-4ubuntu0.2) ...
+Setting up libevent-core-2.1-7:amd64 (2.1.12-stable-1ubuntu0.1) ...
+Setting up libutempter0:amd64 (1.2.1-2build2) ...
+Setting up tmux (3.2a-4ubuntu0.2) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.14) ...
+server exited unexpectedly
+Starting BiShengIR build process...
+OS: Linux
+Build directory: build-ubuntu
+C compiler: clang | CXX compiler: clang++
+Checking dependencies...
+All dependencies satisfied.
+Building with 32 threads...
+ninja: error: loading 'build.ninja': No such file or directory
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ ls ~/work/ascend/AscendNPU-IR/build-ubuntu/bin
 du -sh ~/work/ascend/AscendNPU-IR/build-ubuntu
+update_core_linalg_named_ops.sh
+1.6M    /home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu

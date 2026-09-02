@@ -1,63 +1,24 @@
-  126 |   return format_object<Ts...>(Fmt, Vals...);
-      |          ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:254:37: note: in instantiation of function template specialization 'llvm::format<double>' requested here
-  254 |     startLine() << Label << ": " << format("%5.1f", Value) << "\n";
-      |                                     ^
-5 warnings generated.
-[277/5970] Building CXX object lib/DebugInfo/CodeView/CMakeFiles/LLVMDebugInfoCodeView.dir/TypeRecordMapping.cpp.o
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/CodeView/TypeRecordMapping.cpp:24:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:19:
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/JSON.h:385:5: warning: 'switch' missing 'default' label [-Wswitch-default]
-  385 |     switch (Type) {
-      |     ^
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/CodeView/TypeRecordMapping.cpp:9:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/TypeRecordMapping.h:12:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CVRecord.h:14:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CodeViewError.h:12:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Error.h:24:
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:100:41: warning: format string is not a string literal [-Wformat-nonliteral]
-  100 |     return snprintf(Buffer, BufferSize, Fmt, std::get<Is>(Vals)...);
-      |                                         ^~~
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:111:12: note: in instantiation of function template specialization 'llvm::format_object<float>::snprint_tuple<0UL>' requested here
-  111 |     return snprint_tuple(Buffer, BufferSize, std::index_sequence_for<Ts...>());
-      |            ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:105:3: note: in instantiation of member function 'llvm::format_object<float>::snprint' requested here
-  105 |   format_object(const char *fmt, const Ts &... vals)
-      |   ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:126:10: note: in instantiation of member function 'llvm::format_object<float>::format_object' requested here
-  126 |   return format_object<Ts...>(Fmt, Vals...);
-      |          ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:250:37: note: in instantiation of function template specialization 'llvm::format<float>' requested here
-  250 |     startLine() << Label << ": " << format("%5.1f", Value) << "\n";
-      |                                     ^
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/CodeView/TypeRecordMapping.cpp:9:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/TypeRecordMapping.h:12:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CVRecord.h:14:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CodeViewError.h:12:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Error.h:24:
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:100:41: warning: format string is not a string literal [-Wformat-nonliteral]
-  100 |     return snprintf(Buffer, BufferSize, Fmt, std::get<Is>(Vals)...);
-      |                                         ^~~
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:111:12: note: in instantiation of function template specialization 'llvm::format_object<double>::snprint_tuple<0UL>' requested here
-  111 |     return snprint_tuple(Buffer, BufferSize, std::index_sequence_for<Ts...>());
-      |            ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:105:3: note: in instantiation of member function 'llvm::format_object<double>::snprint' requested here
-  105 |   format_object(const char *fmt, const Ts &... vals)
-      |   ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:126:10: note: in instantiation of member function 'llvm::format_object<double>::format_object' requested here
-  126 |   return format_object<Ts...>(Fmt, Vals...);
-      |          ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:254:37: note: in instantiation of function template specialization 'llvm::format<double>' requested here
-  254 |     startLine() << Label << ": " << format("%5.1f", Value) << "\n";
-      |                                     ^
-3 warnings generated.
-[284/5970] Building CXX object lib/FileCheck/CMakeFiles/LLVMFileCheck.dir/FileCheck.cpp.o
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/FileCheck/FileCheck.cpp:33:3: warning: 'switch' missing 'default' label [-Wswitch-default]
-   33 |   switch (Value) {
-      |   ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/FileCheck/FileCheck.cpp:1500:3: warning: 'switch' missing 'default' label [-Wswitch-default]
- 1500 |   switch (Kind) {
-      |   ^
-2 warnings generated.
-[286/5970] Building CXX object tools/mlir/tools/mlir-tblgen/CMakeFiles/mlir-tblgen.dir/BytecodeDialectGen.cpp.o
-ninja: build stopped: subcommand failed.
+yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ ninja -j 2>&1 | tail -50
+ninja: option requires an argument -- 'j'
+usage: ninja [options] [targets...]
+
+if targets are unspecified, builds the 'default' target (see manual).
+
+options:
+  --version      print ninja version ("1.13.2")
+  -v, --verbose  show all command lines while building
+  --quiet        don't show progress status, just command output
+
+  -C DIR   change to DIR before doing anything else
+  -f FILE  specify input build file [default=build.ninja]
+
+  -j N     run N jobs in parallel (0 means infinity) [default=178 on this system]
+  -k N     keep going until N jobs fail (0 means infinity) [default=1]
+  -l N     do not start new jobs if the load average is greater than N
+  -n       dry run (don't run commands but act like they succeeded)
+
+  -d MODE  enable debugging (use '-d list' to list modes)
+  -t TOOL  run a subtool (use '-t list' to list subtools)
+    terminates toplevel options; further flags are passed to the tool
+  -w FLAG  adjust warnings (use '-w list' to list warnings)
+yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ 

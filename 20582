@@ -1,52 +1,33 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ ninja -j 1 2>&1 | tail -50
-
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/IR/DataLayout.h:333:5: warning: 'switch' missing 'default' label [-Wswitch-default]
-  333 |     switch (ManglingMode) {
-      |     ^
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Transforms/Utils/VNCoercion.cpp:4:
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/IR/IRBuilder.h:24:
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/IR/ConstantFolder.h:31:16: warning: virtual method 'anchor' is inside a 'final' class and can never be overridden [-Wunnecessary-virtual-specifier]
-   31 |   virtual void anchor();
-      |                ^
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Transforms/Utils/VNCoercion.cpp:5:
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/IR/IntrinsicInst.h:1470:5: warning: 'switch' missing 'default' label [-Wswitch-default]
- 1470 |     switch (I.getIntrinsicID()) {
-      |     ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/IR/IntrinsicInst.h:1482:5: warning: 'switch' missing 'default' label [-Wswitch-default]
- 1482 |     switch (I.getIntrinsicID()) {
-      |     ^
-9 warnings generated.
-[1571/5689] Building GPUOpsEnums.cpp.inc...
-[1572/5689] Building GPUOpsEnums.h.inc...
-[1573/5689] Linking CXX static library lib/libMLIRPDLToPDLInterp.a
-[1574/5689] Building CXX object tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineMemoryOpInterfaces.cpp.o
-[1575/5689] Building CXX object tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineOps.cpp.o
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/lib/Dialect/Affine/IR/AffineOps.cpp:13:
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/include/mlir/IR/AffineExprVisitor.h:79:5: warning: 'switch' missing 'default' label [-Wswitch-default]
-   79 |     switch (expr.getKind()) {
-      |     ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/include/mlir/IR/AffineExprVisitor.h:154:5: warning: 'switch' missing 'default' label [-Wswitch-default]
-  154 |     switch (expr.getKind()) {
-      |     ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/include/mlir/IR/AffineExprVisitor.h:246:5: warning: 'switch' missing 'default' label [-Wswitch-default]
-  246 |     switch (expr.getKind()) {
-      |     ^
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/include/mlir/IR/AffineExprVisitor.h:246:5: warning: 'switch' missing 'default' label [-Wswitch-default]
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/lib/Dialect/Affine/IR/AffineOps.cpp:3428:36: note: in instantiation of member function 'mlir::AffineExprVisitor<mlir::SimpleAffineExprFlattener, llvm::LogicalResult>::walkPostOrder' requested here
- 3428 |     auto flattenResult = flattener.walkPostOrder(resultExpr);
-      |                                    ^
-4 warnings generated.
-[1576/5689] Building CXX object tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/AffineValueMap.cpp.o
-[1577/5689] Building CXX object tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/ValueBoundsOpInterfaceImpl.cpp.o
-FAILED: [code=1] tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/ValueBoundsOpInterfaceImpl.cpp.o 
-CCACHE_CPP2=yes CCACHE_HASHDIR=yes /usr/bin/ccache /usr/lib64/ccache/clang++ -DBSPUB_DAVINCI -DBSPUB_DAVINCI_BISHENGIR_A5 -DBSPUB_DAVINCI_BISHENGIR_A5_NPUIR -DGTEST_HAS_RTTI=0 -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -I/home/yaolu/work/ascend/AscendNPU-IR/build/tools/mlir/lib/Dialect/Affine/IR -I/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/lib/Dialect/Affine/IR -I/home/yaolu/work/ascend/AscendNPU-IR/build/include -I/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include -I/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/include -I/home/yaolu/work/ascend/AscendNPU-IR/build/tools/mlir/include -fno-common -fvisibility=hidden -fno-strict-aliasing -pipe -Wformat=2 -Wfloat-equal -Wswitch-default -Wcast-align -Wvla -Wunused -Wundef -Wdate-time -Wframe-larger-than=16384 -Wnon-virtual-dtor -Wno-unknown-warning-option -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Werror=unguarded-availability-new -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wc++98-compat-extra-semi -Wimplicit-fallthrough -Wcovered-switch-default -Wno-noexcept-type -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Wsuggest-override -Wstring-conversion -Wmisleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections -Wundef -Werror=mismatched-tags -Werror=global-constructors -O3 -DNDEBUG -std=c++17  -fno-exceptions -funwind-tables -fno-rtti -MD -MT tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/ValueBoundsOpInterfaceImpl.cpp.o -MF tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/ValueBoundsOpInterfaceImpl.cpp.o.d -o tools/mlir/lib/Dialect/Affine/IR/CMakeFiles/obj.MLIRAffineDialect.dir/ValueBoundsOpInterfaceImpl.cpp.o -c /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/lib/Dialect/Affine/IR/ValueBoundsOpInterfaceImpl.cpp
-In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/lib/Dialect/Affine/IR/ValueBoundsOpInterfaceImpl.cpp:9:
-/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/mlir/include/mlir/Dialect/Affine/IR/ValueBoundsOpInterfaceImpl.h:34:11: error: unknown type name 'int64_t'; did you mean '__int64_t'?
-   34 | FailureOr<int64_t> fullyComposeAndComputeConstantDelta(Value value1,
-      |           ^~~~~~~
-      |           __int64_t
-/usr/include/bits/types.h:44:25: note: '__int64_t' declared here
-   44 | typedef signed long int __int64_t;
-      |                         ^
-1 error generated.
+yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ ninja -j 32
+[0/2] Re-checking globbed directories...
+[105/5962] Building C object lib/Support/CMakeFiles/LLVMSupport.dir/regcomp.c.o
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Support/regcomp.c:557:2: warning: 'switch' missing 'default' label [-Wswitch-default]
+  557 |         switch (c) {
+      |         ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Support/regcomp.c:1686:3: warning: 'switch' missing 'default' label [-Wswitch-default]
+ 1686 |                 switch (OP(s)) {
+      |                 ^
+2 warnings generated.
+[107/5962] Building C object lib/Support/CMakeFiles/LLVMSupport.dir/regexec.c.o
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Support/regexec.c:82:
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Support/regengine.inc:357:3: warning: 'switch' missing 'default' label [-Wswitch-default]
+  357 |                 switch (OP(m->g->strip[es])) {
+      |                 ^
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Support/regexec.c:131:
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/Support/regengine.inc:357:3: warning: 'switch' missing 'default' label [-Wswitch-default]
+  357 |                 switch (OP(m->g->strip[es])) {
+      |                 ^
+2 warnings generated.
+[259/5962] Building CXX object third-party/benchmark/src/CMakeFiles/benchmark.dir/benchmark.cc.o
+FAILED: [code=1] third-party/benchmark/src/CMakeFiles/benchmark.dir/benchmark.cc.o 
+CCACHE_CPP2=yes CCACHE_HASHDIR=yes /usr/bin/ccache /usr/bin/ccache /usr/lib64/ccache/clang++ -DBENCHMARK_HAS_PTHREAD_AFFINITY -DBENCHMARK_STATIC_DEFINE -DBSPUB_DAVINCI -DBSPUB_DAVINCI_BISHENGIR_A5 -DBSPUB_DAVINCI_BISHENGIR_A5_NPUIR -DHAVE_POSIX_REGEX -DHAVE_PTHREAD_AFFINITY -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -DBENCHMARK_VERSION=\"v0.0.0\" -I/home/yaolu/work/ascend/AscendNPU-IR/build/third-party/benchmark/src -I/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/third-party/benchmark/src -I/home/yaolu/work/ascend/AscendNPU-IR/build/include -I/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include -I/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/third-party/benchmark/include -include cstdint -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Werror=unguarded-availability-new -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wc++98-compat-extra-semi -Wimplicit-fallthrough -Wcovered-switch-default -Wno-noexcept-type -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Wsuggest-override -Wstring-conversion -Wmisleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -fno-exceptions  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden -MD -MT third-party/benchmark/src/CMakeFiles/benchmark.dir/benchmark.cc.o -MF third-party/benchmark/src/CMakeFiles/benchmark.dir/benchmark.cc.o.d -o third-party/benchmark/src/CMakeFiles/benchmark.dir/benchmark.cc.o -c /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/third-party/benchmark/src/benchmark.cc
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/third-party/benchmark/src/benchmark.cc:15:
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/third-party/benchmark/include/benchmark/benchmark.h:1465:30: error: '__COUNTER__' is a C2y extension [-Werror,-Wc2y-extensions]
+ 1465 | #if defined(__COUNTER__) && (__COUNTER__ + 1 == __COUNTER__ + 0)
+      |                              ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/third-party/benchmark/include/benchmark/benchmark.h:1465:49: error: '__COUNTER__' is a C2y extension [-Werror,-Wc2y-extensions]
+ 1465 | #if defined(__COUNTER__) && (__COUNTER__ + 1 == __COUNTER__ + 0)
+      |                                                 ^
+2 errors generated.
+[290/5962] Building CXX object tools/mlir/tools/mlir-tblgen/CMakeFiles/mlir-tblgen.dir/OpDefinitionsGen.cpp.o
 ninja: build stopped: subcommand failed.

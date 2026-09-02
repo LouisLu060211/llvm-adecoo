@@ -1,10 +1,15 @@
-[5969/5970] Linking CXX executable bin/bishengir-capi-pass-test
-[0/2] Re-checking globbed directories...
-[0/2] cd /home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/tools/bishengir && /home/yaolu/.local/lib/python3.10/site-packages/cmake/data/bin/cmake -DCMAKE_INSTALL_COMPONENT="bishengir-publish-products" -P /home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/cmake_install.cmake
--- Install configuration: "Release"
--- Installing: /home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/install/bin/bishengir-compile
--- Set non-toolchain portion of runtime path of "/home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/install/bin/bishengir-compile" to "$ORIGIN/../lib"
--- Installing: /home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/install/bin/bishengir-opt
--- Set non-toolchain portion of runtime path of "/home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/install/bin/bishengir-opt" to "$ORIGIN/../lib"
-Build Done!!!
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ 
+ls -la build-ubuntu/install/bin/
+./build-ubuntu/install/bin/bishengir-opt --version
+./build-ubuntu/install/bin/bishengir-compile --help | head -20
+
+Put them on your PATH:
+
+bash
+echo 'export PATH="$HOME/work/ascend/AscendNPU-IR/build-ubuntu/install/bin:$PATH"' >> ~/.bashrc
+export PATH="$HOME/work/ascend/AscendNPU-IR/build-ubuntu/install/bin:$PATH"
+which bishengir-compile
+
+Then run the example the README points at:
+
+bash
+cat bishengir/test/Integration/HIVM/VecAdd/README.md

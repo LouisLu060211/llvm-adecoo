@@ -1,7 +1,12 @@
-Host a5
-    HostName 141.61.33.141
-    User root
-    IdentityFile ~/.ssh/id_ed25519
-    ServerAliveInterval 30
-    ServerAliveCountMax 6
-    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:PASSWORD %h %p
+source /data/start_conda.sh
+conda create --name louis_env --clone chaoran_cv --ofline
+Hocky Yudhiono 00870384 2026-09-02 01:22
+source /data/pri/Ascend/latest/ascend-toolkit/set_env.sh
+export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin
+export PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:$BISHENG_INSTALL_PATH:$PATH
+
+export TRITON_PRINT_AUTOTUNING=1
+export TRITON_DEBUG=1
+export TRITON_ALWAYS_COMPILE=1
+export TRITON_DISABLE_FFTS=1
+export TRITON_DEBUG=1

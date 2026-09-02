@@ -1,3 +1,30 @@
-https://gitcode.com/TritonAscendTest/Q3TritonKernel
-Wang Tao 00664968 2026-09-02 01:30
+That's a much smaller task than the AscendNPU-IR build, so the disk situation isn't blocking. A Triton kernel test repo is megabytes.
+
+```bash
+cd /home/yaolu
+git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
+cd Q3TritonKernel
+ls
+```
+
+Look at what it needs before running:
+
+```bash
+cat README.md 2>/dev/null | head -40
+ls tests/fla_perf/
+cat requirements.txt 2>/dev/null
+```
+
+Then the test Wang Tao gave you:
+
+```bash
 pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf
+```
+
+Your env already has the Triton debug vars set and `hivmc` on PATH, which is what this needs. If you opened a new shell since, `source /home/yaolu/env.sh` first.
+
+Two things to expect. `TRITON_ALWAYS_COMPILE=1` disables the kernel cache, so every run recompiles and the first pass will be slow. That's intentional for debugging but makes performance numbers meaningless, so if this test reports timings, ask Wang Tao whether to unset it.
+
+And keep an eye on disk. Triton caches compiled kernels under `~/.triton`, and with autotuning enabled that grows. Check `df -h /` after the run.
+
+If pytest is missing, `pip install pytest` inside the conda env, not system-wide.

@@ -1,53 +1,34 @@
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ echo 'export PATH="$HOME/work/ascend/AscendNPU-IR/build-ubuntu/install/bin:$PATH"' >> ~/.bashrc
-export PATH="$HOME/work/ascend/AscendNPU-IR/build-ubuntu/install/bin:$PATH"
-which bishengir-compile
-/home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu/install/bin/bishengir-compile
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ 
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ cat bishengir/test/Integration/HIVM/VecAdd/README.md
-# HIVM Vector Add
+Two prerequisites before that example works.
 
-This is a simple example that demonstrates:
-- how to compile `.mlir` into binary that can be executed on the Ascend NPU using `bishengir-compile`
-- how to write a host wrapper that can launch the program on Ascend NPU
-
-## Requirements
-
-To run the example on Ascend NPU, please install the CANN software package and the set the environment variable `ASCEND_HOME_PATH` to the installed path. For example:
+**1. Does this machine have CANN and an actual NPU?**
 
 ```bash
-export ASCEND_HOME_PATH=/usr/local/ascend-toolkit/latest
+ls /usr/local/ascend-toolkit/ 2>/dev/null
+ls /data/pri/Ascend/latest/ascend-toolkit/ 2>/dev/null
+ls /dev/davinci* 2>/dev/null
 ```
 
-## How to build the example
+The middle path is the one Hocky gave you, though that was for the other server. If nothing turns up, fremont is a build machine with no Ascend hardware, and you can compile `.mlir` to `kernel.o` but not run it. That's still useful, just not the full E2E.
 
-1. Prepare the requirements listed above.
-2. Add `-DBISHENGIR_BUILD_EXAMPLES=ON` to the cmake build options. For example:
+**2. Rebuild with examples enabled**
 
-    ```bash
-    cmake -G Ninja .. \
-    -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_ENABLE_PROJECTS="mlir" \
-    -DLLVM_EXTERNAL_PROJECTS="bishengir" \
-    -DLLVM_EXTERNAL_BISHENGIR_SOURCE_DIR="AscendNPU-IR" \ # Project root directory
-    -DBSPUB_DAVINCI_BISHENGIR=ON # Mandatory! Enables AscendNPU IR extensions for third-party repositories
-    [Other CMake Options as required]
-    -DBISHENGIR_BUILD_EXAMPLES=ON # Build integration examples
-    ```
+Your build didn't include `BISHENGIR_BUILD_EXAMPLES`, so `hivm-vec-add` doesn't exist. Add it to the existing build directory rather than starting over:
 
-3. Build the project. After building, the executable `hivm-vec-add` should appear in `./bin` directory.
-4. Build the device binary using `bishengir-compile`
-    ```bash
-    bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
-    ```
-5. Execute `hivm-vec-add`
-    ```bash
-    ./hivm-vec-add
-    ```
-6. You should see the following results (some text are omitted):
-    ```bash
-    i0       Expect: 1                         Result: 1
-    i1       Expect: 2                         Result: 2
-    i2       Expect: 3                         Result: 3
-    i3       Expect: 4                         Result: 4
+```bash
+cd ~/work/ascend/AscendNPU-IR
+bash build-tools/build.sh -o build-ubuntu -j 32 --add-cmake-options '-DBISHENGIR_BUILD_EXAMPLES=ON'
+```
+
+Incremental, so it only builds the new targets. Minutes, not hours.
+
+Meanwhile you can test the compiler half right now, no hardware needed:
+
+```bash
+cd bishengir/test/Integration/HIVM/VecAdd
+ls
+bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
+```
+
+If that produces `kernel.o`, your build works. Running it is a separate question that depends on whether there's an NPU attached.
+
+Paste the results of the three checks in step 1. Whether fremont has Ascend hardware changes what you do next, and it's worth asking Hocky directly rather than guessing.

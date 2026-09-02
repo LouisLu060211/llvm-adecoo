@@ -1,32 +1,33 @@
-Confirmed, no external DNS on that box and no proxy set. Two ways forward.
+Yes, that works. The repo is just Python test files, nothing compiled, so where you clone it doesn't matter.
 
-**Set the proxy and clone directly**
+On your Windows PC:
 
-```bash
-export https_proxy=http://y84451117:PASSWORD@Hkgpqwg00206.huawei.com:8080
-export http_proxy=$https_proxy
-curl -I https://gitcode.com --max-time 10
-```
-
-Substitute your real password. If curl returns headers, clone normally. If it fails the same way, that proxy isn't reachable from this machine either.
-
-**Clone on fremont and copy over**
-
-This is the surer route, since fremont demonstrably clones from gitcode. From a fremont shell:
-
-```bash
-cd ~
+```powershell
+cd $env:USERPROFILE
 git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
-scp -r Q3TritonKernel root@141.61.33.141:/home/yaolu/
 ```
 
-Then back on the A5:
+It will prompt for `yaolu0211` and your personal access token.
+
+Then copy it up. Your SSH config already has `a5` with ProxyJump through fremont, and scp uses the same config:
+
+```powershell
+scp -r $env:USERPROFILE\Q3TritonKernel a5:/home/yaolu/
+```
+
+On the A5:
 
 ```bash
+source /home/yaolu/env.sh
 cd /home/yaolu/Q3TritonKernel
 ls
+pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf
 ```
 
-For scp to work, fremont needs to authenticate to the A5. It could already reach it on port 22, which is why ProxyJump worked, but it may prompt for the root password.
+One thing to check first. If the repo has Python dependencies you'll need them installed in `louis_env`, and the A5 can't reach PyPI any more than it could reach gitcode. Look at what it wants before running:
 
-Worth a quick word to Hocky either way. He expects you to clone repos on that machine, so there's presumably a normal way people do it, whether that's an internal mirror or a proxy setting you don't have yet. Asking takes a minute and saves guessing.
+```bash
+cat requirements.txt 2>/dev/null
+```
+
+If there's a list and packages are missing, that's the same connectivity problem again and worth raising with Hocky rather than working around. The conda env you cloned from `chaoran_cv` may already have everything, since it was presumably set up for exactly this work.

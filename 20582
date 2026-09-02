@@ -1,18 +1,3 @@
-(louis_env) root@tbe:~# mkdir -p /home/yaolu
-(louis_env) root@tbe:~# cat > /home/yaolu/env.sh << 'EOF'
-source /data/start_conda.sh
-conda activate louis_env
-source /data/pri/Ascend/latest/ascend-toolkit/set_env.sh
-export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin
-export PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:$BISHENG_INSTALL_PATH:$PATH
-export TRITON_PRINT_AUTOTUNING=1
-export TRITON_DEBUG=1
-export TRITON_ALWAYS_COMPILE=1
-export TRITON_DISABLE_FFTS=1
-EOF
-(louis_env) root@tbe:~# df -h /home /data
-Filesystem                         Size  Used Avail Use% Mounted on
-/dev/mapper/ubuntu--vg-ubuntu--lv  3.5T  3.2T  101G  98% /
-/dev/mapper/ubuntu--vg-ubuntu--lv  3.5T  3.2T  101G  98% /
-(louis_env) root@tbe:~# 
-(louis_env) root@tbe:~# 
+https://gitcode.com/TritonAscendTest/Q3TritonKernel
+Wang Tao 00664968 2026-09-02 01:30
+pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf

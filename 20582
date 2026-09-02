@@ -1,12 +1,55 @@
+One typo in his message: `--ofline` should be `--offline`. Run:
+
+```bash
 source /data/start_conda.sh
-conda create --name louis_env --clone chaoran_cv --ofline
-Hocky Yudhiono 00870384 2026-09-02 01:22
+conda create --name louis_env --clone chaoran_cv --offline
+```
+
+`--offline` skips the remote index check, which matters on a machine behind the proxy. Takes a few minutes and writes several GB.
+
+Then:
+
+```bash
+conda activate louis_env
 source /data/pri/Ascend/latest/ascend-toolkit/set_env.sh
 export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin
 export PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:$BISHENG_INSTALL_PATH:$PATH
-
 export TRITON_PRINT_AUTOTUNING=1
 export TRITON_DEBUG=1
 export TRITON_ALWAYS_COMPILE=1
 export TRITON_DISABLE_FFTS=1
+```
+
+Verify it took:
+
+```bash
+which python
+which hivmc
+which bishengir-compile
+```
+
+`hivmc` resolving is the thing that was missing on fremont.
+
+Save the env setup so you don't retype it each session:
+
+```bash
+cat > /home/yaolu/env.sh << 'EOF'
+source /data/start_conda.sh
+conda activate louis_env
+source /data/pri/Ascend/latest/ascend-toolkit/set_env.sh
+export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin
+export PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:$BISHENG_INSTALL_PATH:$PATH
+export TRITON_PRINT_AUTOTUNING=1
 export TRITON_DEBUG=1
+export TRITON_ALWAYS_COMPILE=1
+export TRITON_DISABLE_FFTS=1
+EOF
+```
+
+Then `source /home/yaolu/env.sh` at the start of each session.
+
+Check disk before the conda clone, that box was at 89 percent this morning:
+
+```bash
+df -h /home /data
+```

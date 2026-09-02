@@ -1,8 +1,3 @@
-📦[yaolu@a5-ubuntu build]$ gcc -version
-gcc: error: unrecognized command-line option ‘-version’
-gcc: fatal error: no input files
-compilation terminated.
-📦[yaolu@a5-ubuntu build]$ cmake --version
-cmake version 3.22.1
-
-CMake suite maintained and supported by Kitware (kitware.com/cmake).
+tmux new -s ubuntu-build
+cd ~/work/ascend/AscendNPU-IR
+bash build-tools/build.sh -o build-ubuntu -j 32

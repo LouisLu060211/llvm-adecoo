@@ -1,24 +1,39 @@
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ cd bishengir/test/Integration/HIVM/VecAdd
-ls
-bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
-add.mlir  CMakeLists.txt  lit.local.cfg  main.cpp  README.md  README_zh.md
-[ERROR] Cannot find hivmc under $PATH 
-[ERROR] Failed to run `hivmc --version`.
-[WARNING] Failed to detect hivmc version for backward compatibility
-[ERROR] Cannot find hivmc under $PATH 
-loc("/home/yaolu/work/ascend/AscendNPU-IR/bishengir/test/Integration/HIVM/VecAdd/add.mlir":1:1): error: External hivmc run fails, returning module before running external compiler
-[ERROR] Failed to run BiShengIR pipeline
-📦[yaolu@a5-ubuntu VecAdd]$ ls /usr/local/ascend-toolkit/ 2>/dev/null
-ls /data/pri/Ascend/latest/ascend-toolkit/ 2>/dev/null
-find / -name "hivmc" -type f 2>/dev/null | head
-find / -name "set_env.sh" -path "*ascend*" 2>/dev/null | head
-📦[yaolu@a5-ubuntu VecAdd]$ source <path>/set_env.sh
-which hivmc
-bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
-bash: path: No such file or directory
-[ERROR] Cannot find hivmc under $PATH 
-[ERROR] Failed to run `hivmc --version`.
-[WARNING] Failed to detect hivmc version for backward compatibility
-[ERROR] Cannot find hivmc under $PATH 
-loc("/home/yaolu/work/ascend/AscendNPU-IR/bishengir/test/Integration/HIVM/VecAdd/add.mlir":1:1): error: External hivmc run fails, returning module before running external compiler
-[ERROR] Failed to run BiShengIR pipeline
+ssh root@141.61.33.141
+try
+
+explore it
+source /data/start_conda.sh
+Hocky Yudhiono
+source /data/start_conda.sh
+run this
+Hocky Yudhiono 00870384 2026-08-31 23:35
+clone this env called 'chaoran_cv', to your own env, name is up to you
+Yao Lu 84451117 2026-08-31 23:36
+Yao Lu
+PS C:\Users\y84451117> Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE/aeAVFoy/JtEzxH8AXSO2uiu5xMxYiGTPTlcayOyqq A5kernal
+here is my public key right
+okay okay
+Hocky Yudhiono 00870384 2026-08-31 23:36
+conda activate *your_env_here*
+source /data/pri/Ascend/latest/ascend-toolkit/set_env.sh
+export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin
+export PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:$BISHENG_INSTALL_PATH:$PATH
+
+export TRITON_PRINT_AUTOTUNING=1
+export TRITON_DEBUG=1
+export TRITON_ALWAYS_COMPILE=1
+export TRITON_DISABLE_FFTS=1
+export TRITON_DEBUG=1
+Hocky Yudhiono 00870384 2026-08-31 23:37
+you can create a folder under /home
+like mkdir /home/louis
+and work there
+dont mess with other people's home
+Hocky Yudhiono 00870384 2026-08-31 23:38
+ok then more or less your set up is done
+clone your ascendnpu-ir under /home/louis/ascendnpu-ir or somethig
+you can build there 
+./build-tools/build.sh --add-cmake-options "-DCMAKE_LINKER=/usr/bin/lld-15 -DLLVM_ENABLE_LLD=ON" -o ./build --build-type Release -r --c-compiler clang-15 --cxx-compiler clang++-15 -t --bisheng-compiler /home/r00957390/cann/910_b106/ascend-toolkit/latest/bin --fast-build --build-triton
+with this is ok
+and put it under your path

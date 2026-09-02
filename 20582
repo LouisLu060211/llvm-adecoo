@@ -1,7 +1,5 @@
-yaolu@fremont:~$ git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
-Cloning into 'Q3TritonKernel'...
-Username for 'https://gitcode.com': yaolu0211
-Password for 'https://yaolu0211@gitcode.com': 
-remote: <CH.00905401> HTTP Basic: Access denied.
-remote: The password-based authentication of Git has been removed. Please use your personal access token instead of the password. Request-id is whHkDTlMPx.
-fatal: Authentication failed for 'https://gitcode.com/TritonAscendTest/Q3TritonKernel.git/'
+yaolu@fremont:~$ scp -r ~/Q3TritonKernel root@141.51.33.141:/home/yaolu/; ; ; ; 
+-bash: syntax error near unexpected token `;'
+yaolu@fremont:~$ scp -r ~/Q3TritonKernel root@141.51.33.141:/home/yaolu/
+ssh: connect to host 141.51.33.141 port 22: Connection timed out
+scp: Connection closed

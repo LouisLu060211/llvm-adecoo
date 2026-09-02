@@ -1,29 +1,3 @@
-Same fix:
-
-```bash
-pip3 install --user "ninja>=1.12"
-hash -r
-ninja --version
-```
-
-Should report 1.12 or higher. If it still shows the old 1.10, the system one at `/usr/bin/ninja` is winning. Check with `which ninja`. If it points at `/usr/bin/ninja`, your PATH ordering is off, so re-run:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-hash -r
-which ninja
-```
-
-Then rebuild:
-
-```bash
-rm -rf ~/work/ascend/AscendNPU-IR/build-ubuntu
 cd ~/work/ascend/AscendNPU-IR
+rm -rf build-ubuntu
 bash build-tools/build.sh -o build-ubuntu -j 32
-```
-
-Verify both tools before starting so you don't discover a third version problem an hour in:
-
-```bash
-cmake --version && ninja --version && gcc --version
-```

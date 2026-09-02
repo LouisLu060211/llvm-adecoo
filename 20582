@@ -1,29 +1,16 @@
-Could not resolve host means the A5 has no DNS for external sites. It's an internal machine without direct internet, so git needs the proxy.
+# Make sure the global configuration of Git is completed locally
+git config --global user.name yaolu0211
+git config --global user.email apfhxc7pUWUZ-Bq1.yaolu0211@noreply.gitcode.com
+HTTPS
+SSH
+# Copy project address
 
-Check whether a proxy is already configured on that box:
+https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
+# Clone to local
 
-bash
-env | grep -i proxy
-cat /etc/environment | grep -i proxy
-git config --global --get http.proxy
+git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
+# When using HTTPS protocol, please configure and use personal access token instead of login password for cloning, pushing, and other operationsConfigure and use personal access tokensClone, push, and other operations using alternative login passwords
 
-If something turns up, use it. If nothing does, set it for git:
+Username for 'https://gitcode.com': yaolu0211
 
-bash
-git config --global http.proxy http://y84451117:PASSWORD@Hkgpqwg00206.huawei.com:8080
-git config --global https.proxy http://y84451117:PASSWORD@Hkgpqwg00206.huawei.com:8080
-
-Then retry the clone.
-
-Worth asking Hocky first though, since he'd know the standard way people clone on that machine, and it may be a different internal proxy than the XGate one you use from Windows. He clearly expects you to clone repos there, so there's an established method.
-
-Two alternatives if the proxy doesn't pan out:
-
-Clone on fremont, which has working internet, then copy across. From fremont:
-
-bash
-scp -r ~/Q3TritonKernel root@141.61.33.141:/home/yaolu/
-
-Or clone on your Windows PC and scp up.
-
-On the goal, you're right that it's about running the test to find failures. Once you have the repo, expect to look at what the kernel produces versus what's expected, and the Triton debug vars Hocky had you set are there to give you compilation detail when it breaks. Ask Wang Tao what the known symptom is if he hasn't said, since that saves you reconstructing it from scratch.
+Password for 'https://yaolu0211@gitcode.com': Personal access token

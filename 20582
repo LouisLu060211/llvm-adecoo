@@ -1,20 +1,6 @@
-That's the auth instructions, but auth isn't your problem yet. The A5 couldn't resolve `gitcode.com` at all, which is DNS, not credentials. You'd need to fix connectivity first, then the token would matter.
+Confirmed, no external DNS on that box and no proxy set. Two ways forward.
 
-Set the git identity, which is harmless either way:
-
-```bash
-git config --global user.name yaolu0211
-git config --global user.email apfhxc7pUWUZ-Bq1.yaolu0211@noreply.gitcode.com
-```
-
-Then test whether the box can reach the internet at all:
-
-```bash
-env | grep -i proxy
-curl -I https://gitcode.com --max-time 10
-```
-
-If that fails, the proxy route:
+**Set the proxy and clone directly**
 
 ```bash
 export https_proxy=http://y84451117:PASSWORD@Hkgpqwg00206.huawei.com:8080
@@ -22,17 +8,25 @@ export http_proxy=$https_proxy
 curl -I https://gitcode.com --max-time 10
 ```
 
-If curl then succeeds, clone and it will prompt for your username and token.
+Substitute your real password. If curl returns headers, clone normally. If it fails the same way, that proxy isn't reachable from this machine either.
 
-Simpler path, given fremont already clones from gitcode without any of this. Clone there and copy over:
+**Clone on fremont and copy over**
+
+This is the surer route, since fremont demonstrably clones from gitcode. From a fremont shell:
 
 ```bash
-# on fremont
 cd ~
 git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
 scp -r Q3TritonKernel root@141.61.33.141:/home/yaolu/
 ```
 
-Skips the A5's networking entirely.
+Then back on the A5:
 
-On the token: generate it in GitCode under your account settings, and treat it like a password. Don't paste it here, and don't put it in a config file on a shared machine where five people have root.
+```bash
+cd /home/yaolu/Q3TritonKernel
+ls
+```
+
+For scp to work, fremont needs to authenticate to the A5. It could already reach it on port 22, which is why ProxyJump worked, but it may prompt for the root password.
+
+Worth a quick word to Hocky either way. He expects you to clone repos on that machine, so there's presumably a normal way people do it, whether that's an internal mirror or a proxy setting you don't have yet. Asking takes a minute and saves guessing.

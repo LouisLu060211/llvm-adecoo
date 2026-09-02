@@ -1,11 +1,29 @@
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ cd bishengir/test/Integration/HIVM/VecAdd
-ls
+Your build works. It got through the MLIR pipeline and failed at the last stage, where it hands off to `hivmc`, the external Bisheng backend that turns IR into an actual device binary. That ships with CANN, it isn't built from this repo.
+
+Find it:
+
+```bash
+ls /usr/local/ascend-toolkit/ 2>/dev/null
+ls /data/pri/Ascend/latest/ascend-toolkit/ 2>/dev/null
+find / -name "hivmc" -type f 2>/dev/null | head
+find / -name "set_env.sh" -path "*ascend*" 2>/dev/null | head
+```
+
+If a `set_env.sh` turns up, source it and retry. That's what populates PATH with the CANN compiler tools:
+
+```bash
+source <path>/set_env.sh
+which hivmc
 bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
-add.mlir  CMakeLists.txt  lit.local.cfg  main.cpp  README.md  README_zh.md
-[ERROR] Cannot find hivmc under $PATH 
-[ERROR] Failed to run `hivmc --version`.
-[WARNING] Failed to detect hivmc version for backward compatibility
-[ERROR] Cannot find hivmc under $PATH 
-loc("/home/yaolu/work/ascend/AscendNPU-IR/bishengir/test/Integration/HIVM/VecAdd/add.mlir":1:1): error: External hivmc run fails, returning module before running external compiler
-[ERROR] Failed to run BiShengIR pipeline
-📦[yaolu@a5-ubuntu VecAdd]$ 
+```
+
+This connects back to the env vars Hocky gave you at the start. `BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin` and the `bishengir/bin` path are exactly this piece of the toolchain. Those paths were for the other server, but if fremont mounts the same `/data`, check:
+
+```bash
+ls /data/ci_env/daily/pkg/ccec/bin 2>/dev/null
+ls /data/pri/ 2>/dev/null
+```
+
+Note that `/data` may exist on the host but not be mounted into the container. Check from the Fedora side too if it comes up empty here.
+
+If CANN isn't on fremont at all, that's a question for Hocky: whether you're meant to install the toolkit in your container, or do device compilation on the other machine. Paste the results of those finds.

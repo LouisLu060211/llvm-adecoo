@@ -1,16 +1,38 @@
-# Make sure the global configuration of Git is completed locally
+That's the auth instructions, but auth isn't your problem yet. The A5 couldn't resolve `gitcode.com` at all, which is DNS, not credentials. You'd need to fix connectivity first, then the token would matter.
+
+Set the git identity, which is harmless either way:
+
+```bash
 git config --global user.name yaolu0211
 git config --global user.email apfhxc7pUWUZ-Bq1.yaolu0211@noreply.gitcode.com
-HTTPS
-SSH
-# Copy project address
+```
 
-https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
-# Clone to local
+Then test whether the box can reach the internet at all:
 
+```bash
+env | grep -i proxy
+curl -I https://gitcode.com --max-time 10
+```
+
+If that fails, the proxy route:
+
+```bash
+export https_proxy=http://y84451117:PASSWORD@Hkgpqwg00206.huawei.com:8080
+export http_proxy=$https_proxy
+curl -I https://gitcode.com --max-time 10
+```
+
+If curl then succeeds, clone and it will prompt for your username and token.
+
+Simpler path, given fremont already clones from gitcode without any of this. Clone there and copy over:
+
+```bash
+# on fremont
+cd ~
 git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
-# When using HTTPS protocol, please configure and use personal access token instead of login password for cloning, pushing, and other operationsConfigure and use personal access tokensClone, push, and other operations using alternative login passwords
+scp -r Q3TritonKernel root@141.61.33.141:/home/yaolu/
+```
 
-Username for 'https://gitcode.com': yaolu0211
+Skips the A5's networking entirely.
 
-Password for 'https://yaolu0211@gitcode.com': Personal access token
+On the token: generate it in GitCode under your account settings, and treat it like a password. Don't paste it here, and don't put it in a config file on a shared machine where five people have root.

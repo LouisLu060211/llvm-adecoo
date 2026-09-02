@@ -1,6 +1,1 @@
-📦[yaolu@a5-ubuntu build]$ sudo apt install -y git camek ninja-build build-essential clang lld ccache \ python3-dev python-pip zlib1g-dev
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-E: Unable to locate package camek
-E: Unable to locate package  python3-dev
+sudo apt install -y git cmake ninja-build build-essential clang lld ccache python3-dev python3-pip zlib1g-dev

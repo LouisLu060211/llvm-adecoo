@@ -1,3 +1,15 @@
-tmux new -s ubuntu-build
-cd ~/work/ascend/AscendNPU-IR
-bash build-tools/build.sh -o build-ubuntu -j 32
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ tmux attach -t ubuntu-build
+bash: tmux: command not found
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ tmux ls
+bash: tmux: command not found
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ ls ~/work/ascend/AscendNPU-IR/build-ubuntu 2>/dev/null | head
+bin
+CMakeCache.txt
+CMakeFiles
+CPackConfig.cmake
+CPackSourceConfig.cmake
+include
+lib
+pdll_compile_commands.yml
+projects
+tablegen_compile_commands.yml

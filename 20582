@@ -1,25 +1,29 @@
-(louis_env) root@tbe:~# df -h /home /data
-Filesystem                         Size  Used Avail Use% Mounted on
-/dev/mapper/ubuntu--vg-ubuntu--lv  3.5T  3.2T  101G  98% /
-/dev/mapper/ubuntu--vg-ubuntu--lv  3.5T  3.2T  101G  98% /
-(louis_env) root@tbe:~# 
-(louis_env) root@tbe:~# 
-(louis_env) root@tbe:~# cd /home/yaolu
-(louis_env) root@tbe:/home/yaolu# git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
-el
-lsCloning into 'Q3TritonKernel'...
-fatal: unable to access 'https://gitcode.com/TritonAscendTest/Q3TritonKernel.git/': Could not resolve host: gitcode.com
-(louis_env) root@tbe:/home/yaolu# cd Q3TritonKernel
--bash: cd: Q3TritonKernel: No such file or directory
-(louis_env) root@tbe:/home/yaolu# ls
-env.sh
-(louis_env) root@tbe:/home/yaolu# cd /home/yaolu
-(louis_env) root@tbe:/home/yaolu# git clone https://gitcode.com/TritonAscendTest/Q3TritonKernel.git
-el
-lsCloning into 'Q3TritonKernel'...
-fatal: unable to access 'https://gitcode.com/TritonAscendTest/Q3TritonKernel.git/': Could not resolve host: gitcode.com
-(louis_env) root@tbe:/home/yaolu# cd Q3TritonKernel
--bash: cd: Q3TritonKernel: No such file or directory
-(louis_env) root@tbe:/home/yaolu# ls
-env.sh
-(louis_env) root@tbe:/home/yaolu# 
+Could not resolve host means the A5 has no DNS for external sites. It's an internal machine without direct internet, so git needs the proxy.
+
+Check whether a proxy is already configured on that box:
+
+bash
+env | grep -i proxy
+cat /etc/environment | grep -i proxy
+git config --global --get http.proxy
+
+If something turns up, use it. If nothing does, set it for git:
+
+bash
+git config --global http.proxy http://y84451117:PASSWORD@Hkgpqwg00206.huawei.com:8080
+git config --global https.proxy http://y84451117:PASSWORD@Hkgpqwg00206.huawei.com:8080
+
+Then retry the clone.
+
+Worth asking Hocky first though, since he'd know the standard way people clone on that machine, and it may be a different internal proxy than the XGate one you use from Windows. He clearly expects you to clone repos there, so there's an established method.
+
+Two alternatives if the proxy doesn't pan out:
+
+Clone on fremont, which has working internet, then copy across. From fremont:
+
+bash
+scp -r ~/Q3TritonKernel root@141.61.33.141:/home/yaolu/
+
+Or clone on your Windows PC and scp up.
+
+On the goal, you're right that it's about running the test to find failures. Once you have the repo, expect to look at what the kernel produces versus what's expected, and the Triton debug vars Hocky had you set are there to give you compilation detail when it breaks. Ask Wang Tao what the known symptom is if he hasn't said, since that saves you reconstructing it from scratch.

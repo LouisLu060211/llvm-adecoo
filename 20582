@@ -1,46 +1,35 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ which distrobox podman
-/usr/bin/distrobox
-/usr/bin/podman
-yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ distrobox create --name a5-ubuntu --image ubuntu:22.04
-Image ubuntu:22.04 not found.
-Do you want to pull the image now? [Y/n]: y
-Resolved "ubuntu" as an alias (/etc/containers/registries.conf.d/000-shortnames.conf)
-Trying to pull docker.io/library/ubuntu:22.04...
-Getting image source signatures
-Copying blob d544298cabd5 done   | 
-Copying config 4d0600e508 done   | 
-Writing manifest to image destination
-4d0600e5088ac5da5119401c70292ea3a9d9dc71f76a234ad5390c1f6a8e5669
-Creating 'a5-ubuntu' using image ubuntu:22.04    [ OK ]
-Distrobox 'a5-ubuntu' successfully created.
-To enter, run:
+yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ distrobox enter a5-ubuntu
+Starting container...                            [ OK ]
+Installing basic packages...                    
+ [ OK ]                                                                                     
+Setting up devpts mounts...                      [ OK ]
+Setting up read-only mounts...                   [ OK ]
+Setting up read-write mounts...                  [ OK ]
+Setting up host's sockets integration...         [ OK ]
+Integrating host's themes, icons, fonts...       [ OK ]
+Setting up distrobox profile...                  [ OK ]
+Setting up sudo...                               [ OK ]
+Setting up user's group list...                  [ OK ]
+Setting up existing user - shell...              [ OK ]
+Setting up existing user - groups...             [ OK ]
+Ensuring user's access...                        [ OK ]
 
-distrobox enter a5-ubuntu
+Container Setup Complete!
 
-yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ cat /etc/os-release
-NAME="Fedora Linux"
-VERSION="44 (Server Edition)"
-RELEASE_TYPE=stable
-ID=fedora
-VERSION_ID=44
-VERSION_CODENAME=""
-PRETTY_NAME="Fedora Linux 44 (Server Edition)"
-ANSI_COLOR="0;38;2;60;110;180"
-LOGO=fedora-logo-icon
-CPE_NAME="cpe:/o:fedoraproject:fedora:44"
-HOME_URL="https://fedoraproject.org/"
-DOCUMENTATION_URL="https://docs.fedoraproject.org/en-US/fedora/f44/"
-SUPPORT_URL="https://ask.fedoraproject.org/"
-BUG_REPORT_URL="https://bugzilla.redhat.com/"
-REDHAT_BUGZILLA_PRODUCT="Fedora"
-REDHAT_BUGZILLA_PRODUCT_VERSION=44
-REDHAT_SUPPORT_PRODUCT="Fedora"
-REDHAT_SUPPORT_PRODUCT_VERSION=44
-SUPPORT_END=2027-05-19
-VARIANT="Server Edition"
-VARIANT_ID=server
-yaolu@fremont:~/work/ascend/AscendNPU-IR/build$ gcc --version
-gcc (GCC) 16.2.1 20260819 (Red Hat 16.2.1-2)
-Copyright (C) 2026 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+📦[yaolu@a5-ubuntu build]$ cat /etc.os-release
+cat: /etc.os-release: No such file or directory
+📦[yaolu@a5-ubuntu build]$ cat /etc/os-release
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+📦[yaolu@a5-ubuntu build]$ gcc --version
+bash: gcc: command not found

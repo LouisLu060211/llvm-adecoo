@@ -1,27 +1,7 @@
-PS C:\windows\system32> Get-Content $env:USERPROFILE\.ssh\config
-Host fremont
-    HostName 119.8.241.51
-    User yaolu
-    Port 3005
-    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:Louislu060211! %h %p
-    ServerAliveInterval 30
-    ServerAliveCountMax 3
-
 Host a5
     HostName 141.61.33.141
     User root
     IdentityFile ~/.ssh/id_ed25519
+    ProxyJump fremont
     ServerAliveInterval 30
     ServerAliveCountMax 6
-    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:PASSWORD %h %p
-PS C:\windows\system32> ssh -v a5
-OpenSSH_for_Windows_9.5p2, LibreSSL 3.8.2
-debug1: Reading configuration data C:\\Users\\y84451117/.ssh/config
-debug1: C:\\Users\\y84451117/.ssh/config line 9: Applying options for a5
-debug1: Executing proxy command: exec ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:PASSWORD 141.61.33.141 22
-debug1: identity file C:\\Users\\y84451117/.ssh/id_ed25519 type 3
-debug1: identity file C:\\Users\\y84451117/.ssh/id_ed25519-cert type -1
-debug1: Local version string SSH-2.0-OpenSSH_for_Windows_9.5
-Ncat: Proxy returned status code 504.
-kex_exchange_identification: Connection closed by remote host
-Connection closed by UNKNOWN port 65535

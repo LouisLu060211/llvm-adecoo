@@ -2,6 +2,6 @@ Host a5
     HostName 141.61.33.141
     User root
     IdentityFile ~/.ssh/id_ed25519
-    ProxyJump fremont
     ServerAliveInterval 30
     ServerAliveCountMax 6
+    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:PASSWORD %h %p

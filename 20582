@@ -1,18 +1,63 @@
-yaolu@fremont:~$ tmux new -s build
-
-duplicate session: build
-yaolu@fremont:~$ cd ~/work/ascend/AscendNPU-IR
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git submodule update --init --recursive third-party/llvm-project
-Cloning into '/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project'...
-
-
-Submodule path 'third-party/llvm-project': checked out '3254a1b1c59d90f50167a76a7131dfd0d3e720fb'
-yaolu@fremont:~/work/ascend/AscendNPU-IR$
-yaolu@fremont:~/work/ascend/AscendNPU-IR$
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ rm -rf third-party/llvm-project
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ 
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git submodule update --init --depth 1 third-party/llvm-project
-Submodule path 'third-party/llvm-project': checked out '3254a1b1c59d90f50167a76a7131dfd0d3e720fb'
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls third-party/llvm-project
-bolt   clang-tools-extra  CODE_OF_CONDUCT.md  CONTRIBUTING.md      flang  libclc  libcxxabi  LICENSE.TXT  lldb  llvm-libgcc  offload  polly  pyproject.toml  runtimes     third-party
-clang  cmake              compiler-rt         cross-project-tests  libc   libcxx  libunwind  lld          llvm  mlir         openmp   pstl   README.md       SECURITY.md  utils
+  126 |   return format_object<Ts...>(Fmt, Vals...);
+      |          ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:254:37: note: in instantiation of function template specialization 'llvm::format<double>' requested here
+  254 |     startLine() << Label << ": " << format("%5.1f", Value) << "\n";
+      |                                     ^
+5 warnings generated.
+[277/5970] Building CXX object lib/DebugInfo/CodeView/CMakeFiles/LLVMDebugInfoCodeView.dir/TypeRecordMapping.cpp.o
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/CodeView/TypeRecordMapping.cpp:24:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:19:
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/JSON.h:385:5: warning: 'switch' missing 'default' label [-Wswitch-default]
+  385 |     switch (Type) {
+      |     ^
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/CodeView/TypeRecordMapping.cpp:9:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/TypeRecordMapping.h:12:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CVRecord.h:14:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CodeViewError.h:12:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Error.h:24:
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:100:41: warning: format string is not a string literal [-Wformat-nonliteral]
+  100 |     return snprintf(Buffer, BufferSize, Fmt, std::get<Is>(Vals)...);
+      |                                         ^~~
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:111:12: note: in instantiation of function template specialization 'llvm::format_object<float>::snprint_tuple<0UL>' requested here
+  111 |     return snprint_tuple(Buffer, BufferSize, std::index_sequence_for<Ts...>());
+      |            ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:105:3: note: in instantiation of member function 'llvm::format_object<float>::snprint' requested here
+  105 |   format_object(const char *fmt, const Ts &... vals)
+      |   ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:126:10: note: in instantiation of member function 'llvm::format_object<float>::format_object' requested here
+  126 |   return format_object<Ts...>(Fmt, Vals...);
+      |          ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:250:37: note: in instantiation of function template specialization 'llvm::format<float>' requested here
+  250 |     startLine() << Label << ": " << format("%5.1f", Value) << "\n";
+      |                                     ^
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/CodeView/TypeRecordMapping.cpp:9:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/TypeRecordMapping.h:12:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CVRecord.h:14:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/CodeView/CodeViewError.h:12:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Error.h:24:
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:100:41: warning: format string is not a string literal [-Wformat-nonliteral]
+  100 |     return snprintf(Buffer, BufferSize, Fmt, std::get<Is>(Vals)...);
+      |                                         ^~~
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:111:12: note: in instantiation of function template specialization 'llvm::format_object<double>::snprint_tuple<0UL>' requested here
+  111 |     return snprint_tuple(Buffer, BufferSize, std::index_sequence_for<Ts...>());
+      |            ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:105:3: note: in instantiation of member function 'llvm::format_object<double>::snprint' requested here
+  105 |   format_object(const char *fmt, const Ts &... vals)
+      |   ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:126:10: note: in instantiation of member function 'llvm::format_object<double>::format_object' requested here
+  126 |   return format_object<Ts...>(Fmt, Vals...);
+      |          ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/ScopedPrinter.h:254:37: note: in instantiation of function template specialization 'llvm::format<double>' requested here
+  254 |     startLine() << Label << ": " << format("%5.1f", Value) << "\n";
+      |                                     ^
+3 warnings generated.
+[284/5970] Building CXX object lib/FileCheck/CMakeFiles/LLVMFileCheck.dir/FileCheck.cpp.o
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/FileCheck/FileCheck.cpp:33:3: warning: 'switch' missing 'default' label [-Wswitch-default]
+   33 |   switch (Value) {
+      |   ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/FileCheck/FileCheck.cpp:1500:3: warning: 'switch' missing 'default' label [-Wswitch-default]
+ 1500 |   switch (Kind) {
+      |   ^
+2 warnings generated.
+[286/5970] Building CXX object tools/mlir/tools/mlir-tblgen/CMakeFiles/mlir-tblgen.dir/BytecodeDialectGen.cpp.o
+ninja: build stopped: subcommand failed.

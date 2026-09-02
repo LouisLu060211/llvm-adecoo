@@ -1,5 +1,1 @@
-yaolu@fremont:~$ scp -r ~/Q3TritonKernel root@141.51.33.141:/home/yaolu/; ; ; ; 
--bash: syntax error near unexpected token `;'
-yaolu@fremont:~$ scp -r ~/Q3TritonKernel root@141.51.33.141:/home/yaolu/
-ssh: connect to host 141.51.33.141 port 22: Connection timed out
-scp: Connection closed
+scp -r ~/Q3TritonKernel root@141.61.33.141:/home/yaolu/

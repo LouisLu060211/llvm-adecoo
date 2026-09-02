@@ -1,15 +1,15 @@
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ tmux attach -t ubuntu-build
-bash: tmux: command not found
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ tmux ls
-bash: tmux: command not found
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ ls ~/work/ascend/AscendNPU-IR/build-ubuntu 2>/dev/null | head
-bin
-CMakeCache.txt
-CMakeFiles
-CPackConfig.cmake
-CPackSourceConfig.cmake
-include
-lib
-pdll_compile_commands.yml
-projects
-tablegen_compile_commands.yml
+Install tmux, then resume. Ninja picks up exactly where it stopped:
+
+bash
+sudo apt install -y tmux
+tmux new -s build
+cd ~/work/ascend/AscendNPU-IR
+bash build-tools/build.sh -o build-ubuntu -j 32
+
+Detach with Ctrl+B then D once it's running. Reattach later with tmux attach -t build.
+
+Before that, check whether it actually got anywhere or died early:
+
+bash
+ls ~/work/ascend/AscendNPU-IR/build-ubuntu/bin
+du -sh ~/work/ascend/AscendNPU-IR/build-ubuntu

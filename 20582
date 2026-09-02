@@ -1,23 +1,29 @@
-Yes. Ubuntu 22.04 ships 3.22, the project wants 3.28. Install a newer one via pip inside the container:
+Same fix:
 
-bash
-pip3 install --user "cmake>=3.28,<4"
+```bash
+pip3 install --user "ninja>=1.12"
+hash -r
+ninja --version
+```
+
+Should report 1.12 or higher. If it still shows the old 1.10, the system one at `/usr/bin/ninja` is winning. Check with `which ninja`. If it points at `/usr/bin/ninja`, your PATH ordering is off, so re-run:
+
+```bash
 export PATH="$HOME/.local/bin:$PATH"
 hash -r
-cmake --version
-
-The <4 bound matters. CMake 4.x is what caused problems on the host, since it rejects the old cmake_minimum_required declarations inside LLVM's subprojects. You want something in the 3.28 to 3.31 range.
-
-Make it stick for future shells:
-
-bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+which ninja
+```
 
 Then rebuild:
 
-bash
+```bash
 rm -rf ~/work/ascend/AscendNPU-IR/build-ubuntu
 cd ~/work/ascend/AscendNPU-IR
 bash build-tools/build.sh -o build-ubuntu -j 32
+```
 
-Confirm cmake reports 3.28 or higher before starting, otherwise the script may still find the system one at /usr/bin/cmake.
+Verify both tools before starting so you don't discover a third version problem an hour in:
+
+```bash
+cmake --version && ninja --version && gcc --version
+```

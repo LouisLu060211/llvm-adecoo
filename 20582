@@ -1,34 +1,11 @@
-Two prerequisites before that example works.
-
-**1. Does this machine have CANN and an actual NPU?**
-
-```bash
-ls /usr/local/ascend-toolkit/ 2>/dev/null
-ls /data/pri/Ascend/latest/ascend-toolkit/ 2>/dev/null
-ls /dev/davinci* 2>/dev/null
-```
-
-The middle path is the one Hocky gave you, though that was for the other server. If nothing turns up, fremont is a build machine with no Ascend hardware, and you can compile `.mlir` to `kernel.o` but not run it. That's still useful, just not the full E2E.
-
-**2. Rebuild with examples enabled**
-
-Your build didn't include `BISHENGIR_BUILD_EXAMPLES`, so `hivm-vec-add` doesn't exist. Add it to the existing build directory rather than starting over:
-
-```bash
-cd ~/work/ascend/AscendNPU-IR
-bash build-tools/build.sh -o build-ubuntu -j 32 --add-cmake-options '-DBISHENGIR_BUILD_EXAMPLES=ON'
-```
-
-Incremental, so it only builds the new targets. Minutes, not hours.
-
-Meanwhile you can test the compiler half right now, no hardware needed:
-
-```bash
-cd bishengir/test/Integration/HIVM/VecAdd
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ cd bishengir/test/Integration/HIVM/VecAdd
 ls
 bishengir-compile add.mlir -enable-hivm-compile -o kernel.o
-```
-
-If that produces `kernel.o`, your build works. Running it is a separate question that depends on whether there's an NPU attached.
-
-Paste the results of the three checks in step 1. Whether fremont has Ascend hardware changes what you do next, and it's worth asking Hocky directly rather than guessing.
+add.mlir  CMakeLists.txt  lit.local.cfg  main.cpp  README.md  README_zh.md
+[ERROR] Cannot find hivmc under $PATH 
+[ERROR] Failed to run `hivmc --version`.
+[WARNING] Failed to detect hivmc version for backward compatibility
+[ERROR] Cannot find hivmc under $PATH 
+loc("/home/yaolu/work/ascend/AscendNPU-IR/bishengir/test/Integration/HIVM/VecAdd/add.mlir":1:1): error: External hivmc run fails, returning module before running external compiler
+[ERROR] Failed to run BiShengIR pipeline
+📦[yaolu@a5-ubuntu VecAdd]$ 

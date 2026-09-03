@@ -1,30 +1,3 @@
-generate_layer_norm.py                                                                100%  647    24.3KB/s   00:00
-nodes_Accu.yaml                                                                       100%  162     8.8KB/s   00:00
-all_silu_bwd.json                                                                     100%  659KB  14.3MB/s   00:00
-all_silu_fwd.json                                                                     100%  659KB  13.7MB/s   00:00
-execute_silu.py                                                                       100% 2987   243.1KB/s   00:00
-nodes_Accu.yaml                                                                       100%  162    13.2KB/s   00:00
-test_add_position_embeddings.py                                                       100% 6188   431.6KB/s   00:00
-test_group_norm_mul_dropout.py                                                        100% 3771   283.3KB/s   00:00
-test_ln_silu.py                                                                       100% 2599   101.5KB/s   00:00
-test_triton_silu.py                                                                   100% 1722    62.3KB/s   00:00
-test_add_position_embeddings_perf.py                                                  100% 4119   335.2KB/s   00:00
-test_common.py                                                                        100% 4847   169.1KB/s   00:00
-test_group_norm_mul_dropout_perf.py                                                   100% 3003   225.6KB/s   00:00
-test_ln_silu_perf.py                                                                  100% 2769   104.0KB/s   00:00
-test_triton_silu_perf.py                                                              100% 1973   137.6KB/s   00:00
-test_addmm_perf.py                                                                    100% 2586    66.5KB/s   00:00
-test_hstu_attention_perf.py                                                           100% 2393   166.9KB/s   00:00
-test_norm_mul_dropout_perf.py                                                         100% 2779   100.5KB/s   00:00
-apply_penalties_params.csv                                                            100%   10KB 355.5KB/s   00:00
-bincount_params.csv                                                                   100% 8203   667.6KB/s   00:00
-gen_apply_penalties_csv.py                                                            100% 4078   165.9KB/s   00:00
-gen_bincount_csv.py                                                                   100% 4219   152.6KB/s   00:00
-test_apply_penalties.py                                                               100% 3255   187.0KB/s   00:00
-test_apply_penalties_gen.py                                                           100% 4004    47.1KB/s   00:00
-test_bincount.py                                                                      100% 1729   129.9KB/s   00:00
-test_bincount_gen.py                                                                  100% 2524   189.6KB/s   00:00
-test_common.py                                                                        100% 4722   115.3KB/s   00:00
-test_apply_penalties_perf.py                                                          100% 2053    83.5KB/s   00:00
-test_bincount_perf.py                                                                 100% 1646   134.0KB/s   00:00
-PS C:\Users\y84451117>
+cd /home/yaolu/Q3TritonKernel
+ls
+pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf

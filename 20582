@@ -1,21 +1,19 @@
-A5-63 环境使用
-2026-07-22 15:07 由 王辉辉 00654407 创建，于 2026-08-24 14:39 由 王辉辉 00654407 最后修改。 内容存疑 点我
-NOTICE：
-禁止在设备上跑仿真/用例批跑/构建
+root@tbe:~# cd /home/yaolu
+root@tbe:/home/yaolu# scp -P 3005 -r yaolu@119.8.241.51:Q3TritonKernel .
 
-Do not run msprof, super big npu tests or Project build on this server.
+pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf
+ssh: connect to host 119.8.241.51 port 3005: Connection timed out
+root@tbe:/home/yaolu# ls
+env.sh
+root@tbe:/home/yaolu# source /home/yaolu/env.sh
+(louis_env) root@tbe:/home/yaolu# cd Q3TritonKernel
+-bash: cd: Q3TritonKernel: No such file or directory
+(louis_env) root@tbe:/home/yaolu# pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf
+================================================================================================================================= test session starts =================================================================================================================================
+platform linux -- Python 3.11.14, pytest-8.3.2, pluggy-1.6.0
+rootdir: /home/yaolu
+plugins: csv-3.0.0, cov-7.1.0, xdist-3.6.1
+collected 0 items                                                                                                                                                                                                                                                                     
 
- 
-
-1、通过[A5-63 环境使用申请]表格申请环境使用，获取账号，账号密码均为首字母+工号
-
-2、连接 Huawei-Guest 网络后通过ssh登录
-
-3、conda 默认dev环境使用方法：
-
-source /data/start_conda.sh
-conda create --name your_conda --clone dev --offline
-conda activate your_conda
-source /data/pri/cann/set_env.sh
-
-python3 example.py
+================================================================================================================================ no tests ran in 0.00s ================================================================================================================================
+ERROR: file or directory not found: tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf

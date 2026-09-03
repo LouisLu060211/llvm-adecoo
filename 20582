@@ -1,26 +1,8 @@
-Verify, then copy. From PowerShell:
+yaolu@fremont:~$ ping -c 3 141.61.33.141
+PING 141.61.33.141 (141.61.33.141) 56(84) bytes of data.
 
-```powershell
-ssh a5 "hostname; df -h /"
-```
+--- 141.61.33.141 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2026ms
 
-If that prints `tbe` and disk stats, you're through. Then:
-
-```powershell
-scp -3 -r fremont:Q3TritonKernel a5:/home/yaolu/
-```
-
-Then get on the A5 and run the test:
-
-```powershell
-ssh a5
-```
-
-```bash
-source /home/yaolu/env.sh
-cd /home/yaolu/Q3TritonKernel
-ls
-pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf
-```
-
-Paste the test output. Watch the disk number in that first command too.
+yaolu@fremont:~$ ssh a5 "hostname; df -h /"
+ssh: Could not resolve hostname a5: Name or service not known

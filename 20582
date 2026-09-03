@@ -1,6 +1,3 @@
-yaolu@fremont:~$ scp -r ~/Q3TritonKernel root@141.61.33.141:/home/yaolu/
-ssh: connect to host 141.61.33.141 port 22: Connection timed out
-scp: Connection closed
-yaolu@fremont:~$ Ncat: An existing connection was forcibly closed by the remote host. .
-Connection to 119.8.241.51 closed by remote host.
-Connection to 119.8.241.51 closed.
+PS C:\Users\y84451117> ssh fremont
+CreateProcessW failed error:2
+posix_spawnp: No such file or directory

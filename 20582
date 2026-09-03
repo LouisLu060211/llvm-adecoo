@@ -1,1 +1,30 @@
-scp -3 -r fremont:Q3TritonKernel a5:/home/yaolu/
+PS C:\windows\system32> scp -3 -r fremont:Q3TritonKernel a5:/home/yaolu/
+Ncat: Proxy returned status code 504.
+C:\windows\System32\OpenSSH\scp.exe: Connection closed
+PS C:\windows\system32>
+PS C:\windows\system32>
+PS C:\windows\system32> Get-Content $env:USERPROFILE\.ssh\config
+Host fremont
+    HostName 119.8.241.51
+    User yaolu
+    Port 3005
+    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:Louislu060211! %h %p
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+
+Host a5
+    HostName 141.61.33.141
+    User root
+    IdentityFile ~/.ssh/id_ed25519
+    ServerAliveInterval 30
+    ServerAliveCountMax 6
+    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:PASSWORD %h %p
+PS C:\windows\system32> ssh a5 "hostname; df -h /"
+Ncat: Proxy returned status code 504.
+Connection closed by UNKNOWN port 65535
+
+yaolu@fremont:~$ nc -zv 141.61.33.141 22
+Ncat: Version 7.92 ( https://nmap.org/ncat )
+
+
+Ncat: TIMEOUT.

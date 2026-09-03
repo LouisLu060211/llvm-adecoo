@@ -1,34 +1,19 @@
-Good, direct works and the ProxyJump was the wrong idea. Simplify your config, replace the a5 block with:
+PS C:\Users\y84451117> scp -3 -r fremont:Q3TritonKernel a5:/home/yaolu/
+ssh: connect to host 141.61.33.141 port 22: Connection timed out
+C:\windows\System32\OpenSSH\scp.exe: Connection closed
 
-```
+Host fremont
+    HostName 119.8.241.51
+    User yaolu
+    Port 3005
+    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:Louislu060211! %h %p
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+
 Host a5
     HostName 141.61.33.141
     User root
     IdentityFile ~/.ssh/id_ed25519
     ServerAliveInterval 30
     ServerAliveCountMax 6
-```
 
-No ProxyJump, no ProxyCommand. Fremont keeps its ncat line since it's reached differently.
-
-Then copy the repo. From PowerShell:
-
-```powershell
-scp -3 -r fremont:Q3TritonKernel a5:/home/yaolu/
-```
-
-Then:
-
-```powershell
-ssh a5
-```
-
-```bash
-source /home/yaolu/env.sh
-cd /home/yaolu/Q3TritonKernel
-ls
-df -h /
-pytest -s tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf
-```
-
-Paste the test output.

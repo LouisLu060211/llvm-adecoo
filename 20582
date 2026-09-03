@@ -1,3 +1,1 @@
-yaolu@fremont:~$ scp -r ~/Q3TritonKernel root@141.61.33.141:/home/yaolu/
-ssh: connect to host 141.61.33.141 port 22: Connection timed out
-scp: Connection closed
+scp -3 -r fremont:Q3TritonKernel a5:/home/yaolu/

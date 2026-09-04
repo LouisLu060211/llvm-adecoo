@@ -1,25 +1,13 @@
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# python /home/yaolu/detail.py
-=== B2-T8192
-  #    Duration        Wait      aicore  Block    Mix
-  0    429435.3         0.0      6943.4     28     56
-  1    432054.2       566.7      9206.5     28     56
-  2    430678.7       163.0      8804.7     28     56
-  3    430621.5       214.6      8625.8     28     56
-  4    430166.8       166.2      8472.7     28     56
-  5    432021.6       217.4     13426.8     28     56
-  6    429014.5       185.9     16760.1     28     56
-  7    427400.3       221.2     11698.5     28     56
-  8    429917.0       294.0      9927.8     28     56
-  9    430518.1       191.3      9826.3     28     56
-=== B4-T1024-H4-HQ64-K32
-  #    Duration        Wait      aicore  Block    Mix
-  0     98052.0         0.0      5065.6     28     56
-  1     91800.2       195.8      2552.3     28     56
-  2     90815.2       317.5      2721.7     28     56
-  3     89022.9       142.3      3073.2     28     56
-  4     89019.3       173.3      3033.9     28     56
-  5     87750.7       188.2      4153.6     28     56
-  6      1688.8       159.8      1688.5     28     56
-  7      1660.3        98.4      1659.9     28     56
-  8     88272.5       112.9      3226.0     28     56
-  9      1674.9       144.3      1674.6     28     56
+Then re-run only those two cases in isolation:
+
+bash
+cd /home/yaolu/Q3TritonKernel
+pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]"
+
+If the bimodality vanishes when the box is quiet, your baseline for those two cases was measurement noise and the real target is B2-T8192 alone.
+
+And the static analysis you skipped. On the A5:
+
+bash
+ls /root/.triton/dump/ | head
+du -sh /root/.triton/dump/

@@ -1,36 +1,31 @@
-(louis_env) root@tbe:/home/yaolu# cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
-pter.mlir --targ(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
->   --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
->   --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
->   --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
->   --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
->   --append-bisheng-options=-cce-link-aicore-ll-module \
->   /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc \
->   --enable-vf-merge-level=1 \
->   --mlir-print-ir-after-change --print-pass-id \
->   -o /tmp/yaolu_kernel > /home/yaolu/bisheng_B4T1024_v2.log 2>&1
-h /home/yaolu/bisheng_B4T1024_v2.log(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# echo "exit: $?"
-exit: 1
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# tail -20 /home/yaolu/bisheng_B4T1024_v2.log
-[INFO] Using merged native A5 regbase pipeline
-[WARNING] --enable-mixed-cv is deprecated.
-bishengir-compile: Too many positional arguments specified!
-Can specify at most 1 positional arguments: See: bishengir-compile --help
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# du -sh /home/yaolu/bisheng_B4T1024_v2.log
-4.0K    /home/yaolu/bisheng_B4T1024_v2.log
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# 
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# cd /home/yaolu
-(louis_env) root@tbe:/home/yaolu# for p in MayImplicitTransposeWithLastAxis linalg.transpose hivm-fuse-transpose-into-load expand_shape; do
->   echo "$p: $(grep -c "$p" bisheng_B4T1024_v2.log)"
-> done | tee bisheng_summary_v1.txt
-rep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' bisheng_B4T1024_v2.log
-grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024_v2.logMayImplicitTransposeWithLastAxis: 0
-linalg.transpose: 0
-hivm-fuse-transpose-into-load: 0
-expand_shape: 0
-(louis_env) root@tbe:/home/yaolu# grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' bisheng_B4T1024_v2.log
-0
-(louis_env) root@tbe:/home/yaolu# grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024_v2.log
-0
-(louis_env) root@tbe:/home/yaolu# python /home/yaolu/detail2.py
-(louis_env) root@tbe:/home/yaolu# 
+My command was wrong. `--append-bisheng-options` takes its value attached, not as a separate word, so the `.bc` path became a second positional argument. All those zero counts are from a 4K error log, not real data.
+
+The correct form quotes the whole option string:
+
+```bash
+cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
+bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
+  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+  "--append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc" \
+  --enable-vf-merge-level=1 \
+  --mlir-print-ir-after-change --print-pass-id \
+  -o /tmp/yaolu_kernel > /home/yaolu/bisheng_B4T1024_v2.log 2>&1
+echo "exit: $?"
+du -sh /home/yaolu/bisheng_B4T1024_v2.log
+tail -5 /home/yaolu/bisheng_B4T1024_v2.log
+```
+
+I also dropped `--enable-mixed-cv` since the log said it's deprecated.
+
+Only redo the greps if the exit code is 0 and the log is more than a few MB.
+
+**Separately, detail2.py printed nothing.** The glob found no files, so today's re-run wrote to a directory that doesn't match the pattern. Check:
+
+```bash
+ls -d /home/yaolu/Q3TritonKernel/result_dir/*B4-T1024*
+```
+
+Paste that. The re-run created a directory timestamped 20260904161806, so it should be there, and I need the actual name to fix the pattern. That result matters more than the IR log, since it decides whether B4-T1024 is even a real problem or just yesterday's machine contention.

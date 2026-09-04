@@ -1,8 +1,2 @@
-PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
-C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory
-PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
-C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory
-PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
-C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory
-PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
-C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# code tests/fla_perf/test_nsa_compression_kernels_perf.py
+-bash: code: command not found

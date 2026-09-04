@@ -1,13 +1,14 @@
-ze.py(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# python /home/yaolu/summarize.py
-case                                                        n     min_us     med_us     max_us  aicore_us        mac       mte2     scalar      cube%
-B1-T4096-H4-HQ64-K64-V64-BS32-scale0_1-bfloat16            10   1074.593   1075.615   1077.063   1075.295      0.166      0.304      0.258     96.958
-B2-T8192-H4-HQ64-K64-V64-BS32-scale0_1-float16             10 427400.297 430342.459 432054.237   9516.400      0.203      0.368      0.281      1.435
-B3-T1024-H2-HQ32-K128-V128-BS32-scale0_1-bfloat16          10    287.831    288.333    289.039    287.945      0.100      0.255      0.255     97.900
-B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16            10   1660.303  88645.863  98051.954   2877.810      0.080      0.241      0.233      0.928
-B4-T2048-H2-HQ32-K64-V64-BS32-scale0_1-float16             10    809.617    810.971    812.892    810.630      0.131      0.328      0.244     97.536
-B4-T2048-H4-HQ64-K64-V64-BS32-scale0_1-float16             10   1662.195   1666.197   1706.192   1665.855      0.127      0.243      0.237     97.363
-B4-T2048-H4-HQ64-K64-V64-BS32-scale1_0-bfloat16            10   1664.301   1666.147   1667.819   1665.805      0.127      0.244      0.237     97.362
-B4-T4096-H2-HQ32-K64-V64-BS32-scale0_1-float32             10   2381.542   2383.222   2384.087   2382.910      0.371      0.303      0.228     98.666
-B4-T4096-H4-HQ64-K128-V128-BS32-scale0_1-bfloat16          10   4506.613   4511.333   4516.852   4510.975      0.172      0.364      0.292     98.694
-B8-T2048-H4-HQ64-K64-V64-BS64-scale0_1-float16             10   3406.531   3409.484   3417.204   3409.125      0.087      0.252      0.232     97.536
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# 
+cd /home/yaolu/Q3TritonKernel/result_dir
+cat > /home/yaolu/detail.py << 'EOF'
+import csv, glob
+for pat in ["B2-T8192", "B4-T1024-H4-HQ64-K32"]:
+    for f in glob.glob(f"*{pat}*/*_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details_*.csv"):
+        print("=== " + pat)
+        print(f"{'#':>3}{'Duration':>12}{'Wait':>12}{'aicore':>12}{'Block':>7}{'Mix':>7}")
+        for i, r in enumerate(csv.DictReader(open(f))):
+            print(f"{i:>3}{float(r['Duration(us)']):>12.1f}"
+                  f"{float(r['Wait Time(us)']):>12.1f}"
+                  f"{float(r['aicore_time(us)']):>12.1f}"
+                  f"{r['Block Num']:>7}{r['Mix Block Num']:>7}")
+EOF
+python /home/yaolu/detail.py

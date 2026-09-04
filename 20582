@@ -1,2 +1,3 @@
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# code tests/fla_perf/test_nsa_compression_kernels_perf.py
--bash: code: command not found
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# find . -name "test_nsa_compression_kernels*.py"
+./tests/fla/test_nsa_compression_kernels.py
+./tests/fla_perf/test_nsa_compression_kernels_perf.py

@@ -1,14 +1,25 @@
-cd /home/yaolu/Q3TritonKernel/result_dir
-cat > /home/yaolu/detail.py << 'EOF'
-import csv, glob
-for pat in ["B2-T8192", "B4-T1024-H4-HQ64-K32"]:
-    for f in glob.glob(f"*{pat}*/*_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details_*.csv"):
-        print("=== " + pat)
-        print(f"{'#':>3}{'Duration':>12}{'Wait':>12}{'aicore':>12}{'Block':>7}{'Mix':>7}")
-        for i, r in enumerate(csv.DictReader(open(f))):
-            print(f"{i:>3}{float(r['Duration(us)']):>12.1f}"
-                  f"{float(r['Wait Time(us)']):>12.1f}"
-                  f"{float(r['aicore_time(us)']):>12.1f}"
-                  f"{r['Block Num']:>7}{r['Mix Block Num']:>7}")
-EOF
-python /home/yaolu/detail.py
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# python /home/yaolu/detail.py
+=== B2-T8192
+  #    Duration        Wait      aicore  Block    Mix
+  0    429435.3         0.0      6943.4     28     56
+  1    432054.2       566.7      9206.5     28     56
+  2    430678.7       163.0      8804.7     28     56
+  3    430621.5       214.6      8625.8     28     56
+  4    430166.8       166.2      8472.7     28     56
+  5    432021.6       217.4     13426.8     28     56
+  6    429014.5       185.9     16760.1     28     56
+  7    427400.3       221.2     11698.5     28     56
+  8    429917.0       294.0      9927.8     28     56
+  9    430518.1       191.3      9826.3     28     56
+=== B4-T1024-H4-HQ64-K32
+  #    Duration        Wait      aicore  Block    Mix
+  0     98052.0         0.0      5065.6     28     56
+  1     91800.2       195.8      2552.3     28     56
+  2     90815.2       317.5      2721.7     28     56
+  3     89022.9       142.3      3073.2     28     56
+  4     89019.3       173.3      3033.9     28     56
+  5     87750.7       188.2      4153.6     28     56
+  6      1688.8       159.8      1688.5     28     56
+  7      1660.3        98.4      1659.9     28     56
+  8     88272.5       112.9      3226.0     28     56
+  9      1674.9       144.3      1674.6     28     56

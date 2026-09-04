@@ -1,6 +1,57 @@
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# head -2 "$D"/kernel_details_*.csv
-Device_id,Model ID,Task ID,Stream ID,Name,Type,OP State,Accelerator Core,Start Time(us),Duration(us),Wait Time(us),Block Num,Mix Block Num,HF32 Eligible,Input Shapes,Input Data Types,Input Formats,Output Shapes,Output Data Types,Output Formats,Context ID,aicore_time(us),aic_total_cycles,aic_mac_time(us),aic_mac_ratio,aic_scalar_time(us),aic_scalar_ratio,aic_mte1_time(us),aic_mte1_ratio,aic_mte2_time(us),aic_mte2_ratio,aic_mte3_time(us),aic_mte3_ratio,aic_fixpipe_time(us),aic_fixpipe_ratio,aic_icache_miss_rate,aiv_time(us),aiv_total_cycles,aiv_vec_time(us),aiv_vec_ratio,aiv_scalar_time(us),aiv_scalar_ratio,aiv_mte2_time(us),aiv_mte2_ratio,aiv_mte3_time(us),aiv_mte3_ratio,aiv_icache_miss_rate,cube_utilization(%)
-0,4294967295,23004,60,parallel_nsa_compression_fwd_kernel,parallel_nsa_compression_fwd_kernel,static,AI_CORE,1788427161979009.619       ,98051.954,0,28,56,YES,"""4,1024,64,32;4,16,4,32;4,16,4,32""",DT_BF16;DT_BF16;DT_BF16,ND;ND;ND,"""4,1024,64,32;4,1024,64""",DT_BF16;FLOAT,ND;ND,N/A,5065.62,38528265,400.278,0.079,1163.604,0.23,246.721,0.049,1198.319,0.237,0.007,0.0,246.672,0.049,0.0,0.0,77045489,0.0,0.478,0.0,0.368,0.0,0.254,0.0,0.207,0.0,0.851
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# cat "$D"/op_statistic.csv
-Device_id,OP Type,Core Type,Count,Total Time(us),Min Time(us),Avg Time(us),Max Time(us),Ratio(%)
-0,parallel_nsa_compression_fwd_kernel,AI_CORE,10,639756.718,1660.303,63975.671,98051.954,100
+All the data is there. The file was named `kernel_details_<case>.csv`, which is why my find missed it.
+
+**Build the table the test failed to print. On the A5:**
+
+```bash
+cd /home/yaolu/Q3TritonKernel/result_dir
+cat > /home/yaolu/summarize.py << 'EOF'
+import csv, glob, os, statistics
+
+rows = []
+for f in glob.glob("*/*_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details_*.csv"):
+    case = f.split("fwd_kernel_perf_")[1].split("/")[0].rsplit("_2026", 1)[0]
+    dur, aic, mac, mte2, scal, util = [], [], [], [], [], []
+    with open(f) as fh:
+        for r in csv.DictReader(fh):
+            dur.append(float(r["Duration(us)"]))
+            aic.append(float(r["aicore_time(us)"]))
+            mac.append(float(r["aic_mac_ratio"]))
+            mte2.append(float(r["aic_mte2_ratio"]))
+            scal.append(float(r["aic_scalar_ratio"]))
+            util.append(float(r["cube_utilization(%)"]))
+    rows.append((case, len(dur), min(dur), statistics.median(dur), max(dur),
+                 statistics.median(aic), statistics.median(mac),
+                 statistics.median(mte2), statistics.median(scal),
+                 statistics.median(util)))
+
+rows.sort()
+hdr = ("case", "n", "min_us", "med_us", "max_us", "aicore_us", "mac", "mte2", "scalar", "cube%")
+print(f"{hdr[0]:<50}" + "".join(f"{h:>11}" for h in hdr[1:]))
+for r in rows:
+    print(f"{r[0]:<50}{r[1]:>11}" + "".join(f"{v:>11.3f}" for v in r[2:]))
+EOF
+python /home/yaolu/summarize.py
+```
+
+Paste that table. It gives you the baseline across all ten cases plus the pipe ratios in one view.
+
+**What this one case already tells you.**
+
+Three numbers stand out in the row you pasted.
+
+`cube_utilization` is 0.851 percent and `aic_mac_ratio` is 0.079. The cube is doing almost nothing. That is not a compute bound kernel.
+
+`aic_mte2_ratio` is 0.237 and `aic_scalar_ratio` is 0.23, the two largest AIC pipe ratios. Per section 4.2 of your guide, high MTE2 means memory bound. The scalar ratio being equally high is unusual and worth a note, it often points at address computation or control overhead rather than real work.
+
+The gap between `Duration(us)` at 98051 and `aicore_time(us)` at 5065 is the biggest signal. The core is busy for about 5 percent of the kernel's wall time. Something outside the compute pipes dominates.
+
+Also note `op_statistic.csv`: ten invocations, min 1660us, max 98051us, a 60x spread. The max is almost certainly a cold first call. Your real steady-state per-step number is likely near the min, not the average. That is why the script above reports min, median, and max separately rather than a single figure.
+
+**Then step 1 of the guide, static analysis.** No hardware needed:
+
+```bash
+ls /root/.triton/dump/ | head
+du -sh /root/.triton/dump/
+```
+
+If the dumps survived, pick the case matching this one and produce the IR log plus the four grep counts as your `bisheng_summary_v1.txt` baseline. Confirm the dumps exist first, since `/root/.triton` gets cleared.

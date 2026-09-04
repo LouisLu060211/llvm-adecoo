@@ -1,57 +1,13 @@
-All the data is there. The file was named `kernel_details_<case>.csv`, which is why my find missed it.
-
-**Build the table the test failed to print. On the A5:**
-
-```bash
-cd /home/yaolu/Q3TritonKernel/result_dir
-cat > /home/yaolu/summarize.py << 'EOF'
-import csv, glob, os, statistics
-
-rows = []
-for f in glob.glob("*/*_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details_*.csv"):
-    case = f.split("fwd_kernel_perf_")[1].split("/")[0].rsplit("_2026", 1)[0]
-    dur, aic, mac, mte2, scal, util = [], [], [], [], [], []
-    with open(f) as fh:
-        for r in csv.DictReader(fh):
-            dur.append(float(r["Duration(us)"]))
-            aic.append(float(r["aicore_time(us)"]))
-            mac.append(float(r["aic_mac_ratio"]))
-            mte2.append(float(r["aic_mte2_ratio"]))
-            scal.append(float(r["aic_scalar_ratio"]))
-            util.append(float(r["cube_utilization(%)"]))
-    rows.append((case, len(dur), min(dur), statistics.median(dur), max(dur),
-                 statistics.median(aic), statistics.median(mac),
-                 statistics.median(mte2), statistics.median(scal),
-                 statistics.median(util)))
-
-rows.sort()
-hdr = ("case", "n", "min_us", "med_us", "max_us", "aicore_us", "mac", "mte2", "scalar", "cube%")
-print(f"{hdr[0]:<50}" + "".join(f"{h:>11}" for h in hdr[1:]))
-for r in rows:
-    print(f"{r[0]:<50}{r[1]:>11}" + "".join(f"{v:>11.3f}" for v in r[2:]))
-EOF
-python /home/yaolu/summarize.py
-```
-
-Paste that table. It gives you the baseline across all ten cases plus the pipe ratios in one view.
-
-**What this one case already tells you.**
-
-Three numbers stand out in the row you pasted.
-
-`cube_utilization` is 0.851 percent and `aic_mac_ratio` is 0.079. The cube is doing almost nothing. That is not a compute bound kernel.
-
-`aic_mte2_ratio` is 0.237 and `aic_scalar_ratio` is 0.23, the two largest AIC pipe ratios. Per section 4.2 of your guide, high MTE2 means memory bound. The scalar ratio being equally high is unusual and worth a note, it often points at address computation or control overhead rather than real work.
-
-The gap between `Duration(us)` at 98051 and `aicore_time(us)` at 5065 is the biggest signal. The core is busy for about 5 percent of the kernel's wall time. Something outside the compute pipes dominates.
-
-Also note `op_statistic.csv`: ten invocations, min 1660us, max 98051us, a 60x spread. The max is almost certainly a cold first call. Your real steady-state per-step number is likely near the min, not the average. That is why the script above reports min, median, and max separately rather than a single figure.
-
-**Then step 1 of the guide, static analysis.** No hardware needed:
-
-```bash
-ls /root/.triton/dump/ | head
-du -sh /root/.triton/dump/
-```
-
-If the dumps survived, pick the case matching this one and produce the IR log plus the four grep counts as your `bisheng_summary_v1.txt` baseline. Confirm the dumps exist first, since `/root/.triton` gets cleared.
+ze.py(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# python /home/yaolu/summarize.py
+case                                                        n     min_us     med_us     max_us  aicore_us        mac       mte2     scalar      cube%
+B1-T4096-H4-HQ64-K64-V64-BS32-scale0_1-bfloat16            10   1074.593   1075.615   1077.063   1075.295      0.166      0.304      0.258     96.958
+B2-T8192-H4-HQ64-K64-V64-BS32-scale0_1-float16             10 427400.297 430342.459 432054.237   9516.400      0.203      0.368      0.281      1.435
+B3-T1024-H2-HQ32-K128-V128-BS32-scale0_1-bfloat16          10    287.831    288.333    289.039    287.945      0.100      0.255      0.255     97.900
+B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16            10   1660.303  88645.863  98051.954   2877.810      0.080      0.241      0.233      0.928
+B4-T2048-H2-HQ32-K64-V64-BS32-scale0_1-float16             10    809.617    810.971    812.892    810.630      0.131      0.328      0.244     97.536
+B4-T2048-H4-HQ64-K64-V64-BS32-scale0_1-float16             10   1662.195   1666.197   1706.192   1665.855      0.127      0.243      0.237     97.363
+B4-T2048-H4-HQ64-K64-V64-BS32-scale1_0-bfloat16            10   1664.301   1666.147   1667.819   1665.805      0.127      0.244      0.237     97.362
+B4-T4096-H2-HQ32-K64-V64-BS32-scale0_1-float32             10   2381.542   2383.222   2384.087   2382.910      0.371      0.303      0.228     98.666
+B4-T4096-H4-HQ64-K128-V128-BS32-scale0_1-bfloat16          10   4506.613   4511.333   4516.852   4510.975      0.172      0.364      0.292     98.694
+B8-T2048-H4-HQ64-K64-V64-BS64-scale0_1-float16             10   3406.531   3409.484   3417.204   3409.125      0.087      0.252      0.232     97.536
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# 

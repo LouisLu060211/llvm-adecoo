@@ -1,45 +1,35 @@
-Yes, but do it in two batches so you don't wait on a big log for the first answer.
-
-**Batch 1, on the A5.** Fast, tells us if the bimodality is real:
-
-```bash
-cd /home/yaolu/Q3TritonKernel/result_dir
-cat > /home/yaolu/detail2.py << 'EOF'
-import csv, glob
-for f in sorted(glob.glob("*B4-T1024*20260904*/*_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details_*.csv")):
-    print(f"{'#':>3}{'Duration':>12}{'Wait':>12}{'aicore':>12}")
-    for i, r in enumerate(csv.DictReader(open(f))):
-        print(f"{i:>3}{float(r['Duration(us)']):>12.1f}"
-              f"{float(r['Wait Time(us)']):>12.1f}"
-              f"{float(r['aicore_time(us)']):>12.1f}")
-EOF
-python /home/yaolu/detail2.py
-```
-
-Paste those ten rows.
-
-**Batch 2, on the A5.** The IR dump takes a few minutes and produces a large file:
-
-```bash
-cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
-ls
-bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# ls
+arget=Ascend950PR_9579 \
   --mlir-print-ir-after-all --print-pass-id > /home/yaolu/bisheng_B4T1024.log 2>&1
 
 cd /home/yaolu
 for p in MayImplicitTransposeWithLastAxis linalg.transpose hivm-fuse-transpose-into-load expand_shape; do
   echo "$p: $(grep -c "$p" bisheng_B4T1024.log)"
-done | tee bisheng_summary_v1.txt
-
-grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' bisheng_B4T1024.log
+done | tekernel.npuir.mlir  kernel.ttadapter.mlir  kernel.ttir.mlir
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
+>   --mlir-print-ir-after-all --print-pass-id > /home/yaolu/bisheng_B4T1024.log 2>&1
+ng_B4T1024.log
 grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024.log
 du -sh bisheng_B4T1024.log
-```
-
-Paste the `ls`, the four counts, the two multibuffer numbers, and the log size.
-
-Check disk before batch 2, that log can run to gigabytes:
-
-```bash
-df -h /
-```
+Segmentation fault (core dumped)
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# 
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# cd /home/yaolu
+(louis_env) root@tbe:/home/yaolu# for p in MayImplicitTransposeWithLastAxis linalg.transpose hivm-fuse-transpose-into-load expand_shape; do
+>   echo "$p: $(grep -c "$p" bisheng_B4T1024.log)"
+> done | tee bisheng_summary_v1.txt
+MayImplicitTransposeWithLastAxis: 0
+linalg.transpose: 9
+hivm-fuse-transpose-into-load: 0
+expand_shape: 1263
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' bisheng_B4T1024.log
+0
+(louis_env) root@tbe:/home/yaolu# grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024.log
+18
+(louis_env) root@tbe:/home/yaolu# du -sh bisheng_B4T1024.log
+7.9M    bisheng_B4T1024.log
+(louis_env) root@tbe:/home/yaolu# df -h /
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-ubuntu--lv  3.5T  3.2T  149G  96% /
+(louis_env) root@tbe:/home/yaolu# 

@@ -1,29 +1,8 @@
-The script is on your PC in Downloads, not on the A5. Copy it up.
-
-**In PowerShell:**
-
-```powershell
-scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
-```
-
-**Then on the A5:**
-
-```bash
-cd /home/yaolu
-python build_perf_csv.py Q3TritonKernel/result_dir perf_summary.csv
-```
-
-**Then back in PowerShell to pull the result down:**
-
-```powershell
-scp a5:/home/yaolu/perf_summary.csv .
-```
-
-If the error was actually about `Q3TritonKernel/result_dir` rather than the script, check where you are first:
-
-```bash
-pwd
-ls /home/yaolu/Q3TritonKernel/result_dir | head -3
-```
-
-The path is relative, so it only resolves from `/home/yaolu`.
+PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
+C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory
+PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
+C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory
+PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
+C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory
+PS C:\windows\system32> scp $env:USERPROFILE\Downloads\build_perf_csv.py a5:/home/yaolu/
+C:\windows\System32\OpenSSH\scp.exe: stat local "C:/Users/y84451117/Downloads/build_perf_csv.py": No such file or directory

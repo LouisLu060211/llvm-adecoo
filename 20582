@@ -1,423 +1,290 @@
-================================================================================================================================= test session starts =================================================================================================================================
-platform linux -- Python 3.11.14, pytest-8.3.2, pluggy-1.6.0
-rootdir: /home/yaolu/Q3TritonKernel
-plugins: csv-3.0.0, cov-7.1.0, xdist-3.6.1
-collected 10 items                                                                                                                                                                                                                                                                    
+# AscendNPU 性能问题定位指南
 
-tests/fla_perf/test_nsa_compression_kernels_perf.py 
-[case] B4-T2048-H2-HQ32-K64-V64-BS32-scale0.1-float16 fwd: shape=(B=4,T=2048,H=2,HQ=32,K=64,V=64,BS=32,scale=0.1), dtype=fp16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T2048-H2-HQ32-K64-V64-BS32-scale0.1-float16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T2048-H2-HQ32-K64-V64-BS32-scale0_1-float16
-Dumping intermediate results to /root/.triton/dump/uGFmPAya2BmTFd1nHCR3eFBg5W5B3q8M2T8zdCAbiJk
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmppvnyzlyr/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmppvnyzlyr/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/W6Epp2ah48F5POn3tz99Clhvk0ylYQSS1rr3p1F2Vbs
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpnrd1lv8o/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpnrd1lv8o/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/XX-N82C_WhrD9pM_4XhAODlonjyQMxdb2_hu07IzoLM
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpyq07i1dj/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpyq07i1dj/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/kXYaaQ7N-RqE54bhkfkGNVXKlYI1enk2E_CcdUzcYA0
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpdugsrkxl/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpdugsrkxl/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/nUg0OjL-neykj1DQMPJnwmEZoB0vk3UG5USOvvjqlog
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpti60p0rt/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpti60p0rt/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/02JsjM_6OYFzMb3y3iXOyZOioIIBo7Km123-YYAtWzQ
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmphfd55lw6/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmphfd55lw6/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/nWoEGhdmbsUXg_a_OAQIT6W6As-ZDI2btvgi-IdXn0g
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpumzub042/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpumzub042/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/_WvhIVl46EvsPuObQDeynRVcWLKRhOiKlS5YDoxLT-k
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp8fz12exu/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp8fz12exu/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/mA-JXqjY4Cqi9PxcDAm2HTCEe9VnLfex3n5qZT4QGN8
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmptvovccfs/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmptvovccfs/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/hHpb2XKdFlWNowJQDRP2LDgaFIBqFhv7u9G_FXgjx7o
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmplw55u7ey/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmplw55u7ey/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/6HFaVhDf2A4-sUpIPCrJFLmzAy0E302qjfDjxOgyJcY
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmppu17h6fi/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmppu17h6fi/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/aN-BiKuz7YK5YYTN8Ou2bvtd1sFnsry4ErSXHhKF_gw
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpa4mk8myc/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpa4mk8myc/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Triton autotuning for function parallel_nsa_compression_fwd_kernel finished after 17.03s; best config selected: multibuffer: False, enable_vf_fusion: False, num_warps: 1, num_ctas: 1, num_stages: 2, num_buffers_warp_spec: 0, num_consumer_groups: 0, reg_dec_producer: 0, reg_inc_consumer: 0, maxnreg: None;
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:03:03] [INFO] [230178] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T2048-H2-HQ32-K64-V64-BS32-scale0_1-float16_20260903170245/tbe_189689_20260903170302521_ascend_pt
-[2026-09-03 17:03:05] [INFO] [230272] profiler.py: CANN profiling data parsed in a total time of 0:00:02.046289
-[2026-09-03 17:03:06] [INFO] [230178] profiler.py: All profiling data parsed in a total time of 0:00:03.158220
-性能 profiling 完成！
+> 基于《AscendNPU IR 问题定位入门 V1.2》第5章整理，面向算子开发与性能优化人员。
 
+---
 
+## 一、核心思路：「静态 → 动态 → 量化」三步法
 
+**不要跳步直接上板试改**，必须按顺序执行，每步有产出再进入下一步：
 
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  1. 静态分析  │ ──► │  2. 动态分析  │ ──► │  3. 量化分析  │
+│  读 IR + 源码 │     │ 指令仿真+真机 │     │ 算力/带宽瓶颈 │
+└──────────────┘     └──────────────┘     └──────────────┘
+  "编译期有没有        "硬件实际每个         "瓶颈在哪、
+   多余操作？"          流水段在忙什么？"      优化空间多大？"
+```
 
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B3-T1024-H2-HQ32-K128-V128-BS32-scale0.1-bfloat16 fwd: shape=(B=3,T=1024,H=2,HQ=32,K=128,V=128,BS=32,scale=0.1), dtype=bf16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B3-T1024-H2-HQ32-K128-V128-BS32-scale0.1-bfloat16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B3-T1024-H2-HQ32-K128-V128-BS32-scale0_1-bfloat16
-Dumping intermediate results to /root/.triton/dump/FzT2LsFhFpPEh-s2WVtKp8wSCRf0PT-eY6zHy2y0N44
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpw_4dzre5/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpw_4dzre5/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/CyAz0qIFA_6_EWOp1ViWfWI1TlHskwUF1X8FxbpxHB8
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpe4giypud/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpe4giypud/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/QcYDPIUB87a3HaL5fCEN9Xw-2Ec9MC3B6Bu2y6V44g4
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpzorwaauf/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpzorwaauf/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/X1Zo0nKybRr9QMz5bXFjeal-voYNLBv0_BXwCfiYb-E
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmppjy9vthc/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmppjy9vthc/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/7nT3DV-d7OAwj03joTOIQBGaDOIL3bnxtatOMagzRxw
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpgjzetko2/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpgjzetko2/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/JbeQwzUSw1P7KTfffwNn4vh0s5gCu0w5L06qoeS3JWY
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpalhpasz2/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpalhpasz2/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/s2dMjy6cEP4FAMj_8wbJxvxcWuk-cnNBmFYLByq9T_Q
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpy6qa0nfn/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpy6qa0nfn/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/bOzamtFohsHt0Wl-poRk1Xf9KJXfzHzsdTRM3zUfRLk
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmplhv53ymc/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmplhv53ymc/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/FpCjL0GpaQPQNW8SaQi4QNgVrm5UZEyGT0DhyVstbHo
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpkhwvq5_7/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpkhwvq5_7/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/M-OH4Q3JgLUlMLmwbTTsCCjpeUDSFgRSGtNwf8bHT8I
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp7069hsni/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp7069hsni/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/Es6tDzgCezGHf71WKpFyuH3LPFsJak2MQYvCiP4_RR4
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmplvs4mlvb/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmplvs4mlvb/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/k4yrEY-dyn4CUlDME9ZICX1c8O1xMN-utj9UvCL67W0
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpq64glg_w/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpq64glg_w/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Triton autotuning for function parallel_nsa_compression_fwd_kernel finished after 17.19s; best config selected: multibuffer: True, enable_vf_fusion: True, num_warps: 4, num_ctas: 1, num_stages: 2, num_buffers_warp_spec: 0, num_consumer_groups: 0, reg_dec_producer: 0, reg_inc_consumer: 0, maxnreg: None;
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:06:26] [INFO] [577312] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B3-T1024-H2-HQ32-K128-V128-BS32-scale0_1-bfloat16_20260903170608/tbe_189689_20260903170625466_ascend_pt
-[2026-09-03 17:06:28] [INFO] [577725] profiler.py: CANN profiling data parsed in a total time of 0:00:02.052073
-[2026-09-03 17:06:29] [INFO] [577312] profiler.py: All profiling data parsed in a total time of 0:00:03.306731
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B4-T2048-H4-HQ64-K64-V64-BS32-scale0.1-float16 fwd: shape=(B=4,T=2048,H=4,HQ=64,K=64,V=64,BS=32,scale=0.1), dtype=fp16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T2048-H4-HQ64-K64-V64-BS32-scale0.1-float16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T2048-H4-HQ64-K64-V64-BS32-scale0_1-float16
-Dumping intermediate results to /root/.triton/dump/vvmtjyOWd74YzlrHJByx7vg-D0dCzzQ4eA2KEsL92Z8
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpo4i755q0/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpo4i755q0/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:09:32] [INFO] [891022] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T2048-H4-HQ64-K64-V64-BS32-scale0_1-float16_20260903170931/tbe_189689_20260903170932308_ascend_pt
-[2026-09-03 17:09:34] [INFO] [891041] profiler.py: CANN profiling data parsed in a total time of 0:00:02.160714
-[2026-09-03 17:09:35] [INFO] [891022] profiler.py: All profiling data parsed in a total time of 0:00:03.105784
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B4-T4096-H4-HQ64-K128-V128-BS32-scale0.1-bfloat16 fwd: shape=(B=4,T=4096,H=4,HQ=64,K=128,V=128,BS=32,scale=0.1), dtype=bf16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T4096-H4-HQ64-K128-V128-BS32-scale0.1-bfloat16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T4096-H4-HQ64-K128-V128-BS32-scale0_1-bfloat16
-Dumping intermediate results to /root/.triton/dump/jy1Jjq_QztbBrycRx6fCQ3JVpc7PBNjRUax7iE58N2k
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpiz2kcu_i/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpiz2kcu_i/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:12:39] [INFO] [973779] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T4096-H4-HQ64-K128-V128-BS32-scale0_1-bfloat16_20260903171237/tbe_189689_20260903171238994_ascend_pt
-[2026-09-03 17:12:41] [INFO] [973794] profiler.py: CANN profiling data parsed in a total time of 0:00:02.079288
-[2026-09-03 17:12:42] [INFO] [973779] profiler.py: All profiling data parsed in a total time of 0:00:03.086922
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B8-T2048-H4-HQ64-K64-V64-BS64-scale0.1-float16 fwd: shape=(B=8,T=2048,H=4,HQ=64,K=64,V=64,BS=64,scale=0.1), dtype=fp16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B8-T2048-H4-HQ64-K64-V64-BS64-scale0.1-float16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B8-T2048-H4-HQ64-K64-V64-BS64-scale0_1-float16
-Dumping intermediate results to /root/.triton/dump/Q25ogXh9tfOFPE7q07cICD8NPEq_85MDPMTc4kdnHfs
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpxszu5ura/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpxszu5ura/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/25KyhKttnPrubQlwHruiXGOA7dY0ZiKY5CNa89jRzaM
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp6k7vk7v4/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp6k7vk7v4/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/yqEyEV0OLYP_kSU24HyUjeZL7NviL1o_YXq7n1MwNYA
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmppc5_a45l/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmppc5_a45l/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/h41-QXjjAPrnLAP5xBq12Se6z7yOMOFuK-BQpYM890Q
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpjfqrqaru/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpjfqrqaru/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/IxZNF5GMgIb60txUZmJ3HXOYxGG-d3nqIMy5KGxmklU
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp7dt2l6ml/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp7dt2l6ml/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/bFogBks85HQKX7AaYrocXjWI_JLKDhJ5UtDzdiKlxtw
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmplrq0u8s4/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmplrq0u8s4/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/ThXNmAzBKpij-e8VL015m34CshydkuvDJTAhoz2YZXc
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpz1fmtlro/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpz1fmtlro/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/CwXXLcSEANrfFdQI1j3qB_EOCFeViI0btcVZGiDtg2c
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpkbkpz7yd/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpkbkpz7yd/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/g0CSSllEoHORYEdi-t-5S4UjfGWjCt29LfF6u8lM6Qc
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp6ucxlflk/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp6ucxlflk/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/7QX4e2E8egRgMXe9Tw4a6pIC8XyevvynzurwxksULhI
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmph1n9asub/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmph1n9asub/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/fhD-fLTjtkeh-x7KbXJbpwKVcZNJ8psQ6rB1OM1bPdM
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpk1lj_o5o/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpk1lj_o5o/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping intermediate results to /root/.triton/dump/WvlHX3NWxpduMaCCdc23EOsGnfQm9wJqcop2KAyRSzE
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmppvti636o/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmppvti636o/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ehXKMWvyOg5OfksYNbu3cSnvcEsRVbKIG-YAGENwpz0
-Triton autotuning for function parallel_nsa_compression_fwd_kernel finished after 14.44s; best config selected: multibuffer: True, enable_vf_fusion: True, num_warps: 2, num_ctas: 1, num_stages: 2, num_buffers_warp_spec: 0, num_consumer_groups: 0, reg_dec_producer: 0, reg_inc_consumer: 0, maxnreg: None;
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:15:59] [INFO] [1061643] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B8-T2048-H4-HQ64-K64-V64-BS64-scale0_1-float16_20260903171544/tbe_189689_20260903171559144_ascend_pt
-[2026-09-03 17:16:01] [INFO] [1061657] profiler.py: CANN profiling data parsed in a total time of 0:00:02.019583
-[2026-09-03 17:16:02] [INFO] [1061643] profiler.py: All profiling data parsed in a total time of 0:00:03.071409
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16 fwd: shape=(B=4,T=1024,H=4,HQ=64,K=32,V=32,BS=64,scale=0.1), dtype=bf16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16
-Dumping intermediate results to /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpyfe_rwe7/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpyfe_rwe7/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/grmZ3ZFFCBpx_XSP9DOLNqEDHPjPDSWUxjE1fQ_n0_c
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpus2tg3zs/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpus2tg3zs/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/Qn6sE31gUEbKUOf7tncHplD91ysKU00sJLP0UliFYdw
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpmqba2d0a/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpmqba2d0a/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/E_3GD7WC3UNmjnDA9pJY2IqlfO32XXPLyQ0pFEClDyc
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp2q2vgml_/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp2q2vgml_/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/JTwjTEycCyPN_lFAST4Inj09wtLwFXGYbuhWkGEavlg
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp1wkl84m4/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp1wkl84m4/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/5ps-5xxa1M45v7Qsqrw13OkQGtjv1mntu_pv9xqKwN4
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpqcw4ldcg/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpqcw4ldcg/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/ZrBySQkTDSoaQ3R2VaCR-i488XVnuDyLIqXOq__PzHg
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp8u_dnvsi/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp8u_dnvsi/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/Or4QL9iylRBlpLZID5L_jOzFfoBnjEXpkGeQDyaBIek
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpoip_k_3p/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpoip_k_3p/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/xKyiMXaDKsQFxxdUB47UCfC8Vs97FGE1XjKdLC63RI0
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpvpm2a5p0/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpvpm2a5p0/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/HijuuZCaRJeGzJFU3BIITHnNZKdxKNgujYJnnqp-_K8
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp0z4r2pg7/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp0z4r2pg7/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/TcAVjgbV0F9gFz8CcHy1LvVNaFpLCHrqnoDl3ihk7yo
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpsr52hvsa/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpsr52hvsa/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/x9YwyuqZ7e08WKhRL0tx9MOeBVGxwAC6Jngso-YGu2Y
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp_o90jwln/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp_o90jwln/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Triton autotuning for function parallel_nsa_compression_fwd_kernel finished after 16.93s; best config selected: multibuffer: True, enable_vf_fusion: True, num_warps: 2, num_ctas: 1, num_stages: 2, num_buffers_warp_spec: 0, num_consumer_groups: 0, reg_dec_producer: 0, reg_inc_consumer: 0, maxnreg: None;
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:19:22] [INFO] [1091593] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16_20260903171904/tbe_189689_20260903171921889_ascend_pt
-[2026-09-03 17:19:25] [INFO] [1091607] profiler.py: CANN profiling data parsed in a total time of 0:00:02.018575
-[2026-09-03 17:19:25] [INFO] [1091593] profiler.py: All profiling data parsed in a total time of 0:00:03.077602
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B2-T8192-H4-HQ64-K64-V64-BS32-scale0.1-float16 fwd: shape=(B=2,T=8192,H=4,HQ=64,K=64,V=64,BS=32,scale=0.1), dtype=fp16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B2-T8192-H4-HQ64-K64-V64-BS32-scale0.1-float16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B2-T8192-H4-HQ64-K64-V64-BS32-scale0_1-float16
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:22:33] [INFO] [1114949] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B2-T8192-H4-HQ64-K64-V64-BS32-scale0_1-float16_20260903172227/tbe_189689_20260903172228556_ascend_pt
-[2026-09-03 17:22:35] [INFO] [1114968] profiler.py: CANN profiling data parsed in a total time of 0:00:02.015665
-[2026-09-03 17:22:36] [INFO] [1114949] profiler.py: All profiling data parsed in a total time of 0:00:03.102662
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B4-T4096-H2-HQ32-K64-V64-BS32-scale0.1-float32 fwd: shape=(B=4,T=4096,H=2,HQ=32,K=64,V=64,BS=32,scale=0.1), dtype=fp32
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T4096-H2-HQ32-K64-V64-BS32-scale0.1-float32] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T4096-H2-HQ32-K64-V64-BS32-scale0_1-float32
-Dumping intermediate results to /root/.triton/dump/eZ2zSt3yQ6HLnkBfPpFGZNp8mszrD3RKqzeKJWU6-m4
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpui6l13hf/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpui6l13hf/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/AJSa2IDDOmjSPVVTVFSaTmqwiize_vqeapblh_Io4vU
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpzjx8dslt/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpzjx8dslt/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/Uu2xQPAozewwdCP37nJLZaua9LxKELJWJ-eCsLy1KFE
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp50gtkxep/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp50gtkxep/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/HX0O8ny44sNzV32rUoHjn9U1wAnCN1zLQVJRPyeNf_k
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpii5rlxm9/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpii5rlxm9/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/hDPF_s8qlnYVGk2H_L5J7XvqNHK_bUr9qjHDMSob7rw
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp4vbn5ipm/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp4vbn5ipm/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/wHlaka045PObiAdxEms0djj_wFslKHq1JuZd-zbEwpQ
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp_f9xh43a/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp_f9xh43a/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/WFiN1StFd-vBXnqE75t5v14U__E6NHfNaVpd7f68d74
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpvp5hsz2p/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpvp5hsz2p/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/Y9LXOozOKkt0NHN9zPDRHXeBIgyDJRh20IngC_vlJfI
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpb775c5oa/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpb775c5oa/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/f0NqVinxH2_bUq5NIVEigIGcjFoURFAkawZsj4TNr6k
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpmjx0r8uq/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpmjx0r8uq/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/DBDMD6vh39iQqzgS2MzQ9mDAALVz7XTjTXC7CuFzF98
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp4ja1kgxm/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp4ja1kgxm/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/U08zXSGDi5UF7nDkMuFiNuwYwXwXQk2zsBYJABEXdjY
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpd6n8qfa3/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpd6n8qfa3/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping intermediate results to /root/.triton/dump/baAygvoM4oUjVlL90i_nOKArJ4D8mpSN2thkB7FMDfw
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpmpnwz0i2/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpmpnwz0i2/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/NLvNbxjuVuMquSDAj9mxBe0C9Zi2MgetsRM1POSQ5XU
-Triton autotuning for function parallel_nsa_compression_fwd_kernel finished after 35.37s; best config selected: multibuffer: False, enable_vf_fusion: False, num_warps: 4, num_ctas: 1, num_stages: 2, num_buffers_warp_spec: 0, num_consumer_groups: 0, reg_dec_producer: 0, reg_inc_consumer: 0, maxnreg: None;
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:26:15] [INFO] [1125855] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T4096-H2-HQ32-K64-V64-BS32-scale0_1-float32_20260903172539/tbe_189689_20260903172614997_ascend_pt
-[2026-09-03 17:26:17] [INFO] [1125929] profiler.py: CANN profiling data parsed in a total time of 0:00:02.019152
-[2026-09-03 17:26:18] [INFO] [1125855] profiler.py: All profiling data parsed in a total time of 0:00:03.075690
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B1-T4096-H4-HQ64-K64-V64-BS32-scale0.1-bfloat16 fwd: shape=(B=1,T=4096,H=4,HQ=64,K=64,V=64,BS=32,scale=0.1), dtype=bf16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B1-T4096-H4-HQ64-K64-V64-BS32-scale0.1-bfloat16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B1-T4096-H4-HQ64-K64-V64-BS32-scale0_1-bfloat16
-Dumping intermediate results to /root/.triton/dump/Sltcme9OZrBovBq2qsTfGFlF61t20GHLk-cLacnYV6U
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpiklabh3n/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpiklabh3n/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/n6DD4XioIdEvJI33AhWb3UwFZG_giOpEHpaom4011PA
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp6chr80u5/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp6chr80u5/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/bbtQrdtZlDsSS6trZsX-Ly23ks-RXVegoHH5W0fv5e8
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp5gpblkfb/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp5gpblkfb/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/V4wU18tsKZ7h-PAW7j0NZjCuXfnw0lEJWg07f39DLXY
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp5vy9lbdr/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp5vy9lbdr/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/zA29IiYrF0NiweSJ7fFqctc-sLOqslXQrRkhb8Y2aDk
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpvyobqd4r/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpvyobqd4r/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/Uznxn5nOcelhpU8_VGqC8rLma6WyTHMgzIgi1rIQB6o
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp1l2w4i0l/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp1l2w4i0l/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/kkmBYXj8gZ8xd-W98gsmUdmvnwkdOwBo816qpo-_NIs
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpubj6cq__/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpubj6cq__/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/3uZ3LSKpsriwFyPrN1sHD-9QY8R10io3OnwpNRbC4_M
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp9q_33xrf/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp9q_33xrf/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/Sqmyl-FNu18xHS7BJV8uHJqHFExeoKeIAUx7VbrCm8E
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpe6n5ehhs/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpe6n5ehhs/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/eYkEAtH4Xnsu8xB6FlJkOVWQDlBvjAl8uqzuSHZ8YCM
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp6yspn3ti/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp6yspn3ti/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/sPv8PRjg16cbdAYuJFg6OERWq_VTy2z9rn_SUXq_wcI
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp_12o0cgg/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=True --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp_12o0cgg/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping intermediate results to /root/.triton/dump/lbA00uwNtZQJRbCTCaMTE_gjyObXJPo-8s28hbbFvBc
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpr1pr0ldf/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=False --enable-auto-bind-sub-block=True --disable-ffts --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpr1pr0ldf/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-Triton autotuning for function parallel_nsa_compression_fwd_kernel finished after 14.42s; best config selected: multibuffer: False, enable_vf_fusion: False, num_warps: 4, num_ctas: 1, num_stages: 2, num_buffers_warp_spec: 0, num_consumer_groups: 0, reg_dec_producer: 0, reg_inc_consumer: 0, maxnreg: None;
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:29:35] [INFO] [1143648] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B1-T4096-H4-HQ64-K64-V64-BS32-scale0_1-bfloat16_20260903172920/tbe_189689_20260903172935206_ascend_pt
-[2026-09-03 17:29:37] [INFO] [1143731] profiler.py: CANN profiling data parsed in a total time of 0:00:02.019794
-[2026-09-03 17:29:38] [INFO] [1143648] profiler.py: All profiling data parsed in a total time of 0:00:03.053339
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-[case] B4-T2048-H4-HQ64-K64-V64-BS32-scale1.0-bfloat16 fwd: shape=(B=4,T=2048,H=4,HQ=64,K=64,V=64,BS=32,scale=1.0), dtype=bf16
-pytest_nodeid_to_safe_name tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T2048-H4-HQ64-K64-V64-BS32-scale1.0-bfloat16] (call) to tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T2048-H4-HQ64-K64-V64-BS32-scale1_0-bfloat16
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[2026-09-03 17:32:40] [INFO] [1171896] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T2048-H4-HQ64-K64-V64-BS32-scale1_0-bfloat16_20260903173239/tbe_189689_20260903173239861_ascend_pt
-[2026-09-03 17:32:42] [INFO] [1171942] profiler.py: CANN profiling data parsed in a total time of 0:00:02.016711
-[2026-09-03 17:32:43] [INFO] [1171896] profiler.py: All profiling data parsed in a total time of 0:00:02.990319
-性能 profiling 完成！
-等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
-.
-==============================================================================
-NSA compression kernels 性能汇总表（per-step 耗时，us）
-------------------------------------------------------------------------------
-case                                               kernel  dtype  per-step(us)
-------------------------------------------------------------------------------
-B1-T4096-H4-HQ64-K64-V64-BS32-scale0.1-bfloat16    fwd     bf16   -           
-B2-T8192-H4-HQ64-K64-V64-BS32-scale0.1-float16     fwd     fp16   -           
-B3-T1024-H2-HQ32-K128-V128-BS32-scale0.1-bfloat16  fwd     bf16   -           
-B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16    fwd     bf16   -           
-B4-T2048-H2-HQ32-K64-V64-BS32-scale0.1-float16     fwd     fp16   -           
-B4-T2048-H4-HQ64-K64-V64-BS32-scale0.1-float16     fwd     fp16   -           
-B4-T2048-H4-HQ64-K64-V64-BS32-scale1.0-bfloat16    fwd     bf16   -           
-B4-T4096-H2-HQ32-K64-V64-BS32-scale0.1-float32     fwd     fp32   -           
-B4-T4096-H4-HQ64-K128-V128-BS32-scale0.1-bfloat16  fwd     bf16   -           
-B8-T2048-H4-HQ64-K64-V64-BS64-scale0.1-float16     fwd     fp16   -           
-==============================================================================
+**为什么不能跳步：**
+- 只做静态 → IR 看着对但硬件没跑满，会误判
+- 只做量化 → 漏掉编译期插入的开销
+- 三者互为印证，缺一不可
 
+---
 
-=========================================================================================================================== 10 passed in 1984.82s (0:33:04) ===========================================================================================================================
+## 二、第一步：静态分析（读 IR + 源码）
+
+### 2.1 看什么
+
+在不跑硬件的情况下，定位编译期 Pass 是否插入了非预期操作。
+
+### 2.2 操作步骤
+
+**Step 1 — 看 Triton 源码，关注这些信号：**
+
+| 检查项 | 关注点 | 为什么重要 |
+|--------|--------|-----------|
+| host 传参 | 是否传 `x.T`（转置视图，lastStride≠1） | 转置视图会导致隐式转置被物化 |
+| `tl.trans` / `make_block_ptr` 的 `order=` | order 参数是否与数据布局匹配 | 不匹配会触发 ND→NZ 转换开销 |
+| autotune config | 数量、是否调 BLOCK_M/N/K | 决定 tile 大小和并行度 |
+
+**Step 2 — 抓 Triton 编译日志：**
+
+```bash
+TRITON_DEBUG=1 TRITON_ALWAYS_COMPILE=1 TRITON_PRINT_AUTOTUNING=1 pytest ... -s -v
+```
+
+- `TRITON_DEBUG=1`：产出 `triton.log`（含编译器调用栈、dump 路径）与 `<dump_dir>/kernel.mlir`
+- `TRITON_PRINT_AUTOTUNING=1`：打印各 config 的 timing 决策
+
+**Step 3 — 抓编译栈全量 IR dump：**
+
+```bash
+bishengir-compile kernel.mlir \
+  --mlir-print-ir-before-all --mlir-print-ir-after-all \
+  --print-pass-id > bisheng.log 2>&1
+```
+
+**Step 4 — grep 关键模式定位问题：**
+
+```bash
+# 是否生成转置标注（关键！说明数据布局与计算不匹配）
+grep -n "MayImplicitTransposeWithLastAxis" bisheng.log
+
+# 是否物化了 transpose（如果标注没被消掉就会物化）
+grep -n "linalg.transpose" bisheng.log
+
+# 转置融合 pass 是否生效
+grep -n "hivm-fuse-transpose-into-load" bisheng.log
+
+# 是否物化了 expand_shape
+grep -n "expand_shape" bisheng.log
+```
+
+### 2.3 判读规则
+
+以 transA 优化前后对比为例：
+
+| 指标 | 优化前（host 传 x.T） | 优化后（transA 改法） |
+|------|----------------------|---------------------|
+| MayImplicitTransposeWithLastAxis | 出现 | 消失 |
+| linalg.transpose | 被物化 | 无 |
+| hivm-fuse-transpose-into-load | 未能消掉 | 不再需要 |
+| MTE2 搬运量 | 大 | 小 |
+
+> **技巧**：把关键模式计数做成摘要文件（如 `bisheng_summary_v1.txt`），对照优化前后 diff，即可确认编译期插入了哪些多余操作。
+
+---
+
+## 三、第二步：动态分析（指令级仿真 + 真机流水）
+
+### 3.1 指令级仿真（不需要真机）
+
+适用场景：单 kernel、固定 config、想看 cube/vector/MTE2 各 PIPE 的指令级统计。
+
+```bash
+msprof op simulator --output=<sim_dir> python run_B1.py
+```
+
+产出物：
+- `trace.json`（Chrome tracing 格式，可用 chrome://tracing 打开）
+- `visualize_data.bin` + `*_mindstudio_insight_data.db`
+- `core_csvs/coreN.cubecore0`（每 cube core 指令级 CSV）
+- `coreN.veccore0/1`（每 vector core）
+
+> **踩坑提醒**：autotune kernel 仿真前**先固定 config**！autotune 在每个新进程都会重新 timing，simulator 无法复现生产时选中的 config。先用 `TRITON_PRINT_AUTOTUNING=1` 抓到生产 config，再在仿真脚本里写死。B=1/B=2 裁剪：用 CPU 构造小输入喂给 kernel（核心循环行为与全 shape 等价）。
+
+### 3.2 真机指令流水
+
+```bash
+msprof op --aic-metrics=InstrTimeline \
+  --instr-timeline-pipe="cube|fixp|..." python <perf_script>
+```
+
+产出物：
+- `OPPROF_*/` 目录 + `trace.json` + `core*_instr_exe.csv`
+- 各 PIPE 指令级统计（nd2nz / mma_tile / fixpipe / flag / sync_block 计数）
+
+> **踩坑**：
+> - 管道符号 `|` 必须加引号传给 `--instr-timeline-pipe="..."`，否则被 shell 解析
+> - `msprof op` 默认只解析 core 0，看多 core 需额外参数
+> - 脚本名若含 `msprof` 字样，`pkill -f msprof` 会自杀
+
+---
+
+## 四、第三步：量化分析（计算量 / 访存量 / 并行度）
+
+### 4.1 判断瓶颈类型
+
+核心公式：
+- **cube 算力上限** = 28 core × mma_tile rate
+- **HBM 带宽上限** = (A+B+C) bytes / bandwidth
+- **利用率** = 实测时间 / 理论时间
+
+### 4.2 瓶颈分类与优化方向
+
+| 瓶颈类型 | 特征 | 优化方向 |
+|----------|------|---------|
+| **Memory bound** | MTE2（搬运）占比高，搬运量 >> 计算量 | 数据复用、乒乓缓冲、减少搬运 |
+| **Compute bound** | cube（计算）占比高，计算量 >> 搬运量 | 更大 tile、减少 K-loop flag sync |
+| **Sync/overhead bound** | stall 多、flag/sync 多 | 减少同步点、优化 GSS |
+
+### 4.3 shape scaling 规律（快速判断 bound 类型）
+
+| 操作 | 现象 | 含义 |
+|------|------|------|
+| 固定 D/N，B 翻倍 | program 数翻倍，时间近似翻倍 | 28 core 已满载（compute bound） |
+| T 翻倍 | 每 program K-iter 翻倍，时间翻倍 | 计算/搬运线性增长 |
+
+---
+
+## 五、性能排查快速入口
+
+当发现性能不达标时，按以下顺序排查：
+
+### 5.1 确认乒乓/多缓冲是否生效
+
+```bash
+# 1. mark 是否存在？
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ir_dump.log
+
+# 2. slot select 是否存在？（mark 在但 select 不在 = 乒乓标记了但没生效）
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ir_dump.log
+```
+
+**四位 Pass 链**：`MarkMultiBuffer → PlanMemory → GraphSyncSolver → EnableMultiBuffer`
+
+链中任一环节失败都会**静默级联**（不会报错，只是优化没生效），需从存活症状反推断点。
+
+### 5.2 用 msprof 抓每阶段耗时
+
+对比 single-buffer 基线，看哪个 PIPE 是瓶颈。
+
+### 5.3 查 GSS 是否插了不该有的 barrier
+
+```bash
+# 关掉 GSS 试试
+--enable-hivm-graph-sync-solver=false
+```
+
+### 5.4 控制开关二分
+
+逐个关闭优化，找到影响最大的那个：
+
+```bash
+--enable-auto-multi-buffer=false       # 关多缓冲
+--enable-auto-bind-sub-block=false     # 关子块绑定
+--enable-hivm-graph-sync-solver=false  # 关 GSS
+```
+
+找到切换即复现/消失的开关 → 根因就锁在该 Pass 及其下游交互里。
+
+---
+
+## 六、真实优化案例：从 0.226 到 1.365（6 倍提升）
+
+以 jagged_bmm transA kernel 为例的完整优化路径：
+
+```
+基线 0.226 (aiv_mte2 bound, host 传 x.T)
+  │
+  ├─ Step 1: 静态分析
+  │   发现 MayImplicitTransposeWithLastAxis（TRITON_DEBUG + bisheng.log grep）
+  │
+  ├─ Step 2: transA 改法（交换 offs, lastStride=1）
+  │   → 0.515 (+128%)
+  │
+  ├─ Step 3: Pattern C+A 数据复用（A 跨 N, B 跨 M）
+  │   → 1.209 (MTE2 work 5.33×↓, acc≤256KB)
+  │
+  ├─ Step 4: autotune block_m/n 笛卡尔积
+  │   → 1.365 (2:1 优于 8:1, 过滤 acc≤128KB+SRAM≤256KB)
+  │
+  ├─ Step 5: BLOCK_K=64/128（减 K-loop flag sync）
+  │   → 小 shape 0.83→0.97
+  │
+  └─ Step 6: multibuffer/enable_vf_fusion 加回
+      → 持平（默认已开）
+
+最终: jjb 0.226 → 1.365 (6.04×)；jdb 0.579 → 1.202 (2.08×)
+```
+
+---
+
+## 七、新手纪律（必须遵守）
+
+| # | 纪律 | 原因 |
+|---|------|------|
+| 1 | **不要跳步**：先静态再动态再量化 | 每步产出是下一步的基础，跳步会误判 |
+| 2 | **每次只改一个变量** | 开/关一个开关、改一个参数，验证后再改下一个 |
+| 3 | **先保精度再追性能** | 每步优化后先跑 700/700 精度测试 |
+| 4 | **记录每次迭代结论** | 即使"改了没变化"也要记录，避免重复试错 |
+| 5 | **善用 grep 计数做摘要** | 把关键模式计数做成对比文件，一目了然 |
+| 6 | **迭代循环强制执行** | 假设 → 定位证据 → 变更 → 验证 → 书面结论 |
+
+---
+
+## 八、常用命令速查
+
+### Triton 侧
+
+```bash
+# 抓 Triton 中间 IR + autotuning 信息
+TRITON_DEBUG=1 TRITON_ALWAYS_COMPILE=1 TRITON_PRINT_AUTOTUNING=1 pytest test.py -s -v
+
+# 日志里搜 dump 目录
+# "Dumping intermediate results" → 进入 dump 目录拿 kernel.ttadapter.mlir
+```
+
+### 编译栈侧
+
+```bash
+# 全量 IR dump
+bishengir-compile input.mlir --mlir-print-ir-before-all --mlir-print-ir-after-all > ir_dump.log 2>&1
+
+# 更省：只在 IR 变化时打印
+bishengir-compile --mlir-print-ir-after-change input.mlir > ir_dump.log 2>&1
+
+# 按 Pass 分文件（适合二分）
+bishengir-compile <flags> --mlir-print-ir-after-all \
+  --mlir-print-ir-tree-dir=$(pwd)/bishengir_stages input.mlir 2>> a.log
+
+# PlanMemory 内存用量
+bishengir-opt input.mlir --hivm-plan-memory --hivm-plan-memory-enable-print-memory-allocated-size
+```
+
+### 性能分析
+
+```bash
+# 指令级仿真
+msprof op simulator --output=<sim_dir> python run_B1.py
+
+# 真机指令流水
+msprof op --aic-metrics=InstrTimeline \
+  --instr-timeline-pipe="cube|fixp|..." python <perf_script>
+
+# 算子级调优（分 cube/vector/copy 三段看关键路径）
+msprof op python <perf_script>
+```
+
+### 大 dump 里导航
+
+```bash
+grep -n "IR Dump After\|IR Dump Before" ir_dump.log           # 全部 Pass 边界
+grep -n "TileAndBindSubBlock\|BubbleUpExtractSlice" ir_dump.log # 指定 Pass
+grep -n "MayImplicitTransposeWithLastAxis" ir_dump.log          # 指定 annotation
+grep -rn "%alloc_8\b" bishengir_stages/                        # 跟踪某个 SSA 值跨 Pass
+for f in bishengir_stages/*.mlir; do echo "$f: $(grep -c MayImplicitTransposeWithLastAxis $f)"; done
+```

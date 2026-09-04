@@ -1,2 +1,3 @@
-(louis_env) root@tbe:/home/yaolu# sed -i 's/20260904161806/20260904163256/' details2.py
-sed: can't read details2.py: No such file or directory
+cd /home/yaolu
+sed -i 's/20260904161806/20260904163256/' detail2.py
+python detail2.py

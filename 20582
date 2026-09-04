@@ -1,35 +1,47 @@
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel/result_dir# cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# ls
-arget=Ascend950PR_9579 \
-  --mlir-print-ir-after-all --print-pass-id > /home/yaolu/bisheng_B4T1024.log 2>&1
+Two problems with that run, so don't trust those counts yet.
 
+**It segfaulted.** The log is only 7.9M and `bishengir-compile` died partway. Whatever passes ran after the crash point never printed, so every grep count is from a truncated log.
+
+**You dropped the production flags.** The test compiles this kernel with a long flag list. You ran it with only `--target`. That alone explains the multibuffer result: you compiled with multibuffer off, so of course the mark count is 0. The 18 `arith.select` hits are probably from unrelated code, not ping-pong slots.
+
+Rerun with today's actual winning config, which was `multibuffer: True, vf_fusion: False`:
+
+```bash
+cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
+bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
+  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+  --enable-mixed-cv=True --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+  --append-bisheng-options=-cce-link-aicore-ll-module \
+  /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc \
+  --enable-vf-merge-level=1 \
+  --mlir-print-ir-after-change --print-pass-id \
+  -o /tmp/yaolu_kernel > /home/yaolu/bisheng_B4T1024_v2.log 2>&1
+echo "exit: $?"
+tail -20 /home/yaolu/bisheng_B4T1024_v2.log
+du -sh /home/yaolu/bisheng_B4T1024_v2.log
+```
+
+I switched to `--mlir-print-ir-after-change`, which the guide recommends as the cheaper option, and added `-o` since the missing output path may have contributed to the crash.
+
+If it exits 0, redo the counts:
+
+```bash
 cd /home/yaolu
 for p in MayImplicitTransposeWithLastAxis linalg.transpose hivm-fuse-transpose-into-load expand_shape; do
-  echo "$p: $(grep -c "$p" bisheng_B4T1024.log)"
-done | tekernel.npuir.mlir  kernel.ttadapter.mlir  kernel.ttir.mlir
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
->   --mlir-print-ir-after-all --print-pass-id > /home/yaolu/bisheng_B4T1024.log 2>&1
-ng_B4T1024.log
-grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024.log
-du -sh bisheng_B4T1024.log
-Segmentation fault (core dumped)
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# 
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# cd /home/yaolu
-(louis_env) root@tbe:/home/yaolu# for p in MayImplicitTransposeWithLastAxis linalg.transpose hivm-fuse-transpose-into-load expand_shape; do
->   echo "$p: $(grep -c "$p" bisheng_B4T1024.log)"
-> done | tee bisheng_summary_v1.txt
-MayImplicitTransposeWithLastAxis: 0
-linalg.transpose: 9
-hivm-fuse-transpose-into-load: 0
-expand_shape: 1263
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' bisheng_B4T1024.log
-0
-(louis_env) root@tbe:/home/yaolu# grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024.log
-18
-(louis_env) root@tbe:/home/yaolu# du -sh bisheng_B4T1024.log
-7.9M    bisheng_B4T1024.log
-(louis_env) root@tbe:/home/yaolu# df -h /
-Filesystem                         Size  Used Avail Use% Mounted on
-/dev/mapper/ubuntu--vg-ubuntu--lv  3.5T  3.2T  149G  96% /
-(louis_env) root@tbe:/home/yaolu# 
+  echo "$p: $(grep -c "$p" bisheng_B4T1024_v2.log)"
+done | tee bisheng_summary_v1.txt
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' bisheng_B4T1024_v2.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024_v2.log
+```
+
+If it segfaults again with the correct flags, that's a finding worth reporting to Hocky. The compiler crashing on a kernel it successfully compiled during the test run means the difference is in the flags, and narrowing which one is a clean bisect.
+
+You also skipped batch 1. That's the faster and more important result:
+
+```bash
+python /home/yaolu/detail2.py
+```
+
+Whether B4-T1024 is still bimodal decides whether any of this static analysis is even aimed at the right case.

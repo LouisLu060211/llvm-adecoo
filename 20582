@@ -1,27 +1,40 @@
-(louis_env) root@tbe:/home/yaolu# cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
->   --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
->   --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
->   --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
->   --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
->   "--append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc" \
->   --enable-vf-merge-level=1 \
->   --mlir-print-ir-after-change --print-pass-id \
->   -o /tmp/yaolu_kernel > /home/yaolu/bisheng_B4T1024_v2.log 2>&1
-: $?"
-du -sh /home/yaolu/bisheng_B4T1024_v2.log
-tail -5 /home/yaolu/bisheng_B4T1024_v2.log
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# echo "exit: $?"
-exit: 0
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# du -sh /home/yaolu/bisheng_B4T1024_v2.log
-248K    /home/yaolu/bisheng_B4T1024_v2.log
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# tail -5 /home/yaolu/bisheng_B4T1024_v2.log
-[PassID] arith-expand/module/0
-[WARNING] Cannot find hivmc-a5 under /data/ci_env/daily/pkg/ccec/bin
-bisheng: warning: the flag '--cce-aicore-input-parameter-size=1536' has been deprecated and will be ignored [-Wunused-command-line-argument]
-bisheng: warning: the flag '--cce-aicore-input-parameter-size=1536' has been deprecated and will be ignored [-Wunused-command-line-argument]
-ld.lld: warning: -z separate-code and -z separate-loadable-segments will be ignored
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# ls -d /home/yaolu/Q3TritonKernel/result_dir/*B4-T1024*
-/home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16_20260903171904
-/home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16_20260904161806
-(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# 
+Compile succeeded this time, exit 0. The directory does exist, so my glob pattern was just wrong. Two things to run.
+
+**On the A5, the timings first:**
+
+```bash
+cd /home/yaolu/Q3TritonKernel/result_dir
+find *20260904161806* -name "kernel_details_*.csv"
+```
+
+Then point the script at whatever that prints:
+
+```bash
+cat > /home/yaolu/detail2.py << 'EOF'
+import csv, glob, sys
+for f in sorted(glob.glob("/home/yaolu/Q3TritonKernel/result_dir/*20260904161806*/**/kernel_details_*.csv", recursive=True)):
+    print(f)
+    print(f"{'#':>3}{'Duration':>12}{'Wait':>12}{'aicore':>12}")
+    for i, r in enumerate(csv.DictReader(open(f))):
+        print(f"{i:>3}{float(r['Duration(us)']):>12.1f}"
+              f"{float(r['Wait Time(us)']):>12.1f}"
+              f"{float(r['aicore_time(us)']):>12.1f}")
+EOF
+python /home/yaolu/detail2.py
+```
+
+**Then the grep counts on the good log:**
+
+```bash
+cd /home/yaolu
+for p in MayImplicitTransposeWithLastAxis linalg.transpose hivm-fuse-transpose-into-load expand_shape; do
+  echo "$p: $(grep -c "$p" bisheng_B4T1024_v2.log)"
+done | tee bisheng_summary_v1.txt
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' bisheng_B4T1024_v2.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' bisheng_B4T1024_v2.log
+grep -c "PassID" bisheng_B4T1024_v2.log
+```
+
+One caveat on that log. 248K is small for a full IR dump, and `--mlir-print-ir-after-change` only prints when a pass actually changes the IR, so it may be legitimately compact. The `PassID` count tells us how many passes ran, which is the sanity check.
+
+Also worth noting from the tail: `Cannot find hivmc-a5 under /data/ci_env/daily/pkg/ccec/bin`. It fell back to something else and still linked, but that warning did not appear in the test run's compiles. Mention it to Hocky when you next talk to him, since it may mean your manual invocation is not identical to what the test does.

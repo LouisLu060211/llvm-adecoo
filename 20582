@@ -1,31 +1,27 @@
-My command was wrong. `--append-bisheng-options` takes its value attached, not as a separate word, so the `.bc` path became a second positional argument. All those zero counts are from a 4K error log, not real data.
-
-The correct form quotes the whole option string:
-
-```bash
-cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
-bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
-  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
-  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
-  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
-  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
-  "--append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc" \
-  --enable-vf-merge-level=1 \
-  --mlir-print-ir-after-change --print-pass-id \
-  -o /tmp/yaolu_kernel > /home/yaolu/bisheng_B4T1024_v2.log 2>&1
-echo "exit: $?"
+(louis_env) root@tbe:/home/yaolu# cd /root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# bishengir-compile kernel.ttadapter.mlir --target=Ascend950PR_9579 \
+>   --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+>   --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+>   --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+>   --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+>   "--append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc" \
+>   --enable-vf-merge-level=1 \
+>   --mlir-print-ir-after-change --print-pass-id \
+>   -o /tmp/yaolu_kernel > /home/yaolu/bisheng_B4T1024_v2.log 2>&1
+: $?"
 du -sh /home/yaolu/bisheng_B4T1024_v2.log
 tail -5 /home/yaolu/bisheng_B4T1024_v2.log
-```
-
-I also dropped `--enable-mixed-cv` since the log said it's deprecated.
-
-Only redo the greps if the exit code is 0 and the log is more than a few MB.
-
-**Separately, detail2.py printed nothing.** The glob found no files, so today's re-run wrote to a directory that doesn't match the pattern. Check:
-
-```bash
-ls -d /home/yaolu/Q3TritonKernel/result_dir/*B4-T1024*
-```
-
-Paste that. The re-run created a directory timestamped 20260904161806, so it should be there, and I need the actual name to fix the pattern. That result matters more than the IR log, since it decides whether B4-T1024 is even a real problem or just yesterday's machine contention.
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# echo "exit: $?"
+exit: 0
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# du -sh /home/yaolu/bisheng_B4T1024_v2.log
+248K    /home/yaolu/bisheng_B4T1024_v2.log
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# tail -5 /home/yaolu/bisheng_B4T1024_v2.log
+[PassID] arith-expand/module/0
+[WARNING] Cannot find hivmc-a5 under /data/ci_env/daily/pkg/ccec/bin
+bisheng: warning: the flag '--cce-aicore-input-parameter-size=1536' has been deprecated and will be ignored [-Wunused-command-line-argument]
+bisheng: warning: the flag '--cce-aicore-input-parameter-size=1536' has been deprecated and will be ignored [-Wunused-command-line-argument]
+ld.lld: warning: -z separate-code and -z separate-loadable-segments will be ignored
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# ls -d /home/yaolu/Q3TritonKernel/result_dir/*B4-T1024*
+/home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16_20260903171904
+/home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16_20260904161806
+(louis_env) root@tbe:~/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY# 

@@ -1,18 +1,43 @@
-Now check whether your patch fired. On fremont:
-
-bash
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ grep -n "ConstantizeBufferSize\|constantize-buffer" ~/mr3160_full.log | head
+181960:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+182994:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+183460:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+184026:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+184092:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+184124:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+184156:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+184194:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+184222:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+184270:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 sed -n '181960,182100p' ~/mr3160_full.log | grep -n "memref.alloc"
-
-That's the IR right after the first ConstantizeBufferSize run. What you're looking for is memref.alloc with ? in its type versus fully static dimensions. Your patch's entire purpose is turning a dynamic dim into a static bound, so:
-
-bash
-awk 'NR>=181960 && NR<=182994' ~/mr3160_full.log | grep -c "memref.alloc.*?x"
+98:    %alloc = memref.alloc() : memref<2x1x16x16xbf16, #hivm.address_space<cbuf>>
+100:    %alloc_0 = memref.alloc() : memref<4x1x16x16xbf16, #hivm.address_space<cbuf>>
+103:    %alloc_1 = memref.alloc() : memref<16x64xf32, #hivm.address_space<ub>>
+105:    %alloc_2 = memref.alloc() : memref<16x32xf32, #hivm.address_space<ub>>
+136:        %alloc_3 = memref.alloc(%c2, %c4, %c16, %c16) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>>
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ awk 'NR>=181960 && NR<=182994' ~/mr3160_full.log | grep -c "memref.alloc.*?x"
 awk 'NR>=181960 && NR<=182994' ~/mr3160_full.log | grep "memref.alloc" | head -10
-
-If no allocs still carry ?, the pass constantized everything, and your patch may or may not have been the reason. To prove it was, compare against a build without your patch. You still have build-ubuntu-stale or can stash the change:
-
-bash
-git stash
+4
+    %alloc = memref.alloc() : memref<2x1x16x16xbf16, #hivm.address_space<cbuf>>
+    %alloc_0 = memref.alloc() : memref<4x1x16x16xbf16, #hivm.address_space<cbuf>>
+    %alloc_1 = memref.alloc() : memref<16x64xf32, #hivm.address_space<ub>>
+    %alloc_2 = memref.alloc() : memref<16x32xf32, #hivm.address_space<ub>>
+        %alloc_3 = memref.alloc(%c2, %c4, %c16, %c16) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>>
+        %alloc_5 = memref.alloc(%c4, %c1, %c16, %c16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>>
+        %alloc_3 = memref.alloc(%c2, %c4, %c16, %c16) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>>
+        %alloc_5 = memref.alloc(%c2, %c1, %c16, %c16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>>
+    %alloc = memref.alloc() {alignment = 64 : i64} : memref<16x32xf32, #hivm.address_space<ub>>
+    %alloc_0 = memref.alloc() {alignment = 64 : i64} : memref<16xf32, #hivm.address_space<ub>>
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ git stash
 # rebuild, re-dump, compare alloc shapes
 git stash pop
+Saved working directory and index state WIP on mr-3160: d065ad3de [AscendNPU IR][HIVM] fix: prepare buffer sizes before skew CV pipelining
+On branch mr-3160
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (3c5b9816f79270d224698bebf62a70bcfb1e7189)

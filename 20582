@@ -1,1 +1,4 @@
-https://gitcode.com/Ascend/AscendNPU-IR/pull/3160
+cd ~/work/ascend/AscendNPU-IR
+grep -rn "preserveTightlyCoupledLayout" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.h
+git log --oneline -8
+tail -30 ~/mr3160_dump.log

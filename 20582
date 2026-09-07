@@ -1,15 +1,30 @@
-bash
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 git fetch origin refs/merge-requests/3160/head:mr-3160-v2 -f
 git log --oneline -8 mr-3160-v2
 git diff mr-3160 mr-3160-v2 --stat
-
-If the new head has the option, switch to it and drop your constexpr stub, since it hardcodes to true exactly what the pass is meant to control.
-
-Meanwhile your greps returned 0 because the log has no multibuffer marks. Check what's actually in it:
-
-bash
-grep -c "PassID" ~/mr3160_dump.log
+From https://gitcode.com/Ascend/AscendNPU-IR
+ * [new ref]             refs/merge-requests/3160/head -> mr-3160-v2
+d065ad3de (HEAD -> mr-3160, mr-3160-v2) [AscendNPU IR][HIVM] fix: prepare buffer sizes before skew CV pipelining
+35abf686e [AscendNPU IR][HIVM][CVPipeline] fix: preserve dynamic TCB views in preload scopes
+2133c750b [HIVM] Compare constantized buffer sizes in bytes
+e3ab56774 [HFusion] Normalize generated sign-extended loop bounds for uplift
+609a860df [Preload] Fix CI issues
+8d239751f [MarkRealCoreType] fix: inherit core type from parent ScopeOp for unmapped ops
+91d9eff33 [Preload] Enable preload on scopes with same preloadNum
+6e110f763 [CVPipeline] feat: support loop-carried-dependence
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ grep -c "PassID" ~/mr3160_dump.log
 grep -in "multi_buffer\|multibuffer" ~/mr3160_dump.log | head
 grep -in "tightly_coupled\|TightlyCoupled" ~/mr3160_dump.log | head
 grep -in "preload" ~/mr3160_dump.log | head
+17850
+2:warning: warning: --enable-preload=true overrides --enablecv-pipeline-mode; forcing 'Skew'.
+1220:warning: warning: --enable-preload=true overrides --enablecv-pipeline-mode; forcing 'Skew'.
+2225:[PassID] create-preload/module/0
+2981:warning: warning: --enable-preload=true overrides --enablecv-pipeline-mode; forcing 'Skew'.
+4199:warning: warning: --enable-preload=true overrides --enablecv-pipeline-mode; forcing 'Skew'.
+5204:[PassID] create-preload/module/1
+5960:warning: warning: --enable-preload=true overrides --enablecv-pipeline-mode; forcing 'Skew'.
+7178:warning: warning: --enable-preload=true overrides --enablecv-pipeline-mode; forcing 'Skew'.
+8183:[PassID] create-preload/module/2
+8939:warning: warning: --enable-preload=true overrides --enablecv-pipeline-mode; forcing 'Skew'.
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ 

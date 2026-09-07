@@ -1,7 +1,13 @@
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ ls -la build-ubuntu/bin/bishengir-compile
--rwxr-xr-x 1 yaolu yaolu 167392752 Sep  7 17:50 build-ubuntu/bin/bishengir-compile
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ ninja -C build-ubuntu bishengir-compile
-ninja: Entering directory `build-ubuntu'
-[0/2] Re-checking globbed directories...
-ninja: no work to do.
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ grep -rn "preserveTightlyCoupledLayout" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td
+cd ~/work/ascend/AscendNPU-IR
+./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
+  --target=Ascend950PR_9579 \
+  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+  --enable-vf-merge-level=1 --mlir-print-ir-after-all \
+  -o /tmp/mr3236_kernel > ~/mr3236_dump.log 2>&1
+
+grep -c "memref.alloc.*?x" ~/mr3236_dump.log
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/mr3236_dump.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/mr3236_dump.log

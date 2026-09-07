@@ -1,18 +1,11 @@
-Your patch was written against bd47454a. Try to get it, since that repo keeps every pushed commit under refs/keep-around/:
-
-bash
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 git fetch origin bd47454a
 git log --oneline -3 bd47454a
-
-If that works, git checkout bd47454a gives you the base your patch expects, with the option present, and you can drop the constexpr stub. If it fails, ask owenren1234 directly, since he force-pushed away the base his own patch depends on.
-
-Your dump has almost no IR in it. 1.5M across 17850 passes is about 84 bytes each, which is just the [PassID] lines. That's why multi_buffer and tightly_coupled both returned zero hits, they aren't absent from the IR, the IR was never printed.
-
---mlir-print-ir-after-change combined with --print-pass-id is drowning the output. Re-dump the way the production compile does, targeted at one pass:
-
-bash
-./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
+fatal: couldn't find remote ref bd47454a
+fatal: ambiguous argument 'bd47454a': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ ./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
   --target=Ascend950PR_9579 \
   --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
   --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
@@ -24,5 +17,6 @@ bash
 du -sh ~/mr3160_full.log
 grep -c "multi_buffer" ~/mr3160_full.log
 grep -c "tightly_coupled" ~/mr3160_full.log
-
-Expect gigabytes. Check df -h ~ first.
+120M    /home/yaolu/mr3160_full.log
+3228
+15936

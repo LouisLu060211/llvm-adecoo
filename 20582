@@ -1,6 +1,4 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-grep -rn "AdapterSanitizer" bishengir/hivmc/bishengir/lib/Tools/hivmc/CMakeLists.txt
-git log --oneline -3 -- bishengir/hivmc/bishengir/lib/Tools/hivmc/AdapterSanitizer.cpp
-10:    AdapterSanitizer.cpp
-8cbf0d517 [AscendNPU-IR] add hivmc and build
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ 
+distrobox enter a5-ubuntu
+cd ~/work/ascend/AscendNPU-IR
+export PATH="$HOME/.local/bin:$PATH"
+bash build-tools/build.sh -o build-ubuntu -j 32 -r

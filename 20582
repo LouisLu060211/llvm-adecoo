@@ -1,60 +1,17 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-git log --oneline --all -S "preserveTightlyCoupledLayout" | head
-grep -rn "getAnnotatedBufferSizeInBytes\|kBitsToByte" bishengir/ | head
-bishengir/include/bishengir/Dialect/Utils/Util.h:61:constexpr const uint8_t kBitsToByte = 8;
-bishengir/include/bishengir/Dialect/Utils/Util.h:590:    int alignBits = alignBytes[i] * utils::kBitsToByte;
-bishengir/lib/Dialect/HFusion/TransformOps/HFusionTransformOps.cpp:146:        llvm::divideCeil(elementBitWidth, mlir::utils::kBitsToByte));
-bishengir/lib/Dialect/HFusion/Transforms/AutoVectorize.cpp:497:  int64_t bytesPerElement = static_cast<int64_t>(llvm::divideCeil(bitWidth, utils::kBitsToByte));
-bishengir/lib/Dialect/HFusion/Transforms/AutoVectorize.cpp:587:    int64_t lastBytes = (int64_t)llvm::divideCeil(lastBits, utils::kBitsToByte);
-bishengir/lib/Dialect/HFusion/Transforms/Flattener/Flattener.cpp:148:    if (!ShapedType::isDynamic(innerAxis) && innerAxis % utils::kBitsToByte == 0)
-bishengir/lib/Dialect/HFusion/Transforms/NormalizeSliceOps.cpp:509:        sliceOp.getResultType().getElementTypeBitWidth() / utils::kBitsToByte;
-bishengir/lib/Dialect/HIVM/IR/BiShengIRAggregatedOpInterface/DecomposeOperation.cpp:393:        allocDimSize * static_cast<int64_t>(utils::kBitsToByte);
-bishengir/lib/Dialect/HIVM/IR/HIVMMacroOps.cpp:296:      (elementType.getIntOrFloatBitWidth() / utils::kBitsToByte);
-bishengir/lib/Dialect/HIVM/IR/HIVMMacroOps.cpp:308:      2 * utils::kBitsToByte / elementType.getIntOrFloatBitWidth();
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ sed -n '355,400p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
-}
+git log -S came back empty, so no commit in your fetched history ever introduces preserveTightlyCoupledLayout. The patch is incomplete, not misapplied.
 
-FailureOr<int64_t> resolveDynamicDimToBound(Value dim) {
-  auto res = resolveDynamicDimToBoundImpl(dim);
-  if (res.has_value()) {
-    return res->value;
-  } else {
-    return failure();
-  }
-}
-} // namespace
+The context also tells you what shape the missing piece has. matchAndRewrite is a const member of ConstantizeAllocLikeOp, and that struct inherits its constructor with using OpRewritePattern<AllocLikeOp>::OpRewritePattern; and declares no members. So preserveTightlyCoupledLayout would have to be either a new member on that pattern or a pass option threaded through. Neither exists.
 
-namespace {
-struct ConstantizeBufferPass
-    : public impl::ConstantizeBufferSizeBase<ConstantizeBufferPass> {
-  void runOnOperation() override;
-};
+Check the remaining pieces. On fremont:
 
-template <typename AllocLikeOp>
-struct ConstantizeAllocLikeOp : public OpRewritePattern<AllocLikeOp> {
-public:
-  using OpRewritePattern<AllocLikeOp>::OpRewritePattern;
+bash
+cd ~/work/ascend/AscendNPU-IR
+grep -rn "getAnnotatedBufferSizeInBytes" bishengir/ | head
+grep -rn "ConstantizeBufferSize" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td
 
-  LogicalResult matchAndRewrite(AllocLikeOp op,
-                                PatternRewriter &rewriter) const override {
-    auto dynSizes = op.getDynamicSizes();
-    // No change if alloc is already fully static.
-    if (dynSizes.empty())
-      return failure();
+The first matters because your earlier grep was truncated by head, so I can't tell whether that helper exists either. The second shows whether the pass declares any options in tablegen, which is where a preserve-tightly-coupled-layout option would live.
 
-    SmallVector<Value> newDynSizes;
-    SmallVector<int64_t> newStaticSizes;
-    MemRefType currentMemRefType = op.getType();
-    auto currentSizes = currentMemRefType.getShape();
+Also useful:
 
-    // The value-bounds analysis cannot currently prove bounds such as
-    // min(iv + C, max(iv, end)) - iv <= C because the two affine.apply
-    // operands are correlated. For a tightly-coupled buffer with exactly one
-    // dynamic dimension, derive that dimension's storage bound from the
-    // annotated byte capacity instead.
-    std::optional<int64_t> annotatedDynamicBound;
-    auto tightlyCoupledMark = utils::getAnnotateOpWithAttr(
-        op.getResult(), hivm::HIVMTightlyCoupledBufferAttr::name);
-    unsigned numDynamicDims = 0;
-    for (int64_t size : currentSizes)
-      if (ShapedType::isDynamic(size))
+bash
+sed -n '/void ConstantizeBufferPass::runOnOperation/,/^}/p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp

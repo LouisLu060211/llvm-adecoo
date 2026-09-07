@@ -1,42 +1,15 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-grep -rn "preserveTightlyCoupledLayout" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.h
-git log --oneline -8
-tail -30 ~/mr3160_dump.log
-d065ad3de (HEAD -> mr-3160) [AscendNPU IR][HIVM] fix: prepare buffer sizes before skew CV pipelining
-35abf686e [AscendNPU IR][HIVM][CVPipeline] fix: preserve dynamic TCB views in preload scopes
-2133c750b [HIVM] Compare constantized buffer sizes in bytes
-e3ab56774 [HFusion] Normalize generated sign-extended loop bounds for uplift
-609a860df [Preload] Fix CI issues
-8d239751f [MarkRealCoreType] fix: inherit core type from parent ScopeOp for unmapped ops
-91d9eff33 [Preload] Enable preload on scopes with same preloadNum
-6e110f763 [CVPipeline] feat: support loop-carried-dependence
-[PassID] hoist-vstas/mma_tile_bfloat16_t_to_float_tb/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_outlined_vf_1/5
-[PassID] hoist-vstas/copy_ubuf_to_ubuf_1d_float/5
-[PassID] hoist-vstas/store_ubuf_to_gm_2d_bfloat16_t/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_fused_1_outlined_vf_0/5
-[PassID] hoist-vstas/set_l1_2d_bfloat16_t/5
-[PassID] hoist-vstas/nd2nz_bfloat16_t/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_fused_7_outlined_vf_1/5
-[PassID] hoist-vstas/mma_tile_bfloat16_t_to_float/5
-[PassID] hoist-vstas/load_gm_to_ubuf_1d_bfloat16_t/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_outlined_vf_2/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_fused_4_outlined_vf_1/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_mix_aic/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_mix_aiv/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_fused_3_outlined_vf_1/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_fused_3_outlined_vf_0/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_fused_0_outlined_vf_0/5
-[PassID] hoist-vstas/fixpipe_nz2nd_float_to_float_4d_to_2d_ubuf/5
-[PassID] hoist-vstas/copy_ubuf_to_cbuf_2d_bfloat16_t/5
-[PassID] hoist-vstas/store_ubuf_to_gm_1d_float/5
-[PassID] hoist-vstas/copy_ubuf_to_ubuf_2d_float/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_fused_0_outlined_vf_1/5
-[PassID] hoist-vstas/parallel_nsa_compression_fwd_kernel_outlined_vf_0/5
-[PassID] convert-ascend-dpx-to-hivmregbaseintrins/module/5
-[PassID] decompose-frem/module/5
-[PassID] convert-scf-to-cf/module/5
-[PassID] lower-affine/module/5
-[PassID] arith-expand/module/5
-[ERROR] Cannot find hivmc-a5 under $PATH 
-[ERROR] Failed to run BiShengIR regbase pipeline
+bash
+cd ~/work/ascend/AscendNPU-IR
+git fetch origin refs/merge-requests/3160/head:mr-3160-v2 -f
+git log --oneline -8 mr-3160-v2
+git diff mr-3160 mr-3160-v2 --stat
+
+If the new head has the option, switch to it and drop your constexpr stub, since it hardcodes to true exactly what the pass is meant to control.
+
+Meanwhile your greps returned 0 because the log has no multibuffer marks. Check what's actually in it:
+
+bash
+grep -c "PassID" ~/mr3160_dump.log
+grep -in "multi_buffer\|multibuffer" ~/mr3160_dump.log | head
+grep -in "tightly_coupled\|TightlyCoupled" ~/mr3160_dump.log | head
+grep -in "preload" ~/mr3160_dump.log | head

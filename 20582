@@ -1,26 +1,12 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-grep -c "memref.alloc.*?x" ~/mr3160_full.log
-grep -oE "memref\.alloc\([^)]*\) *(\{[^}]*\})? *: memref<[^>]*\?[^>]*>" ~/mr3160_full.log | sort | uniq -c | sort -rn | head -20
-48
-     12 memref.alloc(%c2, %c4, %c16, %c16) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>
-      6 memref.alloc(%c4, %c1, %c16, %c16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
-      6 memref.alloc(%c2, %c1, %c16, %c16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
-      6 memref.alloc(%96, %95, %c16_15, %c16_16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
-      6 memref.alloc(%88, %87, %c16_16, %c16_17) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
-      6 memref.alloc(%87, %86, %c16_5, %c16_6) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>
-      6 memref.alloc(%78, %79, %c16_6, %c16_5) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git stash
-distrobox enter a5-ubuntu
 cd ~/work/ascend/AscendNPU-IR
-export PATH="$HOME/.local/bin:$PATH"
-ninja -C build-ubuntu bishengir-compile
-Saved working directory and index state WIP on mr-3160: d065ad3de [AscendNPU IR][HIVM] fix: prepare buffer sizes before skew CV pipelining
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ cd ~/work/ascend/AscendNPU-IR
-export PATH="$HOME/.local/bin:$PATH"
-ninja -C build-ubuntu bishengir-compile
-ninja: Entering directory `build-ubuntu'
-[0/2] Re-checking globbed directories...
-[4/5] Linking CXX executable bin/bishengir-compile
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ df -h ~
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/md127       15T  3.4T   12T  23% /home/yaolu
+./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
+  --target=Ascend950PR_9579 \
+  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+  --enable-vf-merge-level=1 \
+  --mlir-print-ir-after-all \
+  -o /tmp/base_kernel > ~/base_dump.log 2>&1
+
+grep -c "memref.alloc.*?x" ~/base_dump.log

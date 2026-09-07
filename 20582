@@ -1,3 +1,25 @@
-03c61dc25 (HEAD -> master) !3051 merge select-buffer-support into master
-7adcd1cdf !3055 merge a5-conv1d-dev into master
-4b972fc0a !2970 merge fix_canonicalize into master
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ git ls-remote origin 2>&1 | head -20
+8b7dc42923ee244b43a920ce83275e3f479265d1        HEAD
+fee08c721356d562543eb51ac6b270ff69225eca        refs/heads/dev/regbase
+29d75b8d6f30b5fa3ffdf74ffdff5fb95fd22ba1        refs/heads/experimental
+042c923d02a22e5845cf10311cf2d192b17a5d77        refs/heads/feature/0725
+6cfa9759335c42e7fb3b5619766912a8eb7b8c9a        refs/heads/feature/regbase
+8b7dc42923ee244b43a920ce83275e3f479265d1        refs/heads/master
+9140aa54443612bde0fdd8720a6fd5007721133e        refs/heads/release/BiSheng-Enterprise/206.1.0/A5
+3c20e046df7a54ea209b1177085f73bdc8c3621f        refs/heads/release/v1.0.0
+428ab8fdab46a879c7349caba4cde705bc8c9bb6        refs/heads/release/v1.1.x
+8796a8ac1508380d78128427c61ab47d03f05739        refs/heads/release/v1.2.x
+b89a5c4933eb47111b440dc533aa8904b63dc1ed        refs/heads/stable
+87d9d30ea893a7e42cd29bc8d97303b44ee0853c        refs/heads/staged_membase_regbase
+0c6fcd1e44990a803506e95a0bf687e18789ac62        refs/heads/sync0805/0c6fcd1e
+00065b0e99b9db0b599bdff427d7f0e49f1d2f8f        refs/keep-around/00065b0e99b9db0b599bdff427d7f0e49f1d2f8f
+000aa615d13b7c66c6342fd5db18d14cc517b24f        refs/keep-around/000aa615d13b7c66c6342fd5db18d14cc517b24f
+000dd3db29112de40aad986da34b2273bb643179        refs/keep-around/000dd3db29112de40aad986da34b2273bb643179
+00104aff45faf67f610a7d2f26685179444fa8ef        refs/keep-around/00104aff45faf67f610a7d2f26685179444fa8ef
+00143fe5d2de63d2ce2ff70de518439e05c6efbb        refs/keep-around/00143fe5d2de63d2ce2ff70de518439e05c6efbb
+0015138643a5b9d8f3ab7d9ad987b3ebbd661528        refs/keep-around/0015138643a5b9d8f3ab7d9ad987b3ebbd661528
+001e0d0d89b717c26eeedc212748e5084e0c1bd8        refs/keep-around/001e0d0d89b717c26eeedc212748e5084e0c1bd8
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ git checkout <ref>
+bash: syntax error near unexpected token `newline'
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ git apply --check --recount ~/constantize_buffer_size.path
+error: can't open patch '/home/yaolu/constantize_buffer_size.path': No such file or directory

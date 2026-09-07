@@ -1,3 +1,40 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ head -3 /home/yaolu/mr3160_dump.log
-[INFO] Using merged native A5 regbase pipeline
-[ERROR] Failed to open input file: /path/to/kernel.ttadapter.mlir error message: cannot open input file '/path/to/kernel.ttadapter.mlir': No such file or directory
+As expected, the log is just that error. Get the real file.
+
+**In PowerShell:**
+
+```powershell
+scp -3 a5:/root/.triton/dump/WsImDyDq-V7lSIu-mslNv1-EEV0YyuQSLDwAqMNdkxY/kernel.ttadapter.mlir fremont:~/
+```
+
+**Then on fremont, find the ssbuf flag first:**
+
+```bash
+cd ~/work/ascend/AscendNPU-IR
+grep -rin "ssbuf" bishengir/ --include=*.td --include=*.cpp --include=*.h | head
+```
+
+**Then compile with the real input:**
+
+```bash
+./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
+  --target=Ascend950PR_9579 \
+  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+  --enable-vf-merge-level=1 \
+  --mlir-print-ir-after-change --print-pass-id \
+  -o /tmp/mr3160_kernel > ~/mr3160_dump.log 2>&1
+echo "exit: $?"
+du -sh ~/mr3160_dump.log
+```
+
+Then the counts:
+
+```bash
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/mr3160_dump.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/mr3160_dump.log
+grep -c "annotatedDynamicBound\|PassID" ~/mr3160_dump.log
+```
+
+Note the kernel from that dump hash is the B4-T1024 case, which you already established is healthy at 826us. If the task targets a different kernel, use that one instead. `ls /root/.triton/dump/` on the A5 has 3.9G of them, so match the hash to the case you actually care about.

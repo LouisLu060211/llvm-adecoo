@@ -1,18 +1,7 @@
-Same output pasted again. What I need is one line:
-
-bash
-ls -la build-ubuntu/bin/bishengir-compile
-
-That timestamp decides everything. Fresh means mr-3236 built and only hivmc-a5 failed, so you carry on. Old means you're blocked and need:
-
-bash
-ninja -C build-ubuntu bishengir-compile
-
-which skips hivmc-a5 entirely.
-
-Also worth confirming, since it's the reason you switched branches:
-
-bash
-grep -rn "preserveTightlyCoupledLayout" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td
-
-Paste those two.
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ ls -la build-ubuntu/bin/bishengir-compile
+-rwxr-xr-x 1 yaolu yaolu 167392752 Sep  7 17:50 build-ubuntu/bin/bishengir-compile
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ ninja -C build-ubuntu bishengir-compile
+ninja: Entering directory `build-ubuntu'
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ grep -rn "preserveTightlyCoupledLayout" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td

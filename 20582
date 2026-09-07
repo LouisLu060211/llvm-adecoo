@@ -1,39 +1,6 @@
-A link error, not a compile error. Everything compiled, including your patch. At the final step the linker found a call to `bishengir::setSanitizerAddrArgName` but no compiled body for it anywhere in the libraries it was given.
-
-Two usual causes: the function is declared in a header but never defined, or it's defined in a source file that isn't being compiled into the library being linked.
-
-**Find out which. On fremont:**
-
-```bash
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~$ cd ~/work/ascend/AscendNPU-IR
 grep -rn "setSanitizerAddrArgName" bishengir/ | head
-```
-
-If you see it only in a `.h` with no `.cpp` definition, the symbol doesn't exist in this tree.
-
-If you see a definition in some `.cpp`, check that file is registered with the build:
-
-```bash
-grep -rn "setSanitizerAddrArgName" --include=*.cpp bishengir/
-```
-
-Then look at whether cmake knows about that source file.
-
-**Most likely fix if the definition does exist.** Your `build-ubuntu` directory was configured against master. Switching to mr-3160 may have added source files that the existing `build.ninja` never learned about. Force a reconfigure:
-
-```bash
-distrobox enter a5-ubuntu
-cd ~/work/ascend/AscendNPU-IR
-export PATH="$HOME/.local/bin:$PATH"
-bash build-tools/build.sh -o build-ubuntu -j 32 -r
-```
-
-`-r` is the rebuild flag from the help output.
-
-**The pattern is worth noticing though.** This is the second symbol missing from this base. First `preserveTightlyCoupledLayout`, now `setSanitizerAddrArgName`. One missing symbol is a stale build. Two suggests mr-3160 depends on another merge request that isn't in your tree.
-
-That makes the question to the patch author more urgent, and it should cover both:
-
-> mr-3160 doesn't build standalone. `preserveTightlyCoupledLayout` is undeclared in ConstantizeBufferSize.cpp, and linking fails on an undefined reference to `bishengir::setSanitizerAddrArgName`. Does 3160 depend on another MR I need underneath it?
-
-Run the greps first so you can tell him whether the symbols exist at all. That's the detail that distinguishes a build problem from a missing dependency.
+bishengir/hivmc/bishengir/include/bishengir/Tools/hivmc/AdapterSanitizer.h:22:setSanitizerAddrArgName(mlir::ModuleOp module,
+bishengir/hivmc/bishengir/lib/Tools/hivmc/A3/HIVMCMainA3.cpp:729:        failed(setSanitizerAddrArgName(m, llvmModule))) {
+bishengir/hivmc/bishengir/lib/Tools/hivmc/A5/HIVMCMainA5.cpp:386:        failed(setSanitizerAddrArgName(m, llvmModule))) {
+bishengir/hivmc/bishengir/lib/Tools/hivmc/AdapterSanitizer.cpp:28:setSanitizerAddrArgName(mlir::ModuleOp module,

@@ -1,5 +1,39 @@
-/usr/bin/ld: lib/libBiShengIRHIVMCLibA3.a(HIVMCMainA3.cpp.o): in function `(anonymous namespace)::runDeviceBiShengLIRCompile(mlir::ModuleOp, bishengir::HIVMCMainConfig const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::map<SubCoreTarget, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<SubCoreTarget>, std::allocator<std::pair<SubCoreTarget const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >)':
-HIVMCMainA3.cpp:(.text._ZN12_GLOBAL__N_126runDeviceBiShengLIRCompileEN4mlir8ModuleOpERKN9bishengir15HIVMCMainConfigERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESD_St3mapI13SubCoreTargetSB_St4lessISF_ESaISt4pairIKSF_SB_EEE+0x6fd): undefined reference to `bishengir::setSanitizerAddrArgName(mlir::ModuleOp, std::unique_ptr<llvm::Module, std::default_delete<llvm::Module> > const&)'
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
-[5340/5340] Linking CXX executable bin/bishengir-opt
-ninja: build stopped: subcommand failed.
+A link error, not a compile error. Everything compiled, including your patch. At the final step the linker found a call to `bishengir::setSanitizerAddrArgName` but no compiled body for it anywhere in the libraries it was given.
+
+Two usual causes: the function is declared in a header but never defined, or it's defined in a source file that isn't being compiled into the library being linked.
+
+**Find out which. On fremont:**
+
+```bash
+cd ~/work/ascend/AscendNPU-IR
+grep -rn "setSanitizerAddrArgName" bishengir/ | head
+```
+
+If you see it only in a `.h` with no `.cpp` definition, the symbol doesn't exist in this tree.
+
+If you see a definition in some `.cpp`, check that file is registered with the build:
+
+```bash
+grep -rn "setSanitizerAddrArgName" --include=*.cpp bishengir/
+```
+
+Then look at whether cmake knows about that source file.
+
+**Most likely fix if the definition does exist.** Your `build-ubuntu` directory was configured against master. Switching to mr-3160 may have added source files that the existing `build.ninja` never learned about. Force a reconfigure:
+
+```bash
+distrobox enter a5-ubuntu
+cd ~/work/ascend/AscendNPU-IR
+export PATH="$HOME/.local/bin:$PATH"
+bash build-tools/build.sh -o build-ubuntu -j 32 -r
+```
+
+`-r` is the rebuild flag from the help output.
+
+**The pattern is worth noticing though.** This is the second symbol missing from this base. First `preserveTightlyCoupledLayout`, now `setSanitizerAddrArgName`. One missing symbol is a stale build. Two suggests mr-3160 depends on another merge request that isn't in your tree.
+
+That makes the question to the patch author more urgent, and it should cover both:
+
+> mr-3160 doesn't build standalone. `preserveTightlyCoupledLayout` is undeclared in ConstantizeBufferSize.cpp, and linking fails on an undefined reference to `bishengir::setSanitizerAddrArgName`. Does 3160 depend on another MR I need underneath it?
+
+Run the greps first so you can tell him whether the symbols exist at all. That's the detail that distinguishes a build problem from a missing dependency.

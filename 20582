@@ -1,3 +1,3 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-nm -C build-ubuntu/lib/libBiShengIRScopeUtils.a 2>/dev/null | grep isManualVFScope
-0000000000000000 T mlir::scope::utils::isManualVFScope(mlir::func::FuncOp)
+cd ~/work/ascend/AscendNPU-IR
+ls -la build-ubuntu/bin/bishengir-compile build-ubuntu/bin/bishengir-opt
+ls -la build-ubuntu/install/bin/ 2>/dev/null

@@ -1,21 +1,23 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-grep -rn "getAnnotatedBufferSizeInBytes" bishengir/ | head
-grep -rn "ConstantizeBufferSize" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td
-bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:405:              getAnnotatedBufferSizeInBytes(op.getResult())) {
-bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:458:    auto bufferSizeInBytes = getAnnotatedBufferSizeInBytes(op.getResult());
-bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:482:  std::optional<int64_t> getAnnotatedBufferSizeInBytes(Value value) const {
-659:def ConstantizeBufferSize
-668:  let constructor = "mlir::hivm::createConstantizeBufferSizePass()";
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ sed -n '/void ConstantizeBufferPass::runOnOperation/,/^}/p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
-void ConstantizeBufferPass::runOnOperation() {
-  auto funcOp = getOperation();
-  if (hacc::utils::isHost(funcOp))
-    return;
+Stopgap, one line, gets you testing today. On fremont:
 
-  RewritePatternSet patterns(&getContext());
-  if (hacc::utils::isMemBasedArch(funcOp->getParentOfType<ModuleOp>()))
-    patterns.add<DistributeAffineMaxOverMin>(patterns.getContext());
-  patterns.add<ConstantizeAllocLikeOp<memref::AllocOp>,
-               ConstantizeAllocLikeOp<memref::AllocaOp>>(patterns.getContext());
-  (void)applyPatternsGreedily(funcOp, std::move(patterns));
-}
+Open the file and add a local constant just above the patch block, right after auto currentSizes = currentMemRefType.getShape();:
+
+cpp
+    constexpr bool preserveTightlyCoupledLayout = true;
+
+Then rebuild:
+
+bash
+distrobox enter a5-ubuntu
+cd ~/work/ascend/AscendNPU-IR
+export PATH="$HOME/.local/bin:$PATH"
+bash build-tools/build.sh -o build-ubuntu -j 32
+
+Only that one object needs recompiling plus the link, so minutes not hours.
+
+This hardcodes the option on, which is fine for answering "does the bound get derived and does 1:2 become possible." It is not the real change.
+
+Proper version, if you need it configurable. Three edits: an option in Passes.td between lines 659 and 668, a bool member plus constructor on ConstantizeAllocLikeOp, and passing it in runOnOperation where the pattern is currently constructed with only patterns.getContext(). Worth seeing what's already there:
+
+bash
+sed -n '659,670p' bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td

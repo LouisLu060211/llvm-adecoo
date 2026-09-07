@@ -1,4 +1,5 @@
-distrobox enter a5-ubuntu
-cd ~/work/ascend/AscendNPU-IR
-export PATH="$HOME/.local/bin:$PATH"
-bash build-tools/build.sh -o build-ubuntu -j 32
+/usr/bin/ld: lib/libBiShengIRHIVMCLibA3.a(HIVMCMainA3.cpp.o): in function `(anonymous namespace)::runDeviceBiShengLIRCompile(mlir::ModuleOp, bishengir::HIVMCMainConfig const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::map<SubCoreTarget, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<SubCoreTarget>, std::allocator<std::pair<SubCoreTarget const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >)':
+HIVMCMainA3.cpp:(.text._ZN12_GLOBAL__N_126runDeviceBiShengLIRCompileEN4mlir8ModuleOpERKN9bishengir15HIVMCMainConfigERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESD_St3mapI13SubCoreTargetSB_St4lessISF_ESaISt4pairIKSF_SB_EEE+0x6fd): undefined reference to `bishengir::setSanitizerAddrArgName(mlir::ModuleOp, std::unique_ptr<llvm::Module, std::default_delete<llvm::Module> > const&)'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+[5340/5340] Linking CXX executable bin/bishengir-opt
+ninja: build stopped: subcommand failed.

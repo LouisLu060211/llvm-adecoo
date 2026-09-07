@@ -1,42 +1,21 @@
-**On fremont:**
-
-```bash
-cd ~/work/ascend/AscendNPU-IR
-python3 - << 'EOF'
-p = "bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp"
-old = """    auto currentSizes = currentMemRefType.getShape();
-
-    // The value-bounds analysis cannot currently prove bounds such as"""
-new = """    auto currentSizes = currentMemRefType.getShape();
-
-    constexpr bool preserveTightlyCoupledLayout = true;
-
-    // The value-bounds analysis cannot currently prove bounds such as"""
-s = open(p).read()
-if s.count(old) != 1:
-    raise SystemExit("anchor matched %d times, aborting" % s.count(old))
-open(p, "w").write(s.replace(old, new))
-print("inserted")
-EOF
-```
-
-It refuses to write unless the anchor matches exactly once, so it can't silently do the wrong thing.
-
-Verify:
-
-```bash
-sed -n '380,400p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
-```
-
-Then rebuild. **On fremont:**
-
-```bash
-distrobox enter a5-ubuntu
-cd ~/work/ascend/AscendNPU-IR
-export PATH="$HOME/.local/bin:$PATH"
-bash build-tools/build.sh -o build-ubuntu -j 32
-```
-
-Only the one object plus linking, so a few minutes.
-
-If the anchor doesn't match, the blank line placement differs from what I assumed. Paste lines 380 to 400 and I'll adjust.
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/LogicalView/Core/LVLocation.cpp:13:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/LogicalView/Core/LVLocation.h:17:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/DebugInfo/LogicalView/Core/LVObject.h:17:
+In file included from /home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/BinaryFormat/Dwarf.h:25:
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:100:41: warning: format string is not a string literal [-Wformat-nonliteral]
+    return snprintf(Buffer, BufferSize, Fmt, std::get<Is>(Vals)...);
+                                        ^~~
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:111:12: note: in instantiation of function template specialization 'llvm::format_object<unsigned int, unsigned int>::snprint_tuple<0UL, 1UL>' requested here
+    return snprint_tuple(Buffer, BufferSize, std::index_sequence_for<Ts...>());
+           ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:105:3: note: in instantiation of member function 'llvm::format_object<unsigned int, unsigned int>::snprint' requested here
+  format_object(const char *fmt, const Ts &... vals)
+  ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/include/llvm/Support/Format.h:126:10: note: in instantiation of member function 'llvm::format_object<unsigned int, unsigned int>::format_object' requested here
+  return format_object<Ts...>(Fmt, Vals...);
+         ^
+/home/yaolu/work/ascend/AscendNPU-IR/third-party/llvm-project/llvm/lib/DebugInfo/LogicalView/Core/LVLocation.cpp:638:17: note: in instantiation of function template specialization 'llvm::format<unsigned int, unsigned int>' requested here
+      Stream << format(" (%d/%d)", Symbol->getCoverageFactor(),
+                ^
+8 warnings generated.
+[1066/1758] Building CXX object lib/DebugInfo/LogicalView/CMakeFiles/LLVMDebugInfoLogicalView.dir/Core/LVOptions.cpp.o

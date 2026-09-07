@@ -1,5 +1,44 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-ls -la build-ubuntu/bin/bishengir-compile build-ubuntu/bin/bishengir-opt
-ls -la build-ubuntu/install/bin/ 2>/dev/null
--rwxr-xr-x 1 yaolu yaolu 167392648 Sep  7 16:35 build-ubuntu/bin/bishengir-compile
--rwxr-xr-x 1 yaolu yaolu 176206608 Sep  7 16:35 build-ubuntu/bin/bishengir-opt
+Both binaries built at 16:35 today, so your patch is compiled in. The test target failing doesn't block you. `install/bin/` is empty because the install step never ran after the link failure, which is fine, use `bin/` directly.
+
+**Confirm and find the ssbuf flag. On fremont:**
+
+```bash
+cd ~/work/ascend/AscendNPU-IR
+./build-ubuntu/bin/bishengir-compile --version
+./build-ubuntu/bin/bishengir-compile --help 2>&1 | grep -i "ssbuf\|scratch\|shared"
+```
+
+If nothing matches, dump the whole option list and search it yourself:
+
+```bash
+./build-ubuntu/bin/bishengir-compile --help 2>&1 | wc -l
+./build-ubuntu/bin/bishengir-compile --help 2>&1 > /tmp/help.txt
+grep -in "buf" /tmp/help.txt | head -30
+```
+
+**Then verify the patch actually does something.** You have a kernel to test it on, the B4-T1024 dump you used for static analysis. Compile it with your build and dump IR:
+
+```bash
+./build-ubuntu/bin/bishengir-compile /path/to/kernel.ttadapter.mlir \
+  --target=Ascend950PR_9579 \
+  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+  --enable-vf-merge-level=1 \
+  --mlir-print-ir-after-change --print-pass-id \
+  -o /tmp/mr3160_kernel > /home/yaolu/mr3160_dump.log 2>&1
+```
+
+You'll need the `.mlir` from the A5's `/root/.triton/dump/`, so copy it over, or use whatever kernel the task actually targets.
+
+Then the multibuffer check from section 5.1:
+
+```bash
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' /home/yaolu/mr3160_dump.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' /home/yaolu/mr3160_dump.log
+```
+
+That's the "check if 1:2 can also be enabled" part of your task. Compare against the baseline dump you took on the A5, where both counts were 0.
+
+Two things still unresolved. The ssbuf flag name, which the help output should give you. And whether this binary can run where you need it, since it's glibc 2.35 and the A5 is 2.31.

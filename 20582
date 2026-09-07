@@ -1,25 +1,5 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git fetch origin merge-requests/3160/head:mr-3160
-remote: Enumerating objects: 98, done.
-remote: Counting objects: 100% (86/86), done.
-remote: Compressing objects: 100% (38/38), done.
-remote: Total 98 (delta 62), reused 48 (delta 48), pack-reused 12 (from 1)
-Unpacking objects: 100% (98/98), 99.32 KiB | 941.00 KiB/s, done.
-From https://gitcode.com/Ascend/AscendNPU-IR
- * [new ref]             refs/merge-requests/3160/head -> mr-3160
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git checkout mr-3160
-M       third-party/llvm-project
-Switched to branch 'mr-3160'
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git log --oneline -3
-d065ad3de (HEAD -> mr-3160) [AscendNPU IR][HIVM] fix: prepare buffer sizes before skew CV pipelining
-35abf686e [AscendNPU IR][HIVM][CVPipeline] fix: preserve dynamic TCB views in preload scopes
-2133c750b [HIVM] Compare constantized buffer sizes in bytes
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls ~/*patch
-/home/yaolu/constantize_buffer_size.patch
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git apply --check --recount ~/constantize_buffer_size.patch
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git apply --recount ~/constantize_buffer_size.patch
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ git diff --stat
- bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp | 32 ++++++++++++++++++++++++++++++++
- third-party/llvm-project                                        |  2 +-
- 2 files changed, 33 insertions(+), 1 deletion(-)
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ grep -n "annotatedDynamicBound" bishengir/lib/Dialect/HIVM/Transform/ConstantizeBufferSize.cpp
-grep: bishengir/lib/Dialect/HIVM/Transform/ConstantizeBufferSize.cpp: No such file or directory
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ grep -n "annotatedDynamicBound" bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+395:    std::optional<int64_t> annotatedDynamicBound;
+414:          annotatedDynamicBound =
+434:      if (failed(upperBound) && annotatedDynamicBound)
+435:        upperBound = *annotatedDynamicBound;

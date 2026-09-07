@@ -1,23 +1,42 @@
-Stopgap, one line, gets you testing today. On fremont:
+**On fremont:**
 
-Open the file and add a local constant just above the patch block, right after auto currentSizes = currentMemRefType.getShape();:
+```bash
+cd ~/work/ascend/AscendNPU-IR
+python3 - << 'EOF'
+p = "bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp"
+old = """    auto currentSizes = currentMemRefType.getShape();
 
-cpp
+    // The value-bounds analysis cannot currently prove bounds such as"""
+new = """    auto currentSizes = currentMemRefType.getShape();
+
     constexpr bool preserveTightlyCoupledLayout = true;
 
-Then rebuild:
+    // The value-bounds analysis cannot currently prove bounds such as"""
+s = open(p).read()
+if s.count(old) != 1:
+    raise SystemExit("anchor matched %d times, aborting" % s.count(old))
+open(p, "w").write(s.replace(old, new))
+print("inserted")
+EOF
+```
 
-bash
+It refuses to write unless the anchor matches exactly once, so it can't silently do the wrong thing.
+
+Verify:
+
+```bash
+sed -n '380,400p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+```
+
+Then rebuild. **On fremont:**
+
+```bash
 distrobox enter a5-ubuntu
 cd ~/work/ascend/AscendNPU-IR
 export PATH="$HOME/.local/bin:$PATH"
 bash build-tools/build.sh -o build-ubuntu -j 32
+```
 
-Only that one object needs recompiling plus the link, so minutes not hours.
+Only the one object plus linking, so a few minutes.
 
-This hardcodes the option on, which is fine for answering "does the bound get derived and does 1:2 become possible." It is not the real change.
-
-Proper version, if you need it configurable. Three edits: an option in Passes.td between lines 659 and 668, a bool member plus constructor on ConstantizeAllocLikeOp, and passing it in runOnOperation where the pattern is currently constructed with only patterns.getContext(). Worth seeing what's already there:
-
-bash
-sed -n '659,670p' bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td
+If the anchor doesn't match, the blank line placement differs from what I assumed. Paste lines 380 to 400 and I'll adjust.

@@ -1,14 +1,14 @@
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ cd ~/work/ascend/AscendNPU-IR
-./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
-  --target=Ascend950PR_9579 \
-  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
-  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
-  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
-  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
-  --enable-vf-merge-level=1 \
-  --mlir-print-ir-after-all \
-  -o /tmp/base_kernel > ~/base_dump.log 2>&1
+Finish the comparison:
 
-grep -c "memref.alloc.*?x" ~/base_dump.log
-48
-📦[yaolu@a5-ubuntu AscendNPU-IR]$ 
+bash
+grep -oE "memref\.alloc\([^)]*\) *(\{[^}]*\})? *: memref<[^>]*\?[^>]*>" ~/base_dump.log | sort | uniq -c | sort -rn
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/base_dump.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/base_dump.log
+
+Then restore the patch and note the result:
+
+bash
+exit
+cd ~/work/ascend/AscendNPU-IR
+git stash pop
+git diff --stat

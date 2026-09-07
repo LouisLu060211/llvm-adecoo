@@ -1,17 +1,21 @@
-git log -S came back empty, so no commit in your fetched history ever introduces preserveTightlyCoupledLayout. The patch is incomplete, not misapplied.
-
-The context also tells you what shape the missing piece has. matchAndRewrite is a const member of ConstantizeAllocLikeOp, and that struct inherits its constructor with using OpRewritePattern<AllocLikeOp>::OpRewritePattern; and declares no members. So preserveTightlyCoupledLayout would have to be either a new member on that pattern or a pass option threaded through. Neither exists.
-
-Check the remaining pieces. On fremont:
-
-bash
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 grep -rn "getAnnotatedBufferSizeInBytes" bishengir/ | head
 grep -rn "ConstantizeBufferSize" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td
+bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:405:              getAnnotatedBufferSizeInBytes(op.getResult())) {
+bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:458:    auto bufferSizeInBytes = getAnnotatedBufferSizeInBytes(op.getResult());
+bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:482:  std::optional<int64_t> getAnnotatedBufferSizeInBytes(Value value) const {
+659:def ConstantizeBufferSize
+668:  let constructor = "mlir::hivm::createConstantizeBufferSizePass()";
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ sed -n '/void ConstantizeBufferPass::runOnOperation/,/^}/p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+void ConstantizeBufferPass::runOnOperation() {
+  auto funcOp = getOperation();
+  if (hacc::utils::isHost(funcOp))
+    return;
 
-The first matters because your earlier grep was truncated by head, so I can't tell whether that helper exists either. The second shows whether the pass declares any options in tablegen, which is where a preserve-tightly-coupled-layout option would live.
-
-Also useful:
-
-bash
-sed -n '/void ConstantizeBufferPass::runOnOperation/,/^}/p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+  RewritePatternSet patterns(&getContext());
+  if (hacc::utils::isMemBasedArch(funcOp->getParentOfType<ModuleOp>()))
+    patterns.add<DistributeAffineMaxOverMin>(patterns.getContext());
+  patterns.add<ConstantizeAllocLikeOp<memref::AllocOp>,
+               ConstantizeAllocLikeOp<memref::AllocaOp>>(patterns.getContext());
+  (void)applyPatternsGreedily(funcOp, std::move(patterns));
+}

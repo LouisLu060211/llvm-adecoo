@@ -1,24 +1,26 @@
-Check whether your patch fired anywhere. On fremont:
-
-bash
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 grep -c "memref.alloc.*?x" ~/mr3160_full.log
 grep -oE "memref\.alloc\([^)]*\) *(\{[^}]*\})? *: memref<[^>]*\?[^>]*>" ~/mr3160_full.log | sort | uniq -c | sort -rn | head -20
-
-That shows every dynamic alloc that survives, grouped. Look for any with exactly one ?, since those are the ones your patch could act on.
-
-Then do the A-B comparison properly. The stash and pop happened in the same command block, so nothing was rebuilt in between. To actually compare:
-
-bash
-git stash
+48
+     12 memref.alloc(%c2, %c4, %c16, %c16) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>
+      6 memref.alloc(%c4, %c1, %c16, %c16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
+      6 memref.alloc(%c2, %c1, %c16, %c16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
+      6 memref.alloc(%96, %95, %c16_15, %c16_16) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
+      6 memref.alloc(%88, %87, %c16_16, %c16_17) {alignment = 64 : i64} : memref<?x?x?x?xf32, #hivm.address_space<cc>
+      6 memref.alloc(%87, %86, %c16_5, %c16_6) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>
+      6 memref.alloc(%78, %79, %c16_6, %c16_5) : memref<?x?x?x?xbf16, #hivm.address_space<cbuf>
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ git stash
 distrobox enter a5-ubuntu
 cd ~/work/ascend/AscendNPU-IR
 export PATH="$HOME/.local/bin:$PATH"
 ninja -C build-ubuntu bishengir-compile
-
-Then re-dump to a different filename, exit the container, git stash pop, rebuild again, and diff the alloc lines between the two logs. Only that tells you what your 32 lines changed.
-
-Check disk first, you're accumulating 120M logs:
-
-bash
-df -h ~
+Saved working directory and index state WIP on mr-3160: d065ad3de [AscendNPU IR][HIVM] fix: prepare buffer sizes before skew CV pipelining
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ cd ~/work/ascend/AscendNPU-IR
+export PATH="$HOME/.local/bin:$PATH"
+ninja -C build-ubuntu bishengir-compile
+ninja: Entering directory `build-ubuntu'
+[0/2] Re-checking globbed directories...
+[4/5] Linking CXX executable bin/bishengir-compile
+📦[yaolu@a5-ubuntu AscendNPU-IR]$ df -h ~
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/md127       15T  3.4T   12T  23% /home/yaolu

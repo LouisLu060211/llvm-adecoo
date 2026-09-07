@@ -1,13 +1,60 @@
-Find out where it was supposed to come from. On fremont:
-
-bash
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 git log --oneline --all -S "preserveTightlyCoupledLayout" | head
 grep -rn "getAnnotatedBufferSizeInBytes\|kBitsToByte" bishengir/ | head
+bishengir/include/bishengir/Dialect/Utils/Util.h:61:constexpr const uint8_t kBitsToByte = 8;
+bishengir/include/bishengir/Dialect/Utils/Util.h:590:    int alignBits = alignBytes[i] * utils::kBitsToByte;
+bishengir/lib/Dialect/HFusion/TransformOps/HFusionTransformOps.cpp:146:        llvm::divideCeil(elementBitWidth, mlir::utils::kBitsToByte));
+bishengir/lib/Dialect/HFusion/Transforms/AutoVectorize.cpp:497:  int64_t bytesPerElement = static_cast<int64_t>(llvm::divideCeil(bitWidth, utils::kBitsToByte));
+bishengir/lib/Dialect/HFusion/Transforms/AutoVectorize.cpp:587:    int64_t lastBytes = (int64_t)llvm::divideCeil(lastBits, utils::kBitsToByte);
+bishengir/lib/Dialect/HFusion/Transforms/Flattener/Flattener.cpp:148:    if (!ShapedType::isDynamic(innerAxis) && innerAxis % utils::kBitsToByte == 0)
+bishengir/lib/Dialect/HFusion/Transforms/NormalizeSliceOps.cpp:509:        sliceOp.getResultType().getElementTypeBitWidth() / utils::kBitsToByte;
+bishengir/lib/Dialect/HIVM/IR/BiShengIRAggregatedOpInterface/DecomposeOperation.cpp:393:        allocDimSize * static_cast<int64_t>(utils::kBitsToByte);
+bishengir/lib/Dialect/HIVM/IR/HIVMMacroOps.cpp:296:      (elementType.getIntOrFloatBitWidth() / utils::kBitsToByte);
+bishengir/lib/Dialect/HIVM/IR/HIVMMacroOps.cpp:308:      2 * utils::kBitsToByte / elementType.getIntOrFloatBitWidth();
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ sed -n '355,400p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+}
 
-The first tells you whether any commit in your fetched history introduces it. The second checks whether the patch's other two helper functions exist, since if they're also missing you have the wrong base entirely rather than one stray symbol.
+FailureOr<int64_t> resolveDynamicDimToBound(Value dim) {
+  auto res = resolveDynamicDimToBoundImpl(dim);
+  if (res.has_value()) {
+    return res->value;
+  } else {
+    return failure();
+  }
+}
+} // namespace
 
-Also show me how the surrounding code is structured:
+namespace {
+struct ConstantizeBufferPass
+    : public impl::ConstantizeBufferSizeBase<ConstantizeBufferPass> {
+  void runOnOperation() override;
+};
 
-bash
-sed -n '355,400p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+template <typename AllocLikeOp>
+struct ConstantizeAllocLikeOp : public OpRewritePattern<AllocLikeOp> {
+public:
+  using OpRewritePattern<AllocLikeOp>::OpRewritePattern;
+
+  LogicalResult matchAndRewrite(AllocLikeOp op,
+                                PatternRewriter &rewriter) const override {
+    auto dynSizes = op.getDynamicSizes();
+    // No change if alloc is already fully static.
+    if (dynSizes.empty())
+      return failure();
+
+    SmallVector<Value> newDynSizes;
+    SmallVector<int64_t> newStaticSizes;
+    MemRefType currentMemRefType = op.getType();
+    auto currentSizes = currentMemRefType.getShape();
+
+    // The value-bounds analysis cannot currently prove bounds such as
+    // min(iv + C, max(iv, end)) - iv <= C because the two affine.apply
+    // operands are correlated. For a tightly-coupled buffer with exactly one
+    // dynamic dimension, derive that dimension's storage bound from the
+    // annotated byte capacity instead.
+    std::optional<int64_t> annotatedDynamicBound;
+    auto tightlyCoupledMark = utils::getAnnotateOpWithAttr(
+        op.getResult(), hivm::HIVMTightlyCoupledBufferAttr::name);
+    unsigned numDynamicDims = 0;
+    for (int64_t size : currentSizes)
+      if (ShapedType::isDynamic(size))

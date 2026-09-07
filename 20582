@@ -1,3 +1,6 @@
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 grep -rn "preserveTightlyCoupledLayout" bishengir/ | head -20
 grep -rn "TightlyCoupled" bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:402:    if (preserveTightlyCoupledLayout && tightlyCoupledMark &&
+397:        op.getResult(), hivm::HIVMTightlyCoupledBufferAttr::name);
+402:    if (preserveTightlyCoupledLayout && tightlyCoupledMark &&

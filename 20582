@@ -1,17 +1,2 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-grep -rn "isManualVFScope" bishengir/ | head
-bishengir/include/bishengir/Dialect/Scope/Utils/Utils.h:20:bool isManualVFScope(func::FuncOp funcOp);
-bishengir/lib/Dialect/HFusion/Transforms/AutoVectorize.cpp:1102:    if (mlir::scope::utils::isManualVFScope(func)) {
-bishengir/lib/Dialect/HFusion/Transforms/VectorizeOps.cpp:242:    if (forManualScope && !scope::utils::isManualVFScope(funcOp)) {
-bishengir/lib/Dialect/HFusion/Transforms/VectorizeOps.cpp:328:    if (forManualScope && !scope::utils::isManualVFScope(funcOp)) {
-bishengir/lib/Dialect/Scope/Utils/Utils.cpp:18:bool utils::isManualVFScope(func::FuncOp funcOp) {
-bishengir/lib/Dialect/Vector/Transforms/MaterializeVectorWriteToDestination.cpp:182:  if (!scope::utils::isManualVFScope(funcOp)) {
-bishengir/hivmc/bishengir/include/bishengir/Dialect/Scope/Utils/Utils.h:21:bool isManualVFScope(func::FuncOp funcOp);
-bishengir/hivmc/bishengir/lib/Dialect/HFusion/Transforms/AutoVectorize.cpp:1296:    if (mlir::scope::utils::isManualVFScope(func)) {
-bishengir/hivmc/bishengir/lib/Dialect/HFusion/Transforms/VectorizeOps.cpp:185:    if (forManualScope && !scope::utils::isManualVFScope(funcOp)) {
-bishengir/hivmc/bishengir/lib/Dialect/Scope/Utils/Utils.cpp:15:bool utils::isManualVFScope(func::FuncOp funcOp) {
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls -d ~/work/ascend/AscendNPU-IR/build
-/home/yaolu/work/ascend/AscendNPU-IR/build
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ls -d ~/work/ascend/AscendNPU-IR/build*
-/home/yaolu/work/ascend/AscendNPU-IR/build  /home/yaolu/work/ascend/AscendNPU-IR/build_hivmc  /home/yaolu/work/ascend/AscendNPU-IR/build-tools  /home/yaolu/work/ascend/AscendNPU-IR/build-ubuntu
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ 
+cd ~/work/ascend/AscendNPU-IR
+nm -C build-ubuntu/lib/libBiShengIRScopeUtils.a 2>/dev/null | grep isManualVFScope

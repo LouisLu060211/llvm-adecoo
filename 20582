@@ -1,38 +1,18 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
-  --target=Ascend950PR_9579 \
-  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
-  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
-  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
-  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
-  --enable-vf-merge-level=1 \
-  --mlir-print-ir-after-all \
-  -o /tmp/mr3160_kernel > ~/mr3160_full.log 2>&1
-du -sh ~/mr3160_full.log
-grep -c "multi_buffer" ~/mr3160_full.log
-grep -c "tightly_coupled" ~/mr3160_full.log
-120M    /home/yaolu/mr3160_full.log
-3228
-15936
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/mr3160_full.log
-grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/mr3160_full.log
-\3192
-2604
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ \cd ~/work/ascend/AscendNPU-IR
-grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/mr3160_full.log
-grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/mr3160_full.log
-3192
-2604
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ grep -oE 'multi_buffer = [0-9]+' ~/mr3160_full.log | sort | uniq -c
-   3192 multi_buffer = 2
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ grep -n "ConstantizeBufferSize\|constantize-buffer" ~/mr3160_full.log | head
-181960:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-182994:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-183460:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-184026:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-184092:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-184124:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-184156:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-184194:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-184222:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
-184270:// -----// IR Dump After ConstantizeBufferSize (hivm-constantize-buffer-size) //----- //
+Now check whether your patch fired. On fremont:
+
+bash
+cd ~/work/ascend/AscendNPU-IR
+sed -n '181960,182100p' ~/mr3160_full.log | grep -n "memref.alloc"
+
+That's the IR right after the first ConstantizeBufferSize run. What you're looking for is memref.alloc with ? in its type versus fully static dimensions. Your patch's entire purpose is turning a dynamic dim into a static bound, so:
+
+bash
+awk 'NR>=181960 && NR<=182994' ~/mr3160_full.log | grep -c "memref.alloc.*?x"
+awk 'NR>=181960 && NR<=182994' ~/mr3160_full.log | grep "memref.alloc" | head -10
+
+If no allocs still carry ?, the pass constantized everything, and your patch may or may not have been the reason. To prove it was, compare against a build without your patch. You still have build-ubuntu-stale or can stash the change:
+
+bash
+git stash
+# rebuild, re-dump, compare alloc shapes
+git stash pop

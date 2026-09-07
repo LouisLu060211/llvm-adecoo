@@ -1,22 +1,20 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-git fetch origin bd47454a
-git log --oneline -3 bd47454a
-fatal: couldn't find remote ref bd47454a
-fatal: ambiguous argument 'bd47454a': unknown revision or path not in the working tree.
-Use '--' to separate paths from revisions, like this:
-'git <command> [<revision>...] -- [<file>...]'
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ ./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
-  --target=Ascend950PR_9579 \
-  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
-  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
-  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
-  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
-  --enable-vf-merge-level=1 \
-  --mlir-print-ir-after-all \
-  -o /tmp/mr3160_kernel > ~/mr3160_full.log 2>&1
-du -sh ~/mr3160_full.log
-grep -c "multi_buffer" ~/mr3160_full.log
-grep -c "tightly_coupled" ~/mr3160_full.log
-120M    /home/yaolu/mr3160_full.log
-3228
-15936
+Run the section 5.1 check properly. On fremont:
+
+bash
+cd ~/work/ascend/AscendNPU-IR
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/mr3160_full.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/mr3160_full.log
+
+Mark present with select absent is the silent-failure signature. Both nonzero means ping-pong actually took effect.
+
+Then look at what ratios are being set:
+
+bash
+grep -oE 'multi_buffer = [0-9]+' ~/mr3160_full.log | sort | uniq -c
+
+That directly answers your 1:2 question. multi_buffer = 2 is double buffering. If you see mostly 1 or 4, that tells you where it landed instead.
+
+And check whether your patch fired:
+
+bash
+grep -n "ConstantizeBufferSize\|constantize-buffer" ~/mr3160_full.log | head

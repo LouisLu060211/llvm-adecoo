@@ -1,1 +1,67 @@
-https://gitcode.com/Ascend/AscendNPU-IR/pull/3236
+Also note the motivation line: the dynamic tail slice moving before fixpipe is what blocks CV 1:2 tiling. That's exactly the question you were asked to investigate.
+
+Verify it. First discard your hand-applied patch, since 3236 has the real version. On fremont:
+
+bash
+cd ~/work/ascend/AscendNPU-IR
+git checkout bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
+git status
+git fetch origin refs/merge-requests/3236/head:mr-3236
+git log --oneline -12 mr-3236
+git checkout mr-3236
+grep -rn "preserveTightlyCoupledLayout\|preserve-tightly-coupled-layout" bishengir/include/bishengir/Dialect/HIVM/Transforms/Passes.td
+
+That last grep should now find the option. If it does, the base problem is solved and no stub is needed.
+
+Then rebuild. In the container:
+
+bash
+distrobox enter a5-ubuntu
+cd ~/work/ascend/AscendNPU-IR
+export PATH="$HOME/.local/bin:$PATH"
+bash build-tools/build.sh -o build-ubuntu -j 32 -r
+
+Use -r since 3236 touches 17 files including CMake-visible ones, and you hit stale-configuration link errors last time without it.
+
+Then repeat the same dump and compare against base_dump.log:
+
+bash
+./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
+  --target=Ascend950PR_9579 \
+  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
+  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
+  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
+  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
+  --enable-vf-merge-level=1 --mlir-print-ir-after-all \
+  -o /tmp/mr3236_kernel > ~/mr3236_dump.log 2>&1
+
+grep -c "memref.alloc.*?x" ~/mr3236_dump.log
+grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/mr3236_dump.log
+grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/mr3236_dump.log
+
+Baseline to beat: 48 dynamic allocs, 3192 marks, 2604 selects.
+
+Four things to check specifically:
+
+Pass order changed as claimed:
+
+bash
+grep -n "MarkTightlyCoupledBuffer\|ConstantizeBufferSize" ~/mr3236_dump.log | head -6
+grep -n "MarkTightlyCoupledBuffer\|ConstantizeBufferSize" ~/base_dump.log | head -6
+
+MarkTightlyCoupledBuffer should now come after, not before.
+
+Fewer dynamic allocs, and whether any surviving ones dropped to one dynamic dim:
+
+bash
+grep -oE "memref\.alloc\([^)]*\)[^:]*: memref<[^>]*\?[^>]*>" ~/mr3236_dump.log | sort | uniq -c | sort -rn
+
+The new InlineFixpipe guard fired:
+
+bash
+grep -c "shouldKeepFixpipeBeforeDynamicSlice\|InlineFixpipe" ~/mr3236_dump.log
+
+And whether the whole point landed, CV 1:2 tiling on a case that previously couldn't:
+
+bash
+grep -in "1:2\|cv.*tiling\|has_loop_carried_dep" ~/mr3236_dump.log | head

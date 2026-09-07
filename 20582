@@ -1,6 +1,13 @@
-yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
-grep -rn "preserveTightlyCoupledLayout" bishengir/ | head -20
-grep -rn "TightlyCoupled" bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp
-bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp:402:    if (preserveTightlyCoupledLayout && tightlyCoupledMark &&
-397:        op.getResult(), hivm::HIVMTightlyCoupledBufferAttr::name);
-402:    if (preserveTightlyCoupledLayout && tightlyCoupledMark &&
+Find out where it was supposed to come from. On fremont:
+
+bash
+cd ~/work/ascend/AscendNPU-IR
+git log --oneline --all -S "preserveTightlyCoupledLayout" | head
+grep -rn "getAnnotatedBufferSizeInBytes\|kBitsToByte" bishengir/ | head
+
+The first tells you whether any commit in your fetched history introduces it. The second checks whether the patch's other two helper functions exist, since if they're also missing you have the wrong base entirely rather than one stray symbol.
+
+Also show me how the surrounding code is structured:
+
+bash
+sed -n '355,400p' bishengir/lib/Dialect/HIVM/Transforms/ConstantizeBufferSize.cpp

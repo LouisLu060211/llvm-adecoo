@@ -1,6 +1,24 @@
-yaolu@fremont:~$ cd ~/work/ascend/AscendNPU-IR
-grep -rn "setSanitizerAddrArgName" bishengir/ | head
-bishengir/hivmc/bishengir/include/bishengir/Tools/hivmc/AdapterSanitizer.h:22:setSanitizerAddrArgName(mlir::ModuleOp module,
-bishengir/hivmc/bishengir/lib/Tools/hivmc/A3/HIVMCMainA3.cpp:729:        failed(setSanitizerAddrArgName(m, llvmModule))) {
-bishengir/hivmc/bishengir/lib/Tools/hivmc/A5/HIVMCMainA5.cpp:386:        failed(setSanitizerAddrArgName(m, llvmModule))) {
-bishengir/hivmc/bishengir/lib/Tools/hivmc/AdapterSanitizer.cpp:28:setSanitizerAddrArgName(mlir::ModuleOp module,
+The definition exists at `AdapterSanitizer.cpp:28`, so the source is there but isn't reaching the library. That's a build configuration problem, not a missing dependency.
+
+**Check whether cmake knows about the file. On fremont:**
+
+```bash
+cd ~/work/ascend/AscendNPU-IR
+grep -rn "AdapterSanitizer" bishengir/hivmc/bishengir/lib/Tools/hivmc/CMakeLists.txt
+git log --oneline -3 -- bishengir/hivmc/bishengir/lib/Tools/hivmc/AdapterSanitizer.cpp
+```
+
+If the file isn't listed in CMakeLists, that's a real gap in the branch. If it is listed, your `build-ubuntu` directory was configured on master and never picked up the new source, which is the more likely story since your master build linked fine.
+
+**Force a full reconfigure. On fremont:**
+
+```bash
+distrobox enter a5-ubuntu
+cd ~/work/ascend/AscendNPU-IR
+export PATH="$HOME/.local/bin:$PATH"
+bash build-tools/build.sh -o build-ubuntu -j 32 -r
+```
+
+The `-r` rebuild flag re-runs cmake, which regenerates `build.ninja` with any files the branch added. Compiled objects stay cached, so this is not a from-scratch build.
+
+If that still fails at the same symbol, then the branch genuinely doesn't wire the file in, and that's worth reporting along with the `preserveTightlyCoupledLayout` issue. Both would point at mr-3160 not being self-contained.

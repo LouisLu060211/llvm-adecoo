@@ -1,3 +1,5 @@
-cd ~/work/ascend/AscendNPU-IR
+yaolu@fremont:~/work/ascend/AscendNPU-IR$ cd ~/work/ascend/AscendNPU-IR
 ls -la build-ubuntu/bin/bishengir-compile build-ubuntu/bin/bishengir-opt
 ls -la build-ubuntu/install/bin/ 2>/dev/null
+-rwxr-xr-x 1 yaolu yaolu 167392648 Sep  7 16:35 build-ubuntu/bin/bishengir-compile
+-rwxr-xr-x 1 yaolu yaolu 176206608 Sep  7 16:35 build-ubuntu/bin/bishengir-opt

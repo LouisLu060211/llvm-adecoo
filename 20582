@@ -1,13 +1,20 @@
-cd ~/work/ascend/AscendNPU-IR
-./build-ubuntu/bin/bishengir-compile ~/kernel.ttadapter.mlir \
-  --target=Ascend950PR_9579 \
-  --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts \
-  --set-workspace-multibuffer=0 --limit-auto-multi-buffer-of-local-buffer=no-limit \
-  --enable-vf-fusion=False --disable-auto-inject-block-sync=True \
-  --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true \
-  --enable-vf-merge-level=1 --mlir-print-ir-after-all \
-  -o /tmp/mr3236_kernel > ~/mr3236_dump.log 2>&1
+Start by reading your own note, then check the glibc question. On fremont:
 
-grep -c "memref.alloc.*?x" ~/mr3236_dump.log
-grep -cE 'hivm\.multi_buffer = 2|annotation\.mark.*multi_buffer' ~/mr3236_dump.log
-grep -cE 'arith\.select.*memref<.*#hivm\.address_space<ub>' ~/mr3236_dump.log
+bash
+cat ~/work/ascend/AscendNPU-IR/NOTES-yaolu.md | tail -40
+cd ~/work/ascend/AscendNPU-IR
+git log --oneline -1
+git status --short
+
+Then test whether your binary runs on the A5. In PowerShell:
+
+powershell
+ssh a5 "mkdir -p /home/yaolu/bin"
+scp -3 fremont:work/ascend/AscendNPU-IR/build-ubuntu/bin/bishengir-compile a5:/home/yaolu/bin/
+
+167MB, so give it a minute.
+
+Then on the A5:
+
+bash
+/home/yaolu/bin/bishengir-compile --version

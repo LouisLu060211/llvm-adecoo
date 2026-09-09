@@ -1,13 +1,13 @@
-bash
-source /home/yaolu/env.sh
-export PATH=/home/yaolu/bin:$PATH
-which bishengir-compile
-which hivmc-a5
-
-First should be /home/yaolu/bin/..., second still /data/ci_env/daily/pkg/.... That combination is the whole point.
-
-Then run the test case:
+Need the actual error. On the A5:
 
 bash
 cd /home/yaolu/Q3TritonKernel
-pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]"
+pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -60
+
+Paste that.
+
+Also confirm the PATH took, since a failure right after swapping binaries usually points there:
+
+bash
+which bishengir-compile
+which hivmc-a5

@@ -1,24 +1,5 @@
-Start by reading your own note, then check the glibc question. On fremont:
-
-bash
-cat ~/work/ascend/AscendNPU-IR/NOTES-yaolu.md | tail -40
-cd ~/work/ascend/AscendNPU-IR
-git log --oneline -1
-git status --short
-
-Then test whether your binary runs on the A5. In PowerShell:
-
-powershell
-ssh a5 "mkdir -p /home/yaolu/bin"
-scp -3 fremont:work/ascend/AscendNPU-IR/build-ubuntu/bin/bishengir-compile a5:/home/yaolu/bin/
-
-167MB, so give it a minute.
-
-Then on the A5:
-
-bash
-/home/yaolu/bin/bishengir-compile --version
-
-cat: /home/yaolu/work/ascend/AscendNPU-IR/NOTES-yaolu.md: No such file or directory
-6e21948ae (HEAD -> mr-3236) [AscendNPU IR][HIVM][InlineFixpipe] fix: preserve static TCB
+root@tbe:/home/yaolu/Q3TritonKernel# /home/yaolu/bin/bishengir-compile --version
+bishengir-compile 1.2.0 (https://gitcode.com/Ascend/AscendNPU-IR.git 6e21948ae932 2026-09-07) 
+llvm 19.1.7 97f59c7c9e4a
+Release build
 

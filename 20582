@@ -18,3 +18,7 @@ Then on the A5:
 
 bash
 /home/yaolu/bin/bishengir-compile --version
+
+cat: /home/yaolu/work/ascend/AscendNPU-IR/NOTES-yaolu.md: No such file or directory
+6e21948ae (HEAD -> mr-3236) [AscendNPU IR][HIVM][InlineFixpipe] fix: preserve static TCB
+

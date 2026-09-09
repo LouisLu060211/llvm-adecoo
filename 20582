@@ -1,17 +1,22 @@
-Get the timing and confirm which binary ran:
-
-bash
-which bishengir-compile
-bishengir-compile --version
-uptime
-
-cd /home/yaolu
-sed -i 's/20260904163256/20260909150700/' detail2.py
-python detail2.py
-
-Compare against your baseline for this case: 827.6us median, 48 dynamic allocs, 3192 multibuffer marks, 2604 selects.
-
-Then the IR comparison, which is the actual question:
-
-bash
-ls -t /root/.triton/dump/ | head -5
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# cd /home/yaolu
+(louis_env) root@tbe:/home/yaolu# sed -i 's/20260904163256/20260909150700/' detail2.py
+(louis_env) root@tbe:/home/yaolu# python detail2.py
+/home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16_20260909150700/tbe_1947063_20260909150716329_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details_tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16.csv
+  #    Duration        Wait      aicore
+  0       645.4         0.0       645.1
+  1       644.4       364.1       644.1
+  2       645.2       280.6       644.8
+  3       645.2       286.8       644.8
+  4       644.8       353.8       644.5
+  5       646.4       285.7       646.0
+  6       646.3       249.4       645.9
+  7       645.7       240.7       645.4
+  8       645.4       106.0       645.1
+  9       645.4       103.8       645.1
+(louis_env) root@tbe:/home/yaolu# ls -t /root/.triton/dump/ | head -5
+xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
+3iq-0RnBVnXaf-LyFH34skhtl7s6D_D8WD20jnkcoY0
+3lWIFwBZOyW9IZvnpM9sjgEhF7FGCblMnxM95wnwwHA
+JK0kJ4SrY95zrv7ES8ZjwuYER3pHh-D0gdsnybpp5u0
+qgRLb8KQbQTKUv5EgGUW_aTxFMmaJHq8hcB9IRaWblY
+(louis_env) root@tbe:/home/yaolu# 

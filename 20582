@@ -1,61 +1,12 @@
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -60
-E                     func.call @parallel_nsa_compression_fwd_kernel_mix_aiv_fused_7_outlined_merged_vf_0(%59#1, %59#2, %68, %59#0, %59#1, %20) {hivm.vector_function, no_inline, ptc_simdvf} : (memref<8xf32, #hivm.address_space<ub>>, memref<8x32xf32, #hivm.address_space<ub>>, memref<8x32xf32, #hivm.address_space<ub>>, memref<8xf32, #hivm.address_space<ub>>, memref<8xf32, #hivm.address_space<ub>>, memref<8xf32, #hivm.address_space<ub>>) -> ()
-E                     scf.yield %68 : memref<8x32xf32, #hivm.address_space<ub>>
-E                   }
-E                   func.call @parallel_nsa_compression_fwd_kernel_mix_aiv_outlined_vf_3(%61, %19) {hivm.vector_function, no_inline} : (memref<8x32xf32, #hivm.address_space<ub>>, memref<8x32xbf16, #hivm.address_space<ub>>) -> ()
-E                   hivm.hir.set_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
-E                   %62 = arith.maxsi %52, %c32 : index
-E                   %63 = arith.minsi %54, %62 : index
-E                   %64 = affine.apply affine_map<()[s0, s1] -> (s0 - s1)>()[%63, %52]
-E                   %65 = arith.minsi %64, %c32 : index
-E                   %66 = arith.maxsi %65, %c0 : index
-E                   %subview_7 = memref.subview %19[0, 0] [%47, %66] [1, 1] : memref<8x32xbf16, #hivm.address_space<ub>> to memref<?x?xbf16, strided<[32, 1]>, #hivm.address_space<ub>>
-E                   %subview_8 = memref.subview %reinterpret_cast_6[%11, 0] [%47, %66] [1, 1] : memref<16x32xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>> to memref<?x?xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>
-E                   hivm.hir.wait_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
-E                   hivm.hir.pipe_barrier[<PIPE_MTE3>]
-E                   hivm.hir.store ins(%subview_7 : memref<?x?xbf16, strided<[32, 1]>, #hivm.address_space<ub>>) outs(%subview_8 : memref<?x?xbf16, strided<[32, 1], offset: ?>, #hivm.address_space<gm>>) {tiled_op}
-E                   %67 = arith.cmpi eq, %24, %c0_i32 : i32
-E                   scf.if %67 {
-E                     %68 = arith.muli %33, %c64_i64 : i64
-E                     %69 = arith.addi %68, %32 : i64
-E                     %70 = arith.index_cast %69 : i64 to index
-E                     %reinterpret_cast_9 = memref.reinterpret_cast %arg6 to offset: [%70], sizes: [16], strides: [1] : memref<?xf32, #hivm.address_space<gm>> to memref<16xf32, strided<[1], offset: ?>, #hivm.address_space<gm>>
-E                     %subview_10 = memref.subview %reinterpret_cast_9[%11] [8] [1] {to_be_bubbled_slice} : memref<16xf32, strided<[1], offset: ?>, #hivm.address_space<gm>> to memref<8xf32, strided<[1], offset: ?>, #hivm.address_space<gm>>
-E                     hivm.hir.store ins(%20 : memref<8xf32, #hivm.address_space<ub>>) outs(%subview_10 : memref<8xf32, strided<[1], offset: ?>, #hivm.address_space<gm>>) {tiled_op}
-E                   }
-E                   hivm.hir.set_flag[<PIPE_MTE3>, <PIPE_V>, %16]
-E                   hivm.hir.set_ctrl true at ctrl[60]
-E                 } {autoblockify.subloop}
-E                 hivm.hir.wait_flag[<PIPE_V>, <PIPE_MTE2>, <EVENT_ID0>]
-E                 hivm.hir.wait_flag[<PIPE_V>, <PIPE_MTE2>, <EVENT_ID1>]
-E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID0>]
-E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
-E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID2>]
-E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID3>]
-E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 2
-E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 3
-E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 4
-E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 5
-E                 hivm.hir.pipe_barrier[<PIPE_ALL>]
-E                 return
-E               }
-E               
-E               [WARNING] Cannot find hivmc-a5 under /data/ci_env/daily/pkg/ccec/bin
-E               [WARNING]cannot find bitcode from hivm attribute for coreType:0 
-E               [ERROR]cannot find any bitcode files for coreType:0 
-E               [WARNING]cannot find bitcode from hivm attribute for coreType:1 
-E               [ERROR]cannot find any bitcode files for coreType:1 
-E               loc("/tmp/bishengir-compile-012577/module.hivm.opt.mlir":3:1): error: Failed to compile BiShengLIR for device
-E               [ERROR] Failed to run HIVMC pipeline
-E               [ERROR] Executing: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5 /tmp/bishengir-compile-012577/module.hivm.opt.mlir --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --target=Ascend950PR_9579 --enable-triton-kernel-compile=true -o /tmp/tmpuv0qdvug/kernel --only-run-hivm-pipeline=false
-E               [ERROR] Failed to run BiShengIR regbase pipeline
-E               
-E               
-E               [INFO]: The compiled kernel cache is in /root/.triton/cache/d3Pnv-eDLHtVHfVGZ8NOzeFt53L2vv7U5MffRhJSpVA
-E               
-E               ///------------------[ERROR][Triton][END]------------------
+Confirm where it is. On the A5:
 
-/data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/compiler/compiler.py:303: MLIRCompilationError
-=========================== short test summary info ============================
-FAILED tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]
-============================== 1 failed in 54.89s ==============================
+bash
+ls /data/ci_env/daily/pkg/ccec/bin/ | head
+ls /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
+which hivmc-a5
+
+Then point BISHENG_INSTALL_PATH at the directory that actually contains it:
+
+bash
+export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin
+pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -30

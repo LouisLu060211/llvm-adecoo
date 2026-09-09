@@ -1,5 +1,13 @@
-root@tbe:/home/yaolu/Q3TritonKernel# /home/yaolu/bin/bishengir-compile --version
-bishengir-compile 1.2.0 (https://gitcode.com/Ascend/AscendNPU-IR.git 6e21948ae932 2026-09-07) 
-llvm 19.1.7 97f59c7c9e4a
-Release build
+bash
+source /home/yaolu/env.sh
+export PATH=/home/yaolu/bin:$PATH
+which bishengir-compile
+which hivmc-a5
 
+First should be /home/yaolu/bin/..., second still /data/ci_env/daily/pkg/.... That combination is the whole point.
+
+Then run the test case:
+
+bash
+cd /home/yaolu/Q3TritonKernel
+pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]"

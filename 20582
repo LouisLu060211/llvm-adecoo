@@ -1,4 +1,15 @@
-ls /data/ci_env/daily/pkg/ccec/bin/ | head
-ls /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
-which hivmc-a5
-echo $BISHENG_INSTALL_PATH
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# ls /data/ci_env/daily/pkg/ccec/bin/ | head
+bisheng
+bisheng-tune
+ccec
+cce-ld
+ld.lld
+lld
+lld-link
+llvm-ar
+llvm-link
+llvm-objcopy
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# ls /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
+/data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# which hivmc-a5
+/data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5

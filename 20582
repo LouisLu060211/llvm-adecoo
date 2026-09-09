@@ -1,3 +1,23 @@
-cd /home/yaolu/Q3TritonKernel
-ls /home/yaolu/pkg/lib/*.bc | head -3
-pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -20
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -20
+
+
+Dumping precompiled.h to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
+Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
+Triton autotuning for function parallel_nsa_compression_fwd_kernel finished after 16.16s; best config selected: multibuffer: True, enable_vf_fusion: False, num_warps: 4, num_ctas: 1, num_stages: 2, num_buffers_warp_spec: 0, num_consumer_groups: 0, reg_dec_producer: 0, reg_inc_consumer: 0, maxnreg: None;
+[2026-09-09 15:07:16] [INFO] [1949029] profiler.py: Start parsing profiling data in sync mode at: /home/yaolu/Q3TritonKernel/result_dir/tests_fla_perf_test_nsa_compression_kernels_perf_py_test_nsa_compression_fwd_kernel_perf_B4-T1024-H4-HQ64-K32-V32-BS64-scale0_1-bfloat16_20260909150700/tbe_1947063_20260909150716329_ascend_pt
+[2026-09-09 15:07:18] [INFO] [1949042] profiler.py: CANN profiling data parsed in a total time of 0:00:02.019451
+[2026-09-09 15:07:19] [INFO] [1949029] profiler.py: All profiling data parsed in a total time of 0:00:03.068956
+性能 profiling 完成！
+等待 torch_npu trace 导出完成超时（180s），无法打印 NPU 性能数据
+.
+============================================================================
+NSA compression kernels 性能汇总表（per-step 耗时，us）
+----------------------------------------------------------------------------
+case                                             kernel  dtype  per-step(us)
+----------------------------------------------------------------------------
+B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16  fwd     bf16   -           
+============================================================================
+
+
+======================== 1 passed in 206.57s (0:03:26) =========================
+[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!

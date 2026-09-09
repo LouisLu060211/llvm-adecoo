@@ -1,12 +1,36 @@
-Confirm where it is. On the A5:
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# ls /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
+/data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# which hivmc-a5
+/data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin
+(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -30
+E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID0>]
+E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
+E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID2>]
+E                 hivm.hir.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID3>]
+E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 2
+E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 3
+E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 4
+E                 hivm.hir.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 5
+E                 hivm.hir.pipe_barrier[<PIPE_ALL>]
+E                 return
+E               }
+E               
+E               [WARNING]cannot find bitcode from hivm attribute for coreType:0 
+E               [ERROR]cannot find any bitcode files for coreType:0 
+E               [WARNING]cannot find bitcode from hivm attribute for coreType:1 
+E               [ERROR]cannot find any bitcode files for coreType:1 
+E               loc("/tmp/bishengir-compile-9ef5eb/module.hivm.opt.mlir":3:1): error: Failed to compile BiShengLIR for device
+E               [ERROR] Failed to run HIVMC pipeline
+E               [ERROR] Executing: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5 /tmp/bishengir-compile-9ef5eb/module.hivm.opt.mlir --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --target=Ascend950PR_9579 --enable-triton-kernel-compile=true -o /tmp/tmp7pxz1fi5/kernel --only-run-hivm-pipeline=false
+E               [ERROR] Failed to run BiShengIR regbase pipeline
+E               
+E               
+E               [INFO]: The compiled kernel cache is in /root/.triton/cache/d3Pnv-eDLHtVHfVGZ8NOzeFt53L2vv7U5MffRhJSpVA
+E               
+E               ///------------------[ERROR][Triton][END]------------------
 
-bash
-ls /data/ci_env/daily/pkg/ccec/bin/ | head
-ls /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/hivmc-a5
-which hivmc-a5
-
-Then point BISHENG_INSTALL_PATH at the directory that actually contains it:
-
-bash
-export BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/compiler/tools/bishengir/bin
-pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -30
+/data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/compiler/compiler.py:303: MLIRCompilationError
+=========================== short test summary info ============================
+FAILED tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]
+============================== 1 failed in 54.96s ==============================

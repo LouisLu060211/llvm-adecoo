@@ -27,3 +27,11 @@ bash
 cd /home/yaolu
 python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
 tail -40 ~/CP-0086-repro.log
+
+
+root@tbe:~# scp "$env:USERPROFILE\Downloads\CP-0086.py" a5:/home/yaolu/
+ssh: Could not resolve hostname a5: Temporary failure in name resolution
+lost connection
+root@tbe:~# scp -r "$env:USERPROFILE\Downloads\save_path" a5:/home/yaolu/
+ssh: Could not resolve hostname a5: Temporary failure in name resolution
+lost connection

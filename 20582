@@ -1,56 +1,27 @@
-ffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpmcqocgpo/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ZrKzX_8wut4W_MOeGbMfgDStkgKxCqYpwKYc2jMeCP8
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ZrKzX_8wut4W_MOeGbMfgDStkgKxCqYpwKYc2jMeCP8
-[SUCCESS] dtype=uint64, ndim=2, shape=(1, 32) | Mismatch: 0 (0.00%)
-Dumping intermediate results to /root/.triton/dump/HnLPipKkixRbBLo_qHinteOo17JMLYwqKqq1P7NVclc
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmplr02e4kc/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmplr02e4kc/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/5arn-6wWEcicrWf8fXdZujC9nPU1rgM6VKL1Fj7DIm0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/5arn-6wWEcicrWf8fXdZujC9nPU1rgM6VKL1Fj7DIm0
-[SUCCESS] dtype=uint64, ndim=2, shape=(32, 1) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=2, shape=(16, 16) | Mismatch: 0 (0.00%)
-Dumping intermediate results to /root/.triton/dump/mI9jKd0j2ZHNWqac3vrsB-MiUBZ9VFHhFXfIsYmzcV8
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpld5u2qsb/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpld5u2qsb/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/uTAJ0uu7svQQHMA-8ykNF00gnL2pyZCuwteLubVk0Dw
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/uTAJ0uu7svQQHMA-8ykNF00gnL2pyZCuwteLubVk0Dw
-[SUCCESS] dtype=uint64, ndim=2, shape=(33, 65) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=2, shape=(1, 128) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=3, shape=(1, 1, 1) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=3, shape=(1, 16, 16) | Mismatch: 0 (0.00%)
-Dumping intermediate results to /root/.triton/dump/-dKAzkO3pZtyXBVX2gEFRW0wSW3y3WpS55iJ_b6-Kv4
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpmt7by6do/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpmt7by6do/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/uTAJ0uu7svQQHMA-8ykNF00gnL2pyZCuwteLubVk0Dw
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/uTAJ0uu7svQQHMA-8ykNF00gnL2pyZCuwteLubVk0Dw
-[SUCCESS] dtype=uint64, ndim=3, shape=(4, 1, 16) | Mismatch: 0 (0.00%)
-Dumping intermediate results to /root/.triton/dump/0yfQRmDLUU8p6jPlssTLlr4-MFSMgdKaE5xiY9bp7oM
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpe8d4z355/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpe8d4z355/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/5arn-6wWEcicrWf8fXdZujC9nPU1rgM6VKL1Fj7DIm0
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/5arn-6wWEcicrWf8fXdZujC9nPU1rgM6VKL1Fj7DIm0
-[SUCCESS] dtype=uint64, ndim=3, shape=(2, 16, 1) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=3, shape=(2, 16, 17) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=4, shape=(1, 1, 1, 1) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=4, shape=(2, 1, 16, 16) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=4, shape=(1, 16, 1, 16) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=4, shape=(2, 2, 16, 17) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=5, shape=(1, 1, 1, 1, 1) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=5, shape=(2, 1, 4, 1, 16) | Mismatch: 0 (0.00%)
-Dumping intermediate results to /root/.triton/dump/7nubcAsnJtQq77cAvhOd67ZH_hnC0vo5JybTo82VgJA
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpdrzoxcfh/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpdrzoxcfh/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/ZrKzX_8wut4W_MOeGbMfgDStkgKxCqYpwKYc2jMeCP8
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/ZrKzX_8wut4W_MOeGbMfgDStkgKxCqYpwKYc2jMeCP8
-[SUCCESS] dtype=uint64, ndim=5, shape=(1, 2, 2, 8, 8) | Mismatch: 0 (0.00%)
-[SUCCESS] dtype=uint64, ndim=5, shape=(2, 1, 2, 8, 9) | Mismatch: 0 (0.00%)
+复现完成,253 个用例 230 过 23 失败。现在把失败的 23 个筛出来,看规律。
 
-========================================
-           测试结果汇总报告           
-========================================
-总测试用例数 : 253
-成功用例数   : 230
-失败用例数   : 23
-通过率       : 90.91%
-========================================
-执行过程发生严重错误: 存在 23 个用例执行失败或精度未达标！
+**在 A5 上:**
+
+```bash
+grep -n "\[ERROR\]" ~/CP-0086-run2.log | head -30
+grep -oE "dtype=[a-z0-9]+" ~/CP-0086-run2.log | sort | uniq -c
+```
+
+第二条能看出总体分布,但更关键的是只看失败的:
+
+```bash
+grep "\[ERROR\]" ~/CP-0086-run2.log | grep -oE "dtype=[a-z0-9]+, ndim=[0-9]+, shape=\([^)]*\)" | sort
+```
+
+以及报错类型有几种:
+
+```bash
+grep -oE "don't support cast [a-z0-9_]+" ~/CP-0086-run2.log | sort | uniq -c
+grep -c "ConvertLinalgRToBinary" ~/CP-0086-run2.log
+```
+
+从你之前看到的那一条,错误是 `uint32_t_to_uint8_t_truncmode` 不支持,失败例子是 `dtype=uint8`。如果 23 个全是 uint8,那工单标题写的"部分 shape"其实不准确,真正的规律是 dtype 而不是 shape,这点值得在工单里更正。
+
+另外日志里有个东西值得注意:`SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False`。每次编译都出现,连成功的用例也有。这和你前几天在 3236 上看的 SSBuffer 与 preload 那条线是同一块东西,不一定和这个工单相关,但如果后面要问 renxingdong,可以顺带提。
+
+把上面四条的输出贴上来,我帮你整理成工单要填的 现象描述 和 初步结论。

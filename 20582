@@ -1,29 +1,34 @@
 You already have the key, so this is just installing the public half on fremont.
 
-In PowerShell:
+**In PowerShell:**
 
-powershell
+```powershell
 type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh fremont "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+```
 
 It'll prompt for your fremont password one last time.
 
-Then add the key to your config so SSH offers it. Open C:\Users\y84451117\.ssh\config and make sure the fremont block has:
+Then add the key to your config so SSH offers it. **Open** `C:\Users\y84451117\.ssh\config` and make sure the fremont block has:
 
+```
     IdentityFile ~/.ssh/id_ed25519
+```
 
 Your a5 block already has it; fremont's was missing it.
 
 Then test:
 
-powershell
+```powershell
 ssh fremont
+```
 
 Should go straight in. If it still asks for a password, check permissions on fremont:
 
-bash
+```bash
 ls -ld ~ ~/.ssh
 ls -l ~/.ssh/authorized_keys
+```
 
-Home must not be group or world writable, .ssh needs 700, authorized_keys needs 600. Fix with chmod 700 ~/.ssh; chmod 600 ~/.ssh/authorized_keys; chmod go-w ~.
+Home must not be group or world writable, `.ssh` needs 700, `authorized_keys` needs 600. Fix with `chmod 700 ~/.ssh; chmod 600 ~/.ssh/authorized_keys; chmod go-w ~`.
 
 Note this doesn't change the ncat proxy, that's separate and stays as is. And your fremont password is still in that config file in plaintext for the proxy auth, which is worth dealing with separately.

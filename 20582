@@ -1,3 +1,33 @@
+(louis_env) root@tbe:/home/yaolu# grep -n "error\|ERROR\|Failed" ~/CP-0086-repro.log | head -20
+194:    raise MLIRCompilationError(stage_name, error_detail) from e
+195:triton.compiler.errors.MLIRCompilationError: 
+196:///------------------[ERROR][Triton][BEG]------------------
+197:[ConvertLinalgRToBinary] encounters error:
+205:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
+207:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
+208:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
+210:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
+211:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
+213:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
+214:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
+216:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
+217:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
+219:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
+220:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
+222:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
+223:[ERROR] Failed to run BiShengIR regbase pipeline
+228:///------------------[ERROR][Triton][END]------------------
+262:[ERROR]   dtype=uint8, ndim=1, shape=(1,) | 异常捕获: 
+263:///------------------[ERROR][Triton][BEG]------------------
+(louis_env) root@tbe:/home/yaolu# cd /home/yaolu
+(louis_env) root@tbe:/home/yaolu# ls -la CP-0086.py save_path
+-rw-rw-r--+ 1 root root 10661 Sep 11 16:09 CP-0086.py
+
+save_path:
+total 20
+drwx------+   3 root root  4096 Sep 11 16:09 .
+drwxrwxr-x+   8 root root  4096 Sep 11 16:09 ..
+drwx------+ 122 root root 12288 Sep 11 16:10 save_path
 (louis_env) root@tbe:/home/yaolu# python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
 
 ^C^C^C
@@ -6,3 +36,22 @@
 
 
 ^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C
+
+
+
+
+
+
+
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# grep -n "error\|ERROR\|Failed" ~/CP-0086-repro.log | head -20

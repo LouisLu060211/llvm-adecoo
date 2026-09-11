@@ -35,3 +35,15 @@ lost connection
 root@tbe:~# scp -r "$env:USERPROFILE\Downloads\save_path" a5:/home/yaolu/
 ssh: Could not resolve hostname a5: Temporary failure in name resolution
 lost connection
+
+root@tbe:/home/yaolu# python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3
+
+
+
+root@tbe:/home/yaolu# tail -40 ~/CP-0086-repro.log
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3

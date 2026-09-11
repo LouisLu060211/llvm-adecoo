@@ -1,63 +1,29 @@
-【组合OP】【测试提单】【A5】【CV场景】【NPUIR】组合算子(连续地址加载→矩阵乘法→条件选择→分裂→GELU激活→类型转换→逐元素加法→广播存储）在部分shape执行编译报错，使用CPU解释器模式运行全部pass，gpu执行也全部pass
+In PowerShell:
 
-◆：必填项；◇：选填项
-============基本信息================
-◆【版本信息】：
-TA：8.31日构建，见下方截图
-NPUIR：8.31日构建，见下方截图
-PTA：8.31日构建，见下方截图
-CANN：8.31日构建，见下方截图
+powershell
+scp "$env:USERPROFILE\Downloads\CP-0086.py" a5:/home/yaolu/
+scp -r "$env:USERPROFILE\Downloads\save_path" a5:/home/yaolu/
 
-◆【定位人员】：
-◆【问题时间】：
-◆【初步结论】：
+Then on the A5:
 
-===========问题信息================
-◆【现象描述】：
+bash
+cd /home/yaolu
+ls -la CP-0086.py
+ls -R save_path | head -30
 
-TA同事定位属于NPUIR的问题
+Then set up a clean environment. Important: your PATH currently has your own mr-3236 build in front, and reproducing a ticket against the daily package means using the daily package:
 
+bash
+source /home/yaolu/env.sh
+which bishengir-compile
+bishengir-compile --version
+uptime
 
-A5运行存在编译报错
+Confirm that's /data/ci_env/daily/pkg/... and not /home/yaolu/pkg/bin. Otherwise you'd be testing your patched compiler, not the build the ticket is about.
 
+Then run it:
 
-使用CPU解释器模式全部pass
-
-
-gpu运行全部pass
-
-
-测试脚本：
-"C:\Users\y84451117\Downloads\CP-0086.py"
-
-
-测试方法：直接使用python执行
-
-ttadapter&mlir：
-"C:\Users\y84451117\Downloads\save_path\save_path"
-
-
-
-◆【测试步骤与预期】：
-步骤1：
-预期1：
-步骤2：
-预期2：
-
-◆【出现概率】：
-出现 次/总共测试 次
-
-◇【影响评估】：
-
-◇【原因分析】：
-
-◆【定位信息】：
-
-◇【是否自动化】：
-1、执行机、client、server时间差：
-2、自动化脚本日志：
-
-============配置信息================
-◆【测试环境】：描述测试组网及软硬件配置
-【软件配置】：
- 【硬件配置】：
+bash
+cd /home/yaolu
+python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
+tail -40 ~/CP-0086-repro.log

@@ -1,27 +1,16 @@
-root@tbe:/home/yaolu# source /home/yaolu/env.sh
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# which python
-/data/dev_conda/envs/louis_env/bin/python
-(louis_env) root@tbe:/home/yaolu# which bishengir-compile
-/data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile
-(louis_env) root@tbe:/home/yaolu# bishingir-compile --version
-bishingir-compile: command not found
-(louis_env) root@tbe:/home/yaolu# bishengir-compile --version
-bishengir-compile 1.2.0 (/usr1/AscendNPU-IR/bishengir 0fbc62995d13 2026-09-11) 
-llvm 19.1.7 a502df2e0bf4
-Release build
+Missing the `.py` extension. Also worth confirming the file actually arrived:
 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# uptime
- 16:14:26 up 6 days,  5:21, 40 users,  load average: 1.97, 2.94, 6.91
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# cd /home/yaolu
-(louis_env) root@tbe:/home/yaolu# python CP-0086 2>&1 | tee ~/CP-0086-repo.log
-python: can't open file '/home/yaolu/CP-0086': [Errno 2] No such file or directory
-(louis_env) root@tbe:/home/yaolu# tail -40 ~/CP-0086-repro.log
-Command 'python' not found, did you mean:
-  command 'python3' from deb python3
-  command 'python' from deb python-is-python3
+```bash
+ls -la /home/yaolu/CP-0086.py
+ls /home/yaolu/save_path
+```
+
+Then:
+
+```bash
+cd /home/yaolu
+python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
+tail -40 ~/CP-0086-repro.log
+```
+
+One thing worth flagging about the version. The daily package now reports `0fbc62995d13` built 2026-09-11, today. The ticket was filed against an 8.31 build, eleven days older. If it doesn't reproduce, that's ambiguous: could be fixed, could be masked by other changes. Note the version you tested either way, since the ticket asks for 版本信息.

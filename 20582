@@ -1,34 +1,14 @@
-You already have the key, so this is just installing the public half on fremont.
+Host fremont
+    HostName 119.8.241.51
+    User yaolu
+    Port 3005
+    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:Louislu060211! %h %p
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
 
-**In PowerShell:**
-
-```powershell
-type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh fremont "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
-```
-
-It'll prompt for your fremont password one last time.
-
-Then add the key to your config so SSH offers it. **Open** `C:\Users\y84451117\.ssh\config` and make sure the fremont block has:
-
-```
+Host a5
+    HostName 141.61.33.141
+    User root
     IdentityFile ~/.ssh/id_ed25519
-```
-
-Your a5 block already has it; fremont's was missing it.
-
-Then test:
-
-```powershell
-ssh fremont
-```
-
-Should go straight in. If it still asks for a password, check permissions on fremont:
-
-```bash
-ls -ld ~ ~/.ssh
-ls -l ~/.ssh/authorized_keys
-```
-
-Home must not be group or world writable, `.ssh` needs 700, `authorized_keys` needs 600. Fix with `chmod 700 ~/.ssh; chmod 600 ~/.ssh/authorized_keys; chmod go-w ~`.
-
-Note this doesn't change the ncat proxy, that's separate and stays as is. And your fremont password is still in that config file in plaintext for the proxy auth, which is worth dealing with separately.
+    ServerAliveInterval 30
+    ServerAliveCountMax 6

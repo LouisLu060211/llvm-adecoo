@@ -1,8 +1,1 @@
-Host fremont
-    HostName 119.8.241.51
-    User yaolu
-    Port 3005
-    IdentityFile ~/.ssh/id_ed25519
-    ProxyCommand ncat --proxy Hkgpqwg00206.huawei.com:8080 --proxy-type http --proxy-auth y84451117:Louislu060211! %h %p
-    ServerAliveInterval 30
-    ServerAliveCountMax 3
+type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh fremont "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"

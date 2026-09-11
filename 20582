@@ -1,57 +1,37 @@
-(louis_env) root@tbe:/home/yaolu# grep -n "error\|ERROR\|Failed" ~/CP-0086-repro.log | head -20
-194:    raise MLIRCompilationError(stage_name, error_detail) from e
-195:triton.compiler.errors.MLIRCompilationError: 
-196:///------------------[ERROR][Triton][BEG]------------------
-197:[ConvertLinalgRToBinary] encounters error:
-205:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
-207:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
-208:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
-210:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
-211:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
-213:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
-214:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
-216:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
-217:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
-219:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
-220:loc("/home/yaolu/CP-0086.py":18:0): error: Failed to run BiShengHIR pipeline
-222:loc("/home/yaolu/CP-0086.py":92:42): error: 'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
-223:[ERROR] Failed to run BiShengIR regbase pipeline
-228:///------------------[ERROR][Triton][END]------------------
-262:[ERROR]   dtype=uint8, ndim=1, shape=(1,) | 异常捕获: 
-263:///------------------[ERROR][Triton][BEG]------------------
-(louis_env) root@tbe:/home/yaolu# cd /home/yaolu
-(louis_env) root@tbe:/home/yaolu# ls -la CP-0086.py save_path
--rw-rw-r--+ 1 root root 10661 Sep 11 16:09 CP-0086.py
+复现成功了。第一次运行的日志里错误很清楚:
 
-save_path:
-total 20
-drwx------+   3 root root  4096 Sep 11 16:09 .
-drwxrwxr-x+   8 root root  4096 Sep 11 16:09 ..
-drwx------+ 122 root root 12288 Sep 11 16:10 save_path
-(louis_env) root@tbe:/home/yaolu# python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
+```
+'hivm.hir.vcast' op currently don't support cast uint32_t_to_uint8_t_truncmode
+```
 
-^C^C^C
+出在 `CP-0086.py:92:42`。这是编译器明确说"这个类型转换我不支持",而不是崩溃或者算子写错了。和标题里"类型转换"那一环对得上。
 
+注意你第二次运行前 `tee` 已经把日志覆盖成空的了,所以现在 grep 没输出。第一次的内容还在你屏幕上,但文件里没了。重跑一次,这次写到新文件并且放 tmux 里:
 
+```bash
+tmux new -s repro
+cd /home/yaolu
+timeout 2400 python CP-0086.py 2>&1 | tee ~/CP-0086-run2.log
+```
 
+Ctrl+B 然后 D 脱离。
 
-^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C
+同时可以先看两件事,不用等它跑完。
 
+看第 92 行到底在转什么:
 
+```bash
+sed -n '85,100p' /home/yaolu/CP-0086.py
+sed -n '10,25p' /home/yaolu/CP-0086.py
+```
 
+以及工单说的"部分 shape",从第一次日志能看出一条线索:失败的里面有 `dtype=uint8, ndim=1, shape=(1,)`。跑完之后:
 
+```bash
+grep -n "dtype=" ~/CP-0086-run2.log | head -40
+grep -c "vcast.*don't support" ~/CP-0086-run2.log
+```
 
+这能看出是不是所有 uint8 的都失败、其他 dtype 都过。如果是,那"部分 shape"其实是"部分 dtype",描述得不准确,这点值得在工单里指出来。
 
-
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# grep -n "error\|ERROR\|Failed" ~/CP-0086-repro.log | head -20
+结论上可以这么写:不是算子问题,是 NPUIR 缺少 uint32 到 uint8 truncmode 的 vcast 支持,属于功能缺失而非编译器 bug。CPU 和 GPU 能过是因为它们走完全不同的 lowering 路径,根本不经过 bishengir。

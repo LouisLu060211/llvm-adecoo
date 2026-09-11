@@ -1,4 +1,8 @@
-cd /home/yaolu
-ls -la CP-0086.py save_path
-python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
-grep -n "error\|ERROR\|Failed" ~/CP-0086-repro.log | head -20
+(louis_env) root@tbe:/home/yaolu# python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
+
+^C^C^C
+
+
+
+
+^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C^C

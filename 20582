@@ -1,17 +1,22 @@
-(louis_env) root@tbe:/home/yaolu# sed -n '85,100p' /home/yaolu/CP-0086.py
-    out_ptrs = Out_ptr + offs_m[:, None] * N + offs_n[None, :]
-    out_mask = (offs_m[:, None] < M) & (offs_n[None, :] < N)
+cat > /home/yaolu/min_repro.py << 'EOF'
+import torch, torch_npu, triton, triton.language as tl
 
-    # 针对整型/无符号型做安全转换与裁剪防止溢出
-    if IS_BOOL:
-        final_val = final_out != 0.0
-    elif IS_UINT:
-        final_val = tl.maximum(final_out, 0.0)
-    else:
-        final_val = final_out
+@triton.jit
+def k(In_ptr, Out_ptr, N, BLOCK: tl.constexpr):
+    offs = tl.arange(0, BLOCK)
+    mask = offs < N
+    x = tl.load(In_ptr + offs, mask=mask, other=0.0)
+    y = tl.maximum(x, 0.0)
+    tl.store(Out_ptr + offs, y, mask=mask)
 
-    tl.store(out_ptrs, final_val, mask=out_mask)
-
-
-# ==========================================
-# 2. 数据范围与类型映射定义
+for dt in [torch.uint8, torch.int8, torch.int16, torch.int32]:
+    N = 16
+    a = torch.arange(N, dtype=torch.float32).npu()
+    o = torch.zeros(N, dtype=dt).npu()
+    try:
+        k[(1,)](a, o, N, BLOCK=16)
+        print(f"[OK]   {dt}")
+    except Exception as e:
+        print(f"[FAIL] {dt}: {str(e)[:200]}")
+EOF
+python /home/yaolu/min_repro.py 2>&1 | tail -20

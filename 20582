@@ -1,43 +1,28 @@
-(louis_env) root@tbe:/home/yaolu# python /home/yaolu/min_repro.py 2>&1 | tail -20
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/3WNRuaygAsOwj-TSb0ZGpOT6FLPwkFMzgaW9EZSPwAQ
-[OK]   torch.uint8
-Dumping intermediate results to /root/.triton/dump/dKMa9WVNXEhGmUYsnXNBrdOtPhQ512HeCyAKPhmgFBs
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpyeg2tsx7/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpyeg2tsx7/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/wJKIZ8DWuBg7uFrptSq_kRyYzCf2RmzLlzxh4WZ9v2Q
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/wJKIZ8DWuBg7uFrptSq_kRyYzCf2RmzLlzxh4WZ9v2Q
-[OK]   torch.int8
-Dumping intermediate results to /root/.triton/dump/yNUa-kKlMdvJyj9chPfBLjgwVaBIIS96eDOgHdcSkm8
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpjnepds5a/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpjnepds5a/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/X3UBKx4AUmlKf7VDRLO9DyeE91FzaLP4EHVCbquUyZ8
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/X3UBKx4AUmlKf7VDRLO9DyeE91FzaLP4EHVCbquUyZ8
-[OK]   torch.int16
-Dumping intermediate results to /root/.triton/dump/DTbeIZlkxdNDs6J3oxaOpaB0VEKWA5fSFPZe27r4JH4
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmptsedt03_/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmptsedt03_/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/_sYqN1eVnai5VJGUapL07nMGmjCF8SdNK4N4dpvbqKc
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/_sYqN1eVnai5VJGUapL07nMGmjCF8SdNK4N4dpvbqKc
-[OK]   torch.int32
-(louis_env) root@tbe:/home/yaolu# 
-(louis_env) root@tbe:/home/yaolu# python /home/yaolu/min_repro.py 2>&1 | tail -20
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/3WNRuaygAsOwj-TSb0ZGpOT6FLPwkFMzgaW9EZSPwAQ
-[OK]   torch.uint8
-Dumping intermediate results to /root/.triton/dump/dKMa9WVNXEhGmUYsnXNBrdOtPhQ512HeCyAKPhmgFBs
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp8l67cbya/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp8l67cbya/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/wJKIZ8DWuBg7uFrptSq_kRyYzCf2RmzLlzxh4WZ9v2Q
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/wJKIZ8DWuBg7uFrptSq_kRyYzCf2RmzLlzxh4WZ9v2Q
-[OK]   torch.int8
-Dumping intermediate results to /root/.triton/dump/yNUa-kKlMdvJyj9chPfBLjgwVaBIIS96eDOgHdcSkm8
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmpnnniddrf/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmpnnniddrf/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/X3UBKx4AUmlKf7VDRLO9DyeE91FzaLP4EHVCbquUyZ8
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/X3UBKx4AUmlKf7VDRLO9DyeE91FzaLP4EHVCbquUyZ8
-[OK]   torch.int16
-Dumping intermediate results to /root/.triton/dump/DTbeIZlkxdNDs6J3oxaOpaB0VEKWA5fSFPZe27r4JH4
-SSBUFFER return code=2, will fallback to enable_dynamic_cv_pipeline=False
-[DEBUG] cmd_list: /data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile /tmp/tmp6kzscrua/kernel.ttadapter.mlir --target=Ascend950PR_9579 --enable-auto-multi-buffer=True --enable-auto-bind-sub-block=True --disable-ffts --limit-auto-multi-buffer-of-local-buffer=no-limit --enable-auto-blockify-loop --enable-hfusion-compile=true --enable-triton-kernel-compile=true --append-bisheng-options=-cce-link-aicore-ll-module /data/dev_conda/envs/louis_env/lib/python3.11/site-packages/triton/backends/ascend/lib/libdevice.10.bc --bishengir-print-ir-after=hivm-graph-sync-solver -o /tmp/tmp6kzscrua/kernel --enable-vf-merge-level=1
-Dumping precompiled.h to /root/.triton/dump/_sYqN1eVnai5VJGUapL07nMGmjCF8SdNK4N4dpvbqKc
-Dumping launcher_cxx11abi1.cxx to /root/.triton/dump/_sYqN1eVnai5VJGUapL07nMGmjCF8SdNK4N4dpvbqKc
-[OK]   torch.int32
+四种全过,包括 uint8。所以最小复现失败了,单纯的 fp32 store 到 uint8 是支持的。
+
+这反而是有价值的信息。报错里是 `uint32_t_to_uint8_t`,源头不是 fp32,是 uint32。说明触发条件在算子链上游某个地方产生了 uint32 中间值,然后才截断到 uint8。我的脚本没有那一步,所以走的是另一条 lowering 路径。
+
+要缩小范围,得找出链上哪一步引入了 uint32。**在 A5 上:**
+
+```bash
+sed -n '1,84p' /home/yaolu/CP-0086.py
+```
+
+看 IS_UINT 在上游怎么影响类型,尤其是矩阵乘法、条件选择、GELU 那几步里有没有显式的 cast 或者 int 运算。
+
+另一个更直接的办法:你手上有现成的 ttadapter MLIR,直接在里面找那个 vcast:
+
+```bash
+ls /home/yaolu/save_path/save_path/ | head
+grep -rn "uint32\|i32" /home/yaolu/save_path/save_path/*/  2>/dev/null | grep -i vcast | head
+```
+
+或者从失败用例的 dump 目录里拿:
+
+```bash
+grep -l "vcast" /root/.triton/dump/*/kernel.ttadapter.mlir 2>/dev/null | head -3
+```
+
+拿到那个 .mlir 之后单独喂给 bishengir-compile,就是一个不需要跑 Python 的最小复现,对修的人最有用。
+
+不过话说回来,工单填报所需的信息你已经齐了:253 个用例、23 个失败全是 uint8、唯一报错、版本号、以及 11 天后仍存在。最小复现是加分项。如果时间紧就先把工单提了,把"最小复现尝试过但单条 store 不触发,需要上游 uint32 中间值"这一点写进定位信息,这本身也是有用的线索。

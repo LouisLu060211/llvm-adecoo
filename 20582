@@ -1,49 +1,27 @@
-In PowerShell:
+root@tbe:/home/yaolu# source /home/yaolu/env.sh
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# which python
+/data/dev_conda/envs/louis_env/bin/python
+(louis_env) root@tbe:/home/yaolu# which bishengir-compile
+/data/ci_env/daily/pkg/compiler/tools/bishengir/bin/bishengir-compile
+(louis_env) root@tbe:/home/yaolu# bishingir-compile --version
+bishingir-compile: command not found
+(louis_env) root@tbe:/home/yaolu# bishengir-compile --version
+bishengir-compile 1.2.0 (/usr1/AscendNPU-IR/bishengir 0fbc62995d13 2026-09-11) 
+llvm 19.1.7 a502df2e0bf4
+Release build
 
-powershell
-scp "$env:USERPROFILE\Downloads\CP-0086.py" a5:/home/yaolu/
-scp -r "$env:USERPROFILE\Downloads\save_path" a5:/home/yaolu/
-
-Then on the A5:
-
-bash
-cd /home/yaolu
-ls -la CP-0086.py
-ls -R save_path | head -30
-
-Then set up a clean environment. Important: your PATH currently has your own mr-3236 build in front, and reproducing a ticket against the daily package means using the daily package:
-
-bash
-source /home/yaolu/env.sh
-which bishengir-compile
-bishengir-compile --version
-uptime
-
-Confirm that's /data/ci_env/daily/pkg/... and not /home/yaolu/pkg/bin. Otherwise you'd be testing your patched compiler, not the build the ticket is about.
-
-Then run it:
-
-bash
-cd /home/yaolu
-python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
-tail -40 ~/CP-0086-repro.log
-
-
-root@tbe:~# scp "$env:USERPROFILE\Downloads\CP-0086.py" a5:/home/yaolu/
-ssh: Could not resolve hostname a5: Temporary failure in name resolution
-lost connection
-root@tbe:~# scp -r "$env:USERPROFILE\Downloads\save_path" a5:/home/yaolu/
-ssh: Could not resolve hostname a5: Temporary failure in name resolution
-lost connection
-
-root@tbe:/home/yaolu# python CP-0086.py 2>&1 | tee ~/CP-0086-repro.log
-Command 'python' not found, did you mean:
-  command 'python3' from deb python3
-  command 'python' from deb python-is-python3
-
-
-
-root@tbe:/home/yaolu# tail -40 ~/CP-0086-repro.log
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# uptime
+ 16:14:26 up 6 days,  5:21, 40 users,  load average: 1.97, 2.94, 6.91
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# cd /home/yaolu
+(louis_env) root@tbe:/home/yaolu# python CP-0086 2>&1 | tee ~/CP-0086-repo.log
+python: can't open file '/home/yaolu/CP-0086': [Errno 2] No such file or directory
+(louis_env) root@tbe:/home/yaolu# tail -40 ~/CP-0086-repro.log
 Command 'python' not found, did you mean:
   command 'python3' from deb python3
   command 'python' from deb python-is-python3

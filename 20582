@@ -1,72 +1,17 @@
-(louis_env) root@tbe:/home/yaolu# grep -n "\[ERROR\]" ~/CP-0086-run2.log | head -30
-196:///------------------[ERROR][Triton][BEG]------------------
-223:[ERROR] Failed to run BiShengIR regbase pipeline
-228:///------------------[ERROR][Triton][END]------------------
-262:[ERROR]   dtype=uint8, ndim=1, shape=(1,) | 异常捕获: 
-263:///------------------[ERROR][Triton][BEG]------------------
-290:[ERROR] Failed to run BiShengIR regbase pipeline
-295:///------------------[ERROR][Triton][END]------------------
-300:[ERROR]   dtype=uint8, ndim=1, shape=(16,) | 异常捕获: 
-301:///------------------[ERROR][Triton][BEG]------------------
-328:[ERROR] Failed to run BiShengIR regbase pipeline
-333:///------------------[ERROR][Triton][END]------------------
-368:///------------------[ERROR][Triton][BEG]------------------
-395:[ERROR] Failed to run BiShengIR regbase pipeline
-400:///------------------[ERROR][Triton][END]------------------
-436:///------------------[ERROR][Triton][BEG]------------------
-463:[ERROR] Failed to run BiShengIR regbase pipeline
-468:///------------------[ERROR][Triton][END]------------------
-504:///------------------[ERROR][Triton][BEG]------------------
-531:[ERROR] Failed to run BiShengIR regbase pipeline
-536:///------------------[ERROR][Triton][END]------------------
-542:[ERROR]   dtype=uint8, ndim=1, shape=(32,) | 异常捕获: 
-543:///------------------[ERROR][Triton][BEG]------------------
-570:[ERROR] Failed to run BiShengIR regbase pipeline
-575:///------------------[ERROR][Triton][END]------------------
-580:[ERROR]   dtype=uint8, ndim=1, shape=(128,) | 异常捕获: 
-581:///------------------[ERROR][Triton][BEG]------------------
-608:[ERROR] Failed to run BiShengIR regbase pipeline
-613:///------------------[ERROR][Triton][END]------------------
-618:[ERROR]   dtype=uint8, ndim=2, shape=(1, 1) | 异常捕获: 
-619:///------------------[ERROR][Triton][BEG]------------------
-(louis_env) root@tbe:/home/yaolu# grep -oE "dtype=[a-z0-9]+" ~/CP-0086-run2.log | sort | uniq -c
-     23 dtype=bfloat16
-     23 dtype=bool
-     23 dtype=float16
-     23 dtype=float32
-     23 dtype=int16
-     23 dtype=int32
-     23 dtype=int8
-     23 dtype=uint16
-     23 dtype=uint32
-     23 dtype=uint64
-     23 dtype=uint8
-(louis_env) root@tbe:/home/yaolu# grep "\[ERROR\]" ~/CP-0086-run2.log | grep -oE "dtype=[a-z0-9]+, ndim=[0-9]+, shape=\([^)]*\)" | sort
-dtype=uint8, ndim=1, shape=(1,)
-dtype=uint8, ndim=1, shape=(128,)
-dtype=uint8, ndim=1, shape=(16,)
-dtype=uint8, ndim=1, shape=(32,)
-dtype=uint8, ndim=2, shape=(1, 1)
-dtype=uint8, ndim=2, shape=(1, 128)
-dtype=uint8, ndim=2, shape=(1, 32)
-dtype=uint8, ndim=2, shape=(16, 16)
-dtype=uint8, ndim=2, shape=(32, 1)
-dtype=uint8, ndim=2, shape=(33, 65)
-dtype=uint8, ndim=3, shape=(1, 1, 1)
-dtype=uint8, ndim=3, shape=(1, 16, 16)
-dtype=uint8, ndim=3, shape=(2, 16, 1)
-dtype=uint8, ndim=3, shape=(2, 16, 17)
-dtype=uint8, ndim=3, shape=(4, 1, 16)
-dtype=uint8, ndim=4, shape=(1, 1, 1, 1)
-dtype=uint8, ndim=4, shape=(1, 16, 1, 16)
-dtype=uint8, ndim=4, shape=(2, 1, 16, 16)
-dtype=uint8, ndim=4, shape=(2, 2, 16, 17)
-dtype=uint8, ndim=5, shape=(1, 1, 1, 1, 1)
-dtype=uint8, ndim=5, shape=(1, 2, 2, 8, 8)
-dtype=uint8, ndim=5, shape=(2, 1, 2, 8, 9)
-dtype=uint8, ndim=5, shape=(2, 1, 4, 1, 16)
-(louis_env) root@tbe:/home/yaolu# grep -oE "don't support cast [a-z0-9_]+" ~/CP-0086-run2.log | sort | uniq -c
-    276 don't support cast uint32_t_to_uint8_t_truncmode
-(louis_env) root@tbe:/home/yaolu# grep -c "ConvertLinalgRToBinary" ~/CP-0086-run2.log
-46
-(louis_env) root@tbe:/home/yaolu# 
+(louis_env) root@tbe:/home/yaolu# sed -n '85,100p' /home/yaolu/CP-0086.py
+    out_ptrs = Out_ptr + offs_m[:, None] * N + offs_n[None, :]
+    out_mask = (offs_m[:, None] < M) & (offs_n[None, :] < N)
+
+    # 针对整型/无符号型做安全转换与裁剪防止溢出
+    if IS_BOOL:
+        final_val = final_out != 0.0
+    elif IS_UINT:
+        final_val = tl.maximum(final_out, 0.0)
+    else:
+        final_val = final_out
+
+    tl.store(out_ptrs, final_val, mask=out_mask)
+
+
+# ==========================================
+# 2. 数据范围与类型映射定义

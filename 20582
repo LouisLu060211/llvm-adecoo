@@ -1,30 +1,29 @@
-(louis_env) root@tbe:/home/yaolu# ls -t /root/.triton/dump/ | head -5
-xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-3iq-0RnBVnXaf-LyFH34skhtl7s6D_D8WD20jnkcoY0
-3lWIFwBZOyW9IZvnpM9sjgEhF7FGCblMnxM95wnwwHA
-JK0kJ4SrY95zrv7ES8ZjwuYER3pHh-D0gdsnybpp5u0
-qgRLb8KQbQTKUv5EgGUW_aTxFMmaJHq8hcB9IRaWblY
-(louis_env) root@tbe:/home/yaolu# uptime
- 15:23:53 up 4 days,  4:31, 30 users,  load average: 4.10, 11.48, 12.82
-(louis_env) root@tbe:/home/yaolu# which bishengir-compile
-/home/yaolu/pkg/bin/bishengir-compile
-(louis_env) root@tbe:/home/yaolu# bishengir-compile --version
-bishengir-compile 1.2.0 (https://gitcode.com/Ascend/AscendNPU-IR.git 6e21948ae932 2026-09-07) 
-llvm 19.1.7 97f59c7c9e4a
-Release build
+You already have the key, so this is just installing the public half on fremont.
 
-(louis_env) root@tbe:/home/yaolu# cd /home/yaolu/Q3TritonKernel
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# env PATH="/data/ci_env/daily/pkg/compiler/tools/bishengir/bin:/data/ci_env/daily/pkg/ccec/bin:$PATH" \
->     BISHENG_INSTALL_PATH=/data/ci_env/daily/pkg/ccec/bin \
->   pytest -s "tests/fla_perf/test_nsa_compression_kernels_perf.py::test_nsa_compression_fwd_kernel_perf[B4-T1024-H4-HQ64-K32-V32-BS64-scale0.1-bfloat16]" 2>&1 | tail -5
-============================================================================
+In PowerShell:
 
+powershell
+type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh fremont "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 
-======================== 1 passed in 204.29s (0:03:24) =========================
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-(louis_env) root@tbe:/home/yaolu/Q3TritonKernel# ls -lt /root/.triton/dump/ | head -5
-total 3740
-drwxr-xr-x 2 root root 4096 Sep  9 15:24 xEo5cLzoMFt-5K-QtjE7aXVubcHSY8NWGDIlpiD0cjs
-drwxr-xr-x 2 root root 4096 Sep  9 15:24 3iq-0RnBVnXaf-LyFH34skhtl7s6D_D8WD20jnkcoY0
-drwxr-xr-x 2 root root 4096 Sep  9 15:24 3lWIFwBZOyW9IZvnpM9sjgEhF7FGCblMnxM95wnwwHA
-drwxr-xr-x 2 root root 4096 Sep  9 15:24 JK0kJ4SrY95zrv7ES8ZjwuYER3pHh-D0gdsnybpp5u0
+It'll prompt for your fremont password one last time.
+
+Then add the key to your config so SSH offers it. Open C:\Users\y84451117\.ssh\config and make sure the fremont block has:
+
+    IdentityFile ~/.ssh/id_ed25519
+
+Your a5 block already has it; fremont's was missing it.
+
+Then test:
+
+powershell
+ssh fremont
+
+Should go straight in. If it still asks for a password, check permissions on fremont:
+
+bash
+ls -ld ~ ~/.ssh
+ls -l ~/.ssh/authorized_keys
+
+Home must not be group or world writable, .ssh needs 700, authorized_keys needs 600. Fix with chmod 700 ~/.ssh; chmod 600 ~/.ssh/authorized_keys; chmod go-w ~.
+
+Note this doesn't change the ncat proxy, that's separate and stays as is. And your fremont password is still in that config file in plaintext for the proxy auth, which is worth dealing with separately.
